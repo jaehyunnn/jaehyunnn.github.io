@@ -104,5 +104,19 @@ $$
 
 위 그래프는 D-dimensional unit sphere 에서 datapoint 들에 대한 density를 보여준다. 대부분의 dimension 들이 비슷한 양상을 나타낸다. 
 
+![](https://miro.medium.com/max/2244/1*Ajj6Q52QvexZ_cudqqdr_A.png)
+
+위 그림 (a) 에서 보다시피, 논문에서 관찰한 바로는 anchor 와 negative 의 거리가 너무 가까운것을 사용하면 gradient의 variance가 너무 커지고 noise ratio에 low-signal을 가짐. 동시에, random 하게 sampling하면 good signal에서는 너무 자주 벗어나게됨.
+
+#### Distance weighted sampling
+
+이러한 문제를 고려하고자 논문에서는 variance 를 잘 control 하는 동시에 bias 를 고친 새로운 sampling distribution 을 제안한다. 
+
+상세히 설명하자면, 먼저 distance 에 따라서 uniform 하게 sampling 함 (즉, $q(d)^{-1}$의 weight로 sampling) --> 한 군데 몰려있는 sample 이 아니라 골고루 잘 퍼진 sample 들을 얻을 수 있다. 수식적으로 이러한 distance weighted sampling 은 다음과 같다:
+$$
+Pr(n^{*}=n|a) \propto min(\lambda, q^{-1}(D_{an}))
+$$
+위 그림 (b)는 gradient 의 variance 에 따라 달라지는 strategy 로 부터 추출 되는 sample 들을 비교한다. Hard negative 는 항상 high variance  region 에서의 sample 을 제공한다. --> 이렇게 되면 anchor 와 negative 가 멀어 지도록 학습 할 수 없는 noisy 한 gradient 가 나오게 된다. 그 결과로 model 이 망가지게 되는 것이다.
+
 
 
