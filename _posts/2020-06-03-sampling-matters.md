@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "Sampling Matters in Deep Embedding Learning 정리"
-date:   2020-06-03
+title: "Sampling Matters in Deep Embedding Learning 정리"
+date:  2020-06-03
 categories: Deep learning
 ---
 
@@ -113,10 +113,40 @@ $$
 이러한 문제를 고려하고자 논문에서는 variance 를 잘 control 하는 동시에 bias 를 고친 새로운 sampling distribution 을 제안한다. 
 
 상세히 설명하자면, 먼저 distance 에 따라서 uniform 하게 sampling 함 (즉, $q(d)^{-1}$의 weight로 sampling) --> 한 군데 몰려있는 sample 이 아니라 골고루 잘 퍼진 sample 들을 얻을 수 있다. 수식적으로 이러한 distance weighted sampling 은 다음과 같다:
+
+<center>
+
 $$
 Pr(n^{*}=n|a) \propto min(\lambda, q^{-1}(D_{an}))
 $$
+</center>
+
+
+
+여기서 $\lambda$ 를 설정함으로써 일정 거리보다 가까운 sample들은 애초에 배제하고 sampling을 진행할 수 있다. 그리고 기존 distribution의 역인 $q^{-1}$로 sampling 하면 특정거리에서만 뽑히지않고, 다양한 거리를 가지는 negative point들이 sampling 될것이다. --> 다른 sampling 기법 처럼 bias 되지 않음
+
 위 그림 (b)는 gradient 의 variance 에 따라 달라지는 strategy 로 부터 추출 되는 sample 들을 비교한다. Hard negative 는 항상 high variance  region 에서의 sample 을 제공한다. --> 이렇게 되면 anchor 와 negative 가 멀어 지도록 학습 할 수 없는 noisy 한 gradient 가 나오게 된다. 그 결과로 model 이 망가지게 되는 것이다.
 
+![](https://miro.medium.com/max/2272/1*nuWto8G_9p6966nFfFMIaw.png)
+
+위 그림 (a) (b) 는 contrastrive loss 와 triplet loss의 차이를 보여준다. constrastive loss 는 일정 threshold 를 두고 그 거리 밖은 negative postive 로 나누어 절대적으로 정의하는 방식이고, triplet 은 상대적인 거리가 일정 margin 이상 나도록 학습하므로 좀 더 유연하게 embedding space가 학습 되도록 한다. 
+
+또 한가지 loss 가 안정적이 되도록 돕는 방법중 하나는 $l_{2}^{2}$ loss 대신 $l_{2}$ 를 쓰는 것이다:
 
 
+$$
+l^{triplet, l_2}:=[D_{ap}-D_{an}+\alpha]_{+}
+$$
+
+
+단순히 이렇게 각 거리들의 square를 제거해주는것만으로 성능 향상이 있었다고 한다.
+
+!!!정리!!!
+
+- unit sphere 위에 embedding 된 datapoint 들의 pairwise distance 분포를 보니, embedding vector의 dimension에 따라 약간의 차이를 보일 뿐 대부분 특정 distance가 많은 gaussian의 형태를 보이고 있음 
+- 이런 형태에서 random하게 sampling 하게 되면 특정 easy pair 들이 자주 sampling 되고 hard negative 는 model을 망가뜨리고, semi-hard negative 은 pair 수가 너무 적은 제한이 있음 
+- pairwise distance의 분포의 역수로 weight를 주고 random uniformly sampling  을 진행하니 다양한 거리 대역에서 sample을 뽑혀 sample에 대한 bias 가 없고  더 좋은 성능을 냄
+
+#### Margin based loss
+
+제안하는 loss 의 basic idea 는 ordinal regression (순서가 있는 regression ?) 에서 기반된다고 한다.
