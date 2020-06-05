@@ -67,9 +67,11 @@ Siamese architecture 의 등장 --> 당시 computational power 가 부족했던�
 
 ### 3   Preliminaries
 
-$ f(x_i) $ 는 $x_i$ 의 embedding point 이고 $f:R^N \rightarrow R^D$ 인 deep network 라고 하자. 보통 embedding 된 point $f(x_i)$ 는 학습의 stability 를 위하여 L2-normalize 되어 unit length 를 가지게 된다. 
+$$ f(x_i) $$ 는 $$x_i$$ 의 embedding point 이고 $$f:R^N \rightarrow R^D$$ 인 deep network 라고 하자. 보통 embedding 된 point $$f(x_i)$$ 는 학습의 stability 를 위하여 L2-normalize 되어 unit length 를 가지게 된다. 
 
 여기서 각 similar data 들의 embedding point 는 가까워지고, dissimilar data 들의 embedding point 는 멀어지도록 목적하는 함수들은 다음과 같다.
+
+<br>
 $$
 l^{contrast}(i,j):=y_{ij}D^{2}_{ij}+(1-y_{ij})[\alpha - D_{ij}]^{2}_{+}
 $$
@@ -78,14 +80,20 @@ $$
 l^{triplet}(a,p,n):=[D_{ap}^{2}-D_{an}^{2}+\alpha]_{+}
 $$
 
+<br>
+
 순서대로 contrastive, triplet loss 이다. 여기서 margin $\alpha$ 를 기준으로 두고 embedding space가 distortion 되도록 학습하는 것이다.
 
 여기서 빠르게 수렴할 수 있도록 몇가지 heuristic한 방법들을 사용하는데 sampling 방법이 그 중 하나가 될 수 있다. contrastive loss 에서는 hard negative mining 을 적용했을때 대부분 빠르게 수렴하는 편이지만, triplet loss 에서는 종종 hard negative mining 때문에 모델이 망가지는 경우들을 보면 수렴이 빠르다는 것이 확실치 못한 편이다.
 
 그래서 FaceNet 에서 semi-hard negative mining 을 제안한 것이다: 
+
+<br>
 $$
 n^{*}_{ap}:=argmin_{n:D(a,n)>D(a,p)}D_{an}
 $$
+<br>
+
 결국, positive point와의 거리보다 멀리있는 negative point들 중에서 hardest 한걸 채택하는 방식이다 (물론 mini-batch 내에서 이루어짐). --> 이러한 방식은 어려운 negative를 채택하지만 너~~~무 어렵지 않은 semi-hard negative 이다.
 
 암튼 이 논문에서는 기존 sampling 기법들이 다소 heuristic 한 방법으로 sample 들에 weighting을 함으로써 좋은 성능을 가져왔는데, 어떠한 이유로 이런 성능향상이 일어났는지 분석하고, 새로운 sampling 기법을 제안하고자 한다.
@@ -94,11 +102,15 @@ $$
 
 ### 4   Distance Weighted Margin-Based Loss
 
-먼저 negative 를 uniform 하게 sampling 할때 어떤 일이 발생하는지 이해하기 위해, embedding space 는 n-차원 (보통 n>128)의 unit sphere $S^{n-1}$ 라는 것을 언급한다. 이 경우에 pariwise distance 들은 다음과 같이 일반화 할 수 있다:
+먼저 negative 를 uniform 하게 sampling 할때 어떤 일이 발생하는지 이해하기 위해, embedding space 는 n-차원 (보통 n>128)의 unit sphere $$S^{n-1}$$ 라는 것을 언급한다. 이 경우에 pariwise distance 들은 다음과 같이 일반화 할 수 있다:
+
+<br>
 $$
 q(d)\propto d^{n-2}[1-\frac{1}{4}d^{2}]^{\frac{n-3}{2}}
 $$
-"*The sphere game in n dimensions. http://faculty.madisoncollege.edu/alehnen/sphere/hypers.htm. Accessed: 2017-02-22.*" 에 유도식이 나온다지만 일단 넘어가고, 결론적으로는 만약 negative sample 들이 uniform 하게 찍히고, 우리는 그것들을 random 하게 뽑아버리면, 우리는 $\sqrt{2}$-가지의 sample을 얻을 수 있다는 것이다.  여기서 threshold 를 $\sqrt{2}$ 보다 낮게 하면, loss 는 생기지 않을 것이고 더 이상 학습이 되지 않게 된다.
+<br>
+
+"*The sphere game in n dimensions. http://faculty.madisoncollege.edu/alehnen/sphere/hypers.htm. Accessed: 2017-02-22.*" 에 유도식이 나온다지만 일단 넘어가고, 결론적으로는 만약 negative sample 들이 uniform 하게 찍히고, 우리는 그것들을 random 하게 뽑아버리면, 우리는 $$\sqrt{2}$$-가지의 sample을 얻을 수 있다는 것이다.  여기서 threshold 를 $$\sqrt{2}$$ 보다 낮게 하면, loss 는 생기지 않을 것이고 더 이상 학습이 되지 않게 된다.
 
 ![](https://ai2-s2-public.s3.amazonaws.com/figures/2017-08-08/854565e4ec4dda69d1d5587ef9d7c122726816ab/3-Figure2-1.png)
 
@@ -112,18 +124,20 @@ $$
 
 이러한 문제를 고려하고자 논문에서는 variance 를 잘 control 하는 동시에 bias 를 고친 새로운 sampling distribution 을 제안한다. 
 
-상세히 설명하자면, 먼저 distance 에 따라서 uniform 하게 sampling 함 (즉, $q(d)^{-1}$의 weight로 sampling) --> 한 군데 몰려있는 sample 이 아니라 골고루 잘 퍼진 sample 들을 얻을 수 있다. 수식적으로 이러한 distance weighted sampling 은 다음과 같다:
+상세히 설명하자면, 먼저 distance 에 따라서 uniform 하게 sampling 함 (즉, $$q(d)^{-1}$$의 weight로 sampling) --> 한 군데 몰려있는 sample 이 아니라 골고루 잘 퍼진 sample 들을 얻을 수 있다. 수식적으로 이러한 distance weighted sampling 은 다음과 같다:
 
-<center>
+<br><center>
 
 $$
 Pr(n^{*}=n|a) \propto min(\lambda, q^{-1}(D_{an}))
 $$
 </center>
 
+<br>
 
 
-여기서 $\lambda$ 를 설정함으로써 일정 거리보다 가까운 sample들은 애초에 배제하고 sampling을 진행할 수 있다. 그리고 기존 distribution의 역인 $q^{-1}$로 sampling 하면 특정거리에서만 뽑히지않고, 다양한 거리를 가지는 negative point들이 sampling 될것이다. --> 다른 sampling 기법 처럼 bias 되지 않음
+
+여기서 $$\lambda$$ 를 설정함으로써 일정 거리보다 가까운 sample들은 애초에 배제하고 sampling을 진행할 수 있다. 그리고 기존 distribution의 역인 $$q^{-1}$$로 sampling 하면 특정거리에서만 뽑히지않고, 다양한 거리를 가지는 negative point들이 sampling 될것이다 --> 다른 sampling 기법 처럼 bias 되지 않음
 
 위 그림 (b)는 gradient 의 variance 에 따라 달라지는 strategy 로 부터 추출 되는 sample 들을 비교한다. Hard negative 는 항상 high variance  region 에서의 sample 을 제공한다. --> 이렇게 되면 anchor 와 negative 가 멀어 지도록 학습 할 수 없는 noisy 한 gradient 가 나오게 된다. 그 결과로 model 이 망가지게 되는 것이다.
 
@@ -131,13 +145,15 @@ $$
 
 위 그림 (a) (b) 는 contrastrive loss 와 triplet loss의 차이를 보여준다. constrastive loss 는 일정 threshold 를 두고 그 거리 밖은 negative postive 로 나누어 절대적으로 정의하는 방식이고, triplet 은 상대적인 거리가 일정 margin 이상 나도록 학습하므로 좀 더 유연하게 embedding space가 학습 되도록 한다. 
 
-또 한가지 loss 가 안정적이 되도록 돕는 방법중 하나는 $l_{2}^{2}$ loss 대신 $l_{2}$ 를 쓰는 것이다:
+또 한가지 loss 가 안정적이 되도록 돕는 방법중 하나는 $$l_{2}^{2}$$ loss 대신 $$l_{2}$$ 를 쓰는 것이다:
 
+<br>
 
 $$
 l^{triplet, l_2}:=[D_{ap}-D_{an}+\alpha]_{+}
 $$
 
+<br>
 
 단순히 이렇게 각 거리들의 square를 제거해주는것만으로 성능 향상이 있었다고 한다.
 
@@ -149,4 +165,35 @@ $$
 
 #### Margin based loss
 
+이 논문에서 제안하는 loss function 은 contrastive loss의 computational efficiency 도 가져오면서 triplet loss 의 flexibility 까지 가져오도록 design 되었음
+
 제안하는 loss 의 basic idea 는 ordinal regression (순서가 있는 regression ?) 에서 기반된다고 한다.
+
+<br>
+$$
+l^{margin}(i,j):=(\alpha+y_{i,j}(D_{i,j}-\beta))
+$$
+<br>
+
+여기서 $$\beta$$ 는 positive 와 negative 를 구분하는 boundary 이고 $$\alpha$$ 는 seperation 정도를 조정하는 margin 이다. $$y_{ij}$$ 는 positive 이면 $$1$$, negative 이면 $$-1$$ 값을 가진다. 위 그림 (d) 를 보면 constrastive loss 에서 positive set 의 Loss 를 triplet 처럼 완화 시킬 수 있다. -> 결국 contrastive 의 효율성으로 triplet 의 유연성을 가질 수 있음
+
+논문에서는 triplet loss의 flexibility 를 활용하기 위해선 $$\beta$$ 를 더 세분화 하여 다뤄야 한다고 말하고 class-specific $$\beta^{(class)}$$ 와 sample-specific $$\beta^{(image)}$$ 로 나누어야 한다고 주장한다:
+
+<br>
+$$
+\beta(i):=\beta^{(0)}+\beta^{(class)}_{c(i)}+\beta^{(image)}_{i}
+$$
+<br>
+
+특히 sample-specific offset 인 $$\beta^{(image)}_{i}$$ 는 triplet loss 에서 margin 역할을 한다고 한다. 하지만!!!! 이런 class-specific 하고 sample-specific 한 offset 들을 어떻게 일일히 정해주랴... 그래서 논문에서는 그냥 하나의 $$\beta$$ 로 합쳐서 학습시 같이 학습시켜 이 값이 정해지도록 한다. --> 결국 class에 개수만큼 $$\beta$$ 를 만들어서 학습
+
+최종적으로 $$\beta$$ 를 regularize 하기위해 마지막 loss 에  regularization hyperparameter 인 $$\nu$$ 과 함께 regularization term 을 둔다:
+
+<br>
+$$
+minimize\sum_{(i,j)}l^{margin}(i,j)+\nu(\sum_{c(i)}\beta_{c(i)})
+$$
+<br>
+
+직관적으로 이해하기 위해 논문 원문에 나온 수식이 아니라, 논문 구현에 맞게 조금 수식을 수정하였다.
+
