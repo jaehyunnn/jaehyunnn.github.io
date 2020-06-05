@@ -9,7 +9,7 @@ permalink: /about/
 <center><p style="font-family:'Times New Roman'">
   M.S Student, Department of Computer and Radio Communications Engineering, Korea University </p></center>
 
-<center> ✉ &nbsp;<a href="mailto:benpak2015@gmail.com">benpak2015@gmail.com</a> &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; Github: <a href="github.com/jaehyunnn">jaehyunnn</a> </center>
+<center> ✉ &nbsp;<a href="mailto:benpak2015@gmail.com">benpak2015@gmail.com</a> &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; Github: <a href="https://github.com/jaehyunnn">jaehyunnn</a> </center>
 
 ---
 
