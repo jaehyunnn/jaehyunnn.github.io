@@ -15,7 +15,7 @@ permalink: /about/
 
 <h3 style="font-family:'Times New Roman'">Education</h3>
 
-2018.03 - 2020.02&nbsp;&nbsp; Korea University, M.S degrees
+2018.03 - 2020.02&nbsp;&nbsp; Korea University, M.S degree
 
 2012.03 - 2018.02&nbsp;&nbsp; Sahmyook University, B.S degree
 
