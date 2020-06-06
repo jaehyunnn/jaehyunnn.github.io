@@ -21,7 +21,7 @@ permalink: /about/
 
 <h3 style="font-family:'Times New Roman'">Honor & Award</h3>
 
-2019.02&nbsp;&nbsp; 2nd place prize, Naver AI Hackaton: AI-VISION (Product image retrieval)
+2019.02&nbsp;&nbsp; 2nd place prize, Naver AI Hackathon: AI-VISION (Product image retrieval)
 
 <h3 style="font-family:'Times New Roman'">Publication</h3>
 
