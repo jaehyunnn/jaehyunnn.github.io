@@ -35,9 +35,9 @@ CVPR 2020, 매우 거대한 모델 (cumbersome model) 을 teacher로 활용하�
 - 하지만, 실험에서는 예상과 달리 이러한 좋지 않은 model 을 통해 KD 를 적용했을 때도 model 이 강화되는 결과를 보여주었고, 이로 인해 KD 의 성공 요인이 knowledge transfer term보다는 regularization term 에 있고 Label Smoothing Regularization (LSR) 과 밀접한 관련이 있다는 것을 시사한다.
 - 결국, 저자들은 실험과 분석을 통해 KD 는 LSR 의 학습된 version 이고 LSR 은 KD 의 ad-hoc 이라는 것을 찾아냈다고 한다. LSR 의 학습된 version 이라는 것은 LSR 은 보통 smoothing parameter 를 manual 하게 주는데 반해, KD 의 teacher 로 부터 나온 smoothed label (soft target) 은 학습이 되어 나왔다는 말이다.
 
-논문은 결론적으로 다음과 같이 정의를 내린다:<br><center>
+논문은 결론적으로 다음과 같이 정의를 내린다:<br>
 
-*"Dark knowledge does not just include the similarity between categories, <br><center>but also imposes regularization on the student training.​"*
+*"Dark knowledge does not just include the similarity between categories, but also imposes regularization on the student training.​"*
 
 <br>
 
@@ -62,15 +62,17 @@ CVPR 2020, 매우 거대한 모델 (cumbersome model) 을 teacher로 활용하�
 
 ![](https://d3i71xaburhd42.cloudfront.net/bf96f5c2d68f73d3f4d45603a5ccb803cdd92ea8/4-Table1-1.png)
 
-<center> - CIFAR100 에서의 결과 -
+<center> - CIFAR100 에서의 결과 - </center>
+
 
 ![](https://d3i71xaburhd42.cloudfront.net/bf96f5c2d68f73d3f4d45603a5ccb803cdd92ea8/4-Table2-1.png)
 
-<center>- CIFAR10 에서의 결과 -
+<center>- CIFAR10 에서의 결과 -</center>
+
 
 ![](https://d3i71xaburhd42.cloudfront.net/bf96f5c2d68f73d3f4d45603a5ccb803cdd92ea8/4-Table3-1.png)
 
-<center>- Tiny-ImageNet 에서의 결과 -
+<center>- Tiny-ImageNet 에서의 결과 -</center>
 
 위와 같은 설정으로 진행했을때, 위 결과 표에서 보다시피 student model 이 teacher model의 성능을 향상 시키는 결과를 확인 하였다.
 
