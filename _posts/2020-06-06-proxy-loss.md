@@ -9,7 +9,7 @@ categories: Deep learning
 
 ---
 
-CVPR 2020, 기존 metric learning 에서 사용되던 로스를 1) pair-based loss 2) proxy-based loss 두 분류로 정의하고  pair-based loss 경우 data-point 간의 관계를 이용하지만, 너무 느리게 수렴한다는 단점이 있다. 반면 proxy-based loss 같은 경우 매우 빠르게 수렴하지만 data-to-data 관계를 풍부하게 고려하지못하는 단점이 있다. 이 논문에서는 이러한 각 카테고리별 loss 들의 한계점들을 극복한 new proxy-based loss 를 제안한다.
+CVPR 2020, 기존 metric learning 에서 사용되던 loss 를 1) pair-based loss 2) proxy-based loss 두 분류로 정의하고  pair-based loss 경우 data-point 간의 관계를 이용하지만, 너무 느리게 수렴한다는 단점이 있다. 반면 proxy-based loss 같은 경우 매우 빠르게 수렴하지만 data-to-data 관계를 풍부하게 고려하지못하는 단점이 있다. 이 논문에서는 이러한 각 카테고리별 loss 들의 한계점들을 극복한 new proxy-based loss 를 제안한다.
 
 ---
 
@@ -73,5 +73,5 @@ l(X)
 $$
 <br>
 
-여기서 $$Softflus(z)=log(1+e^{z}), \forall z\in R $$ 이고, 보통 ReLU 의 soft 한 버전으로 알려져있다.
+여기서 $$Softplus(z)=log(1+e^{z}), \forall z\in R $$ 이고, 보통 ReLU 의 soft 한 버전으로 알려져있다.
 
