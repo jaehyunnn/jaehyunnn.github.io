@@ -71,11 +71,11 @@ OCR task들의 속성들은 아래와 같이 나타난다:
 
 #### PDF OCR
 
-OCR 에서 가장 일반적인 시나리오는 printed/pdf OCR이다. 프린트된 문서의 구조적인 특성은 text 같은 걸 parsing하는데 더 쉽게 만들어 준다. 대부분 OCR tool들(e.g. [Tesseract][https://github.com/tesseract-ocr/])은 이런 문제들을 다루기위해 많은 시도를 하였고 설공적인 결과를 가져왔다. 
+OCR 에서 가장 일반적인 시나리오는 printed/pdf OCR이다. 프린트된 문서의 구조적인 특성은 text 같은 걸 parsing하는데 더 쉽게 만들어 준다. 대부분 OCR tool들(e.g. [Tesseract](https://github.com/tesseract-ocr/))은 이런 문제들을 다루기위해 많은 시도를 하였고 설공적인 결과를 가져왔다. 
 
 #### OCR in the wild
 
-이게 가장 challenging한 OCR task가 아닐까 싶다. 일반적으로 computer vision 분야에서 chanllenging하게 다뤄지는 noise, lighting, artifact 같은 것들이 함께 나타난다. 몇 가지 이런 것들과 연관 된 데이터로는 [coco-text][https://vision.cornell.edu/se3/coco-text-2/], [SVT][http://tc11.cvc.uab.es/datasets/SVT_1] 같은 데이터셋들이 있다. 이런 데이터들은 그냥 street view 에서 text를 추출하는 형태로 이루어져있다.
+이게 가장 challenging한 OCR task가 아닐까 싶다. 일반적으로 computer vision 분야에서 chanllenging하게 다뤄지는 noise, lighting, artifact 같은 것들이 함께 나타난다. 몇 가지 이런 것들과 연관 된 데이터로는 [coco-text](https://vision.cornell.edu/se3/coco-text-2/), [SVT](http://tc11.cvc.uab.es/datasets/SVT_1) 같은 데이터셋들이 있다. 이런 데이터들은 그냥 street view 에서 text를 추출하는 형태로 이루어져있다.
 
 ![wild ocr](https://cdn-images-1.medium.com/max/800/1*h1CDmAxHf1Ee0illDor2HA.png)
 
@@ -119,7 +119,7 @@ SynthText repo: https://github.com/ankush-me/SynthText
 
 만약 2번 항목이 잘된다면, 3번 항목은 pattern matching이나 machine learning 기법을 사용해 쉽게 쉽게 풀 수 있다.
 
-그러나,  contour detection은 일반화에 있어서 꽤 challenging 한 문제이다. 수동적인 fine-tuning이 많이 필요하기 때문에 대부분의 문제들에서 실행불가능하게 된다. 예를들면, [간단한 알고리즘][http://scikit-image.org/docs/dev/auto_examples/segmentation/plot_label.html#sphx-glr-download-auto-examples-segmentation-plot-label-py]을 SVHN 데이터에 적용한다고 하면 아래와 같이 좋은 결과를 얻게된다:
+그러나,  contour detection은 일반화에 있어서 꽤 challenging 한 문제이다. 수동적인 fine-tuning이 많이 필요하기 때문에 대부분의 문제들에서 실행불가능하게 된다. 예를들면, [간단한 알고리즘](http://scikit-image.org/docs/dev/auto_examples/segmentation/plot_label.html#sphx-glr-download-auto-examples-segmentation-plot-label-py)을 SVHN 데이터에 적용한다고 하면 아래와 같이 좋은 결과를 얻게된다:
 
 ![svhn](https://cdn-images-1.medium.com/max/800/0*R6r8eGNyoylNVj4G)
 
@@ -171,19 +171,19 @@ Key idea로는 첫번째 단계에서, 일반적인 fully-convolutional network�
 
 마지막 세번째 단계로, transcription layer이다. 윗 단계에서 나온 sequence를 보면 중복되는 부분과 공백이 있는 등 상당이 지전분 할것이다. 이런 부분들은 probabilistic한 방법 들을 사용하여 통합하고 이해가 되는 seqence로 정제 시킨다고 생각하는 layer라고 보면 될것 같다.
 
-이 방법은 **CTC loss** 라고 불리며 더 자세한 것은 [여기][https://gab41.lab41.org/speech-recognition-you-down-with-ctc-8d3b558943f0]를 참조하면 좋을 것 같다.
+이 방법은 **CTC loss** 라고 불리며 더 자세한 것은 [여기](https://gab41.lab41.org/speech-recognition-you-down-with-ctc-8d3b558943f0)를 참조하면 좋을 것 같다.
 
 #### STN-net / SEE
 
-[SEE][https://arxiv.org/pdf/1712.05404.pdf] - Semi Supervised End-to-End Scene Text Recognition 은 Christian Bartzi 라는 분이 연구하신 결과인데, 완전히 text를 detection하고 recognition하는 부분을 end-to-end하게 만들었다. 
+[SEE](https://arxiv.org/pdf/1712.05404.pdf) - Semi Supervised End-to-End Scene Text Recognition 은 Christian Bartzi 라는 분이 연구하신 결과인데, 완전히 text를 detection하고 recognition하는 부분을 end-to-end하게 만들었다. 
 
 여기서는 weak supervised (semi-supervision 와 같은 의미, 혼용 되어 사용되는 듯) 방식으로 학습을 하게 된다. 학습을 할때 오직 text 내용에 대한 annotation만 주어지고 bounding box에 대한 annotation은 주어지지 않는다. 이렇게하면 annotation에 대한 부담이 줄기 때문에 더 많은 데이터를 활용 할 수 있지만, 이런 데이터를 활용해서 학습을 시킨다는 것은 상당히 어려운 주제이고 이 논문에서는 그것들에 대해 토의하고 몇 가지 trick들을 통해 실제 이런 방식으로 학습이 가능하게 하였다.
 
-SEE 를 발표하기전 먼저 [STN-OCR][https://arxiv.org/abs/1707.08831] 이라는 네트워크를 발표했었는데, SEE는 STN을 좀더 다듬고 일반성을 강조한 것이라고 생각하면 될 것 같다. 
+SEE 를 발표하기전 먼저 [STN-OCR](https://arxiv.org/abs/1707.08831) 이라는 네트워크를 발표했었는데, SEE는 STN을 좀더 다듬고 일반성을 강조한 것이라고 생각하면 될 것 같다. 
 
 ![SEE](https://cdn-images-1.medium.com/max/800/1*XAUtH9C1iPLa9clk9RA-8Q.png)
 
-**STN-OCR** 은 이름에서 보이 듯이 딥-마인드에서 2015년에 발표한 [Spatial Transformer Network][https://arxiv.org/pdf/1506.02025.pdf] 을 사용하였다. (최근 나온 Google Transformer 와는 다르다고 함.)
+**STN-OCR** 은 이름에서 보이 듯이 딥-마인드에서 2015년에 발표한 [Spatial Transformer Network](https://arxiv.org/pdf/1506.02025.pdf) 을 사용하였다. (최근 나온 Google Transformer 와는 다르다고 함.)
 
 먼저 두개의 concatenate 된 네트워크들을 학습시키는데, 첫번째 네트워크는 이미지의 transformation을 학습하는 transformer이고, 다른 하나는 text를 인식하기 위한 LSTM으로 이루어져 있다.
 
