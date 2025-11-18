@@ -1,0 +1,219 @@
+'use client';
+
+import { useState, useEffect, useRef } from 'react';
+import { Music, Pause, Play, Volume2, VolumeX } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+interface BGMPlayerProps {
+  audioSrc?: string;
+  autoPlay?: boolean;
+}
+
+export default function BGMPlayer({ audioSrc = '/audio/bgm.mp3', autoPlay = false }: BGMPlayerProps) {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [volume, setVolume] = useState(0.5);
+  const [showControls, setShowControls] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    audio.volume = volume;
+
+    if (autoPlay && !isPlaying) {
+      // 브라우저 자동재생 정책에 따라 사용자 인터랙션 후 재생
+      const playAudio = async () => {
+        try {
+          await audio.play();
+          setIsPlaying(true);
+        } catch (error) {
+          console.log('자동재생이 차단되었습니다. 사용자 인터랙션이 필요합니다.');
+        }
+      };
+
+      // 첫 클릭 이벤트에서 재생 시도
+      const handleFirstInteraction = () => {
+        playAudio();
+        document.removeEventListener('click', handleFirstInteraction);
+        document.removeEventListener('touchstart', handleFirstInteraction);
+      };
+
+      document.addEventListener('click', handleFirstInteraction);
+      document.addEventListener('touchstart', handleFirstInteraction);
+
+      return () => {
+        document.removeEventListener('click', handleFirstInteraction);
+        document.removeEventListener('touchstart', handleFirstInteraction);
+      };
+    }
+  }, [autoPlay, volume, isPlaying]);
+
+  const togglePlay = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    try {
+      if (isPlaying) {
+        audio.pause();
+        setIsPlaying(false);
+      } else {
+        await audio.play();
+        setIsPlaying(true);
+      }
+    } catch (error) {
+      console.error('재생 오류:', error);
+    }
+  };
+
+  const toggleMute = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    audio.muted = !isMuted;
+    setIsMuted(!isMuted);
+  };
+
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVolume = parseFloat(e.target.value);
+    setVolume(newVolume);
+    if (audioRef.current) {
+      audioRef.current.volume = newVolume;
+      if (newVolume === 0) {
+        setIsMuted(true);
+      } else if (isMuted) {
+        setIsMuted(false);
+      }
+    }
+  };
+
+  return (
+    <>
+      <audio
+        ref={audioRef}
+        src={audioSrc}
+        loop
+        preload="auto"
+        onEnded={() => setIsPlaying(false)}
+      />
+
+      <motion.div
+        className="fixed bottom-6 right-6 z-50"
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ delay: 1, duration: 0.5, type: 'spring' }}
+      >
+        <div
+          className="relative"
+          onMouseEnter={() => setShowControls(true)}
+          onMouseLeave={() => setShowControls(false)}
+        >
+          {/* 메인 컨트롤 버튼 */}
+          <motion.button
+            onClick={togglePlay}
+            className="bg-white/90 backdrop-blur-sm shadow-lg rounded-full p-4 hover:bg-white transition-all duration-300"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            aria-label={isPlaying ? '음악 일시정지' : '음악 재생'}
+          >
+            <AnimatePresence mode="wait">
+              {isPlaying ? (
+                <motion.div
+                  key="pause"
+                  initial={{ rotate: -180, opacity: 0 }}
+                  animate={{ rotate: 0, opacity: 1 }}
+                  exit={{ rotate: 180, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Pause className="w-6 h-6 text-rose-500" />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="play"
+                  initial={{ rotate: -180, opacity: 0 }}
+                  animate={{ rotate: 0, opacity: 1 }}
+                  exit={{ rotate: 180, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Play className="w-6 h-6 text-rose-500 ml-0.5" />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.button>
+
+          {/* 재생 중 애니메이션 링 */}
+          {isPlaying && (
+            <motion.div
+              className="absolute inset-0 rounded-full border-2 border-rose-300"
+              initial={{ scale: 1, opacity: 0.5 }}
+              animate={{ scale: 1.3, opacity: 0 }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            />
+          )}
+
+          {/* 확장 컨트롤 */}
+          <AnimatePresence>
+            {showControls && (
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-white/95 backdrop-blur-sm shadow-lg rounded-full px-4 py-2 flex items-center gap-3"
+              >
+                {/* 음소거 버튼 */}
+                <button
+                  onClick={toggleMute}
+                  className="hover:scale-110 transition-transform"
+                  aria-label={isMuted ? '음소거 해제' : '음소거'}
+                >
+                  {isMuted || volume === 0 ? (
+                    <VolumeX className="w-5 h-5 text-gray-600" />
+                  ) : (
+                    <Volume2 className="w-5 h-5 text-gray-600" />
+                  )}
+                </button>
+
+                {/* 볼륨 슬라이더 */}
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                  value={volume}
+                  onChange={handleVolumeChange}
+                  className="w-20 h-1 bg-gray-300 rounded-lg appearance-none cursor-pointer slider"
+                  aria-label="볼륨 조절"
+                />
+
+                <Music className="w-4 h-4 text-rose-400" />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </motion.div>
+
+      <style jsx>{`
+        .slider::-webkit-slider-thumb {
+          appearance: none;
+          width: 12px;
+          height: 12px;
+          background: #f43f5e;
+          border-radius: 50%;
+          cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb {
+          width: 12px;
+          height: 12px;
+          background: #f43f5e;
+          border-radius: 50%;
+          cursor: pointer;
+          border: none;
+        }
+      `}</style>
+    </>
+  );
+}
