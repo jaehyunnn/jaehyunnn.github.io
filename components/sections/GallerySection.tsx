@@ -33,7 +33,7 @@ export default function GallerySection({ photos }: GallerySectionProps) {
 
   return (
     <>
-      <section ref={ref} className="py-20 px-6 bg-gradient-to-b from-white to-rose-50/30">
+      <section ref={ref} className="py-20 px-6 relative">
         <div className="max-w-6xl mx-auto">
           {/* 제목 */}
           <motion.div
@@ -45,7 +45,7 @@ export default function GallerySection({ photos }: GallerySectionProps) {
             <h2 className="text-3xl md:text-4xl font-serif text-gray-800 mb-4">
               Our Story
             </h2>
-            <div className="w-12 h-px bg-rose-300 mx-auto mb-4" />
+            <div className="w-12 h-0.5 bg-gradient-to-r from-transparent via-rose-300 to-transparent mx-auto mb-4" />
             <p className="text-gray-600 text-sm">우리의 소중한 순간들</p>
           </motion.div>
 
@@ -62,9 +62,9 @@ export default function GallerySection({ photos }: GallerySectionProps) {
                 style={{ rotate: `${getRotation(index, photo)}deg` }}
                 onClick={() => setSelectedPhoto(photo)}
               >
-                {/* 폴라로이드 프레임 */}
-                <div className="bg-white p-4 pb-12 shadow-xl hover:shadow-2xl transition-shadow duration-300">
-                  <div className="relative w-full aspect-square bg-gray-100 overflow-hidden">
+                {/* 폴라로이드 프레임 - Glassmorphism */}
+                <div className="glass-strong p-4 pb-12 shadow-2xl hover:shadow-[0_20px_50px_rgba(251,113,133,0.3)] transition-all duration-300">
+                  <div className="relative w-full aspect-square bg-gradient-to-br from-white/30 to-rose-50/30 overflow-hidden rounded-lg backdrop-blur-sm">
                     {photo.src.startsWith('http') || photo.src.startsWith('/images') ? (
                       <Image
                         src={photo.src}
@@ -74,13 +74,13 @@ export default function GallerySection({ photos }: GallerySectionProps) {
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-rose-100 to-pink-100">
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-rose-100/50 to-pink-100/50 backdrop-blur-sm">
                         <p className="text-gray-400 text-sm">사진 {index + 1}</p>
                       </div>
                     )}
                   </div>
                   {photo.caption && (
-                    <p className="text-center mt-4 text-gray-700 font-handwriting text-sm">
+                    <p className="text-center mt-4 text-gray-800 font-handwriting text-sm font-medium">
                       {photo.caption}
                     </p>
                   )}

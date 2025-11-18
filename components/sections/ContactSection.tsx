@@ -56,21 +56,21 @@ export default function ContactSection({
   };
 
   const PersonCard = ({ person, label }: { person: Person; label: string }) => (
-    <div className="bg-white p-6 rounded-xl shadow-md">
-      <p className="text-gray-600 text-sm mb-2">{label}</p>
-      <p className="text-lg font-semibold text-gray-800 mb-4">{person.name}</p>
+    <div className="glass-strong p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105">
+      <p className="text-gray-600 text-sm mb-2 font-medium">{label}</p>
+      <p className="text-lg font-bold text-gray-800 mb-4">{person.name}</p>
 
       <div className="flex gap-2 mb-4">
         <button
           onClick={() => makeCall(person.phone)}
-          className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-lg transition-colors text-sm"
+          className="flex-1 flex items-center justify-center gap-2 py-2.5 glass hover:glass-strong text-rose-600 rounded-xl transition-all duration-300 text-sm shadow-md hover:shadow-lg font-semibold"
         >
           <Phone className="w-4 h-4" />
           전화
         </button>
         <button
           onClick={() => sendMessage(person.phone)}
-          className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors text-sm"
+          className="flex-1 flex items-center justify-center gap-2 py-2.5 glass hover:glass-strong text-green-600 rounded-xl transition-all duration-300 text-sm shadow-md hover:shadow-lg font-semibold"
         >
           <MessageCircle className="w-4 h-4" />
           문자
@@ -78,18 +78,18 @@ export default function ContactSection({
       </div>
 
       {person.accountBank && person.accountNumber && (
-        <div className="pt-4 border-t border-gray-100">
-          <p className="text-xs text-gray-500 mb-2">계좌번호</p>
-          <div className="flex items-center justify-between gap-2 bg-gray-50 p-3 rounded-lg">
+        <div className="pt-4 border-t border-white/40">
+          <p className="text-xs text-gray-600 mb-2 font-medium">계좌번호</p>
+          <div className="flex items-center justify-between gap-2 glass-subtle p-3 rounded-xl">
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-800 truncate">
+              <p className="text-sm font-semibold text-gray-800 truncate">
                 {person.accountBank}
               </p>
-              <p className="text-xs text-gray-600 truncate">
+              <p className="text-xs text-gray-700 truncate">
                 {person.accountNumber}
               </p>
               {person.accountHolder && (
-                <p className="text-xs text-gray-500">{person.accountHolder}</p>
+                <p className="text-xs text-gray-600">{person.accountHolder}</p>
               )}
             </div>
             <button
@@ -99,13 +99,13 @@ export default function ContactSection({
                   `${label}-${person.name}`
                 )
               }
-              className="flex-shrink-0 p-2 hover:bg-gray-200 rounded-lg transition-colors"
+              className="flex-shrink-0 p-2 hover:bg-white/30 rounded-lg transition-colors"
               aria-label="계좌번호 복사"
             >
               {copiedAccount === `${label}-${person.name}` ? (
                 <Check className="w-4 h-4 text-green-600" />
               ) : (
-                <Copy className="w-4 h-4 text-gray-600" />
+                <Copy className="w-4 h-4 text-gray-700" />
               )}
             </button>
           </div>
@@ -115,7 +115,7 @@ export default function ContactSection({
   );
 
   return (
-    <section ref={ref} className="py-20 px-6 bg-gradient-to-b from-rose-50/30 to-white">
+    <section ref={ref} className="py-20 px-6 relative">
       <div className="max-w-4xl mx-auto">
         {/* 제목 */}
         <motion.div
@@ -127,7 +127,7 @@ export default function ContactSection({
           <h2 className="text-3xl md:text-4xl font-serif text-gray-800 mb-4">
             Contact
           </h2>
-          <div className="w-12 h-px bg-rose-300 mx-auto mb-4" />
+          <div className="w-12 h-0.5 bg-gradient-to-r from-transparent via-rose-300 to-transparent mx-auto mb-4" />
           <p className="text-gray-600 text-sm">연락처 및 마음 전하실 곳</p>
         </motion.div>
 
@@ -139,9 +139,9 @@ export default function ContactSection({
           className="mb-12"
         >
           <div className="flex items-center gap-2 mb-6">
-            <div className="w-8 h-px bg-rose-200" />
-            <h3 className="text-xl font-serif text-gray-800">신랑측</h3>
-            <div className="flex-1 h-px bg-rose-200" />
+            <div className="w-8 h-px bg-gradient-to-r from-transparent to-rose-300" />
+            <h3 className="text-xl font-serif text-gray-800 font-semibold">신랑측</h3>
+            <div className="flex-1 h-px bg-gradient-to-r from-rose-300 to-transparent" />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -158,9 +158,9 @@ export default function ContactSection({
           transition={{ duration: 0.8, delay: 0.4 }}
         >
           <div className="flex items-center gap-2 mb-6">
-            <div className="w-8 h-px bg-rose-200" />
-            <h3 className="text-xl font-serif text-gray-800">신부측</h3>
-            <div className="flex-1 h-px bg-rose-200" />
+            <div className="w-8 h-px bg-gradient-to-r from-transparent to-rose-300" />
+            <h3 className="text-xl font-serif text-gray-800 font-semibold">신부측</h3>
+            <div className="flex-1 h-px bg-gradient-to-r from-rose-300 to-transparent" />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

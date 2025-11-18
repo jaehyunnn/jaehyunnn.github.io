@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Noto_Serif_KR, Nanum_Pen_Script } from "next/font/google";
+import { Geist, Geist_Mono, Noto_Serif_KR, Nanum_Pen_Script, Nanum_Brush_Script } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -24,12 +24,18 @@ const nanumPen = Nanum_Pen_Script({
   weight: ["400"],
 });
 
+const nanumBrush = Nanum_Brush_Script({
+  variable: "--font-nanum-brush",
+  subsets: ["latin"],
+  weight: ["400"],
+});
+
 export const metadata: Metadata = {
-  title: "모바일 청첩장 - 우리 결혼합니다",
+  title: "재현 & 가인 - 우리 결혼합니다",
   description: "소중한 분들을 초대합니다",
   openGraph: {
-    title: "모바일 청첩장",
-    description: "우리의 특별한 날을 함께해 주세요",
+    title: "💍 가인 & 재현의 결혼식에 초대합니다.",
+    description: "2026년 8월 23일(월) 오전 11시·라브르에드니아",
     images: ["/images/og-image.jpg"],
   },
 };
@@ -46,7 +52,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${notoSerifKR.variable} ${nanumPen.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${notoSerifKR.variable} ${nanumPen.variable} ${nanumBrush.variable} antialiased`}
       >
         {children}
       </body>

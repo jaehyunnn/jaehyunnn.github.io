@@ -32,52 +32,59 @@ export default function HeroSection({
         <div className="absolute inset-0 bg-black/20" />
       </div>
 
-      {/* 콘텐츠 */}
+      {/* 콘텐츠 - Glassmorphism 카드 */}
       <div className="relative z-10 text-center px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.3 }}
+          className="glass-strong rounded-3xl p-10 md:p-16 max-w-3xl mx-auto shadow-2xl"
         >
-          <p className="text-white/90 text-sm md:text-base tracking-widest mb-4 font-light">
-            WEDDING INVITATION
-          </p>
-        </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.5 }}
+          >
+            <p className="text-gray-700/90 text-sm md:text-base tracking-widest mb-6 font-light">
+              WEDDING INVITATION
+            </p>
+          </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, delay: 0.6 }}
-          className="mb-8"
-        >
-          <h1 className="text-4xl md:text-5xl lg:text-6xl text-white font-serif mb-4">
-            {groomName} <span className="text-2xl md:text-3xl mx-2">&</span> {brideName}
-          </h1>
-          <div className="w-16 h-px bg-white/60 mx-auto mb-6" />
-        </motion.div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, delay: 0.7 }}
+            className="mb-8"
+          >
+            <h1 className="text-4xl md:text-5xl lg:text-6xl text-gray-800 font-serif mb-4">
+              {groomName} <span className="text-2xl md:text-3xl mx-2 text-rose-400">&</span> {brideName}
+            </h1>
+            <div className="w-20 h-0.5 bg-gradient-to-r from-transparent via-rose-300 to-transparent mx-auto mb-6" />
+          </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.9 }}
-          className="text-white/95"
-        >
-          <p className="text-lg md:text-xl mb-2 font-light">{weddingDate}</p>
-          <p className="text-base md:text-lg font-light">{weddingTime}</p>
-        </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 1 }}
+            className="text-gray-700"
+          >
+            <p className="text-lg md:text-xl mb-2 font-light">{weddingDate}</p>
+            <p className="text-base md:text-lg font-light">{weddingTime}</p>
+          </motion.div>
 
-        {/* 장식 요소 */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 1.2 }}
-          className="mt-12"
-        >
-          <div className="flex justify-center items-center gap-2">
-            <div className="w-8 h-px bg-white/40" />
-            <div className="w-2 h-2 rounded-full bg-white/60" />
-            <div className="w-8 h-px bg-white/40" />
-          </div>
+          {/* 장식 요소 */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 1.3 }}
+            className="mt-10"
+          >
+            <div className="flex justify-center items-center gap-3">
+              <div className="w-10 h-px bg-gradient-to-r from-transparent via-rose-300 to-rose-300" />
+              <div className="w-2.5 h-2.5 rounded-full bg-rose-300 shadow-lg" />
+              <div className="w-10 h-px bg-gradient-to-l from-transparent via-rose-300 to-rose-300" />
+            </div>
+          </motion.div>
         </motion.div>
       </div>
 
@@ -91,10 +98,10 @@ export default function HeroSection({
         <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
-          className="flex flex-col items-center text-white/80"
+          className="flex flex-col items-center glass-subtle rounded-full px-6 py-3 shadow-lg"
         >
-          <p className="text-xs mb-2 tracking-wider">SCROLL</p>
-          <ChevronDown className="w-6 h-6" />
+          <p className="text-xs mb-1 tracking-wider text-gray-700 font-medium">SCROLL</p>
+          <ChevronDown className="w-5 h-5 text-rose-400" />
         </motion.div>
       </motion.div>
     </section>

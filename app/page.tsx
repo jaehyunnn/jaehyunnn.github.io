@@ -1,6 +1,8 @@
 'use client';
 
+import { useState } from 'react';
 import BGMPlayer from '@/components/BGMPlayer';
+import IntroSection from '@/components/sections/IntroSection';
 import HeroSection from '@/components/sections/HeroSection';
 import InvitationSection from '@/components/sections/InvitationSection';
 import GallerySection from '@/components/sections/GallerySection';
@@ -9,34 +11,35 @@ import ContactSection from '@/components/sections/ContactSection';
 import ShareSection from '@/components/sections/ShareSection';
 
 export default function Home() {
+  const [showIntro, setShowIntro] = useState(true);
   // 청첩장 데이터 (실제 사용시 수정하세요)
   const weddingData = {
     groom: {
-      name: '김신랑',
-      father: '김아버지',
-      mother: '김어머니',
-      phone: '010-1234-5678',
-      accountBank: '국민은행',
-      accountNumber: '123-456-789012',
-      accountHolder: '김신랑',
+      name: '박재현',
+      father: '박준길',
+      mother: '이상숙',
+      phone: '010-2788-2543',
+      accountBank: '기업은행',
+      accountNumber: '065-154410-01-010',
+      accountHolder: '박재현',
     },
     bride: {
-      name: '이신부',
-      father: '이아버지',
-      mother: '이어머니',
-      phone: '010-9876-5432',
-      accountBank: '신한은행',
-      accountNumber: '987-654-321098',
-      accountHolder: '이신부',
+      name: '김가인',
+      father: '김연재',
+      mother: '김선화',
+      phone: '010-2450-4137',
+      accountBank: '하나은행',
+      accountNumber: '215-910417-00707',
+      accountHolder: '김가인',
     },
     wedding: {
-      date: '2025년 6월 14일 토요일',
-      time: '오후 2시 30분',
-      venue: '그랜드 컨벤션 웨딩홀',
-      venueDetail: '3층 그랜드볼룸',
-      address: '서울특별시 강남구 테헤란로 123',
-      latitude: 37.5665,
-      longitude: 126.9780,
+      date: '2026년 8월 23일 일요일',
+      time: '오전 11시',
+      venue: '라브르 에드니아',
+      venueDetail: '단독홀',
+      address: '서울특별시 송파구 백제고분로 95',
+      latitude: 37.508439,
+      longitude: 127.079492,
     },
     invitation: {
       message: `서로가 마주보며 다져온 사랑을
@@ -84,9 +87,19 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-white">
-      {/* BGM 플레이어 */}
-      <BGMPlayer audioSrc="/audio/bgm.mp3" autoPlay={true} />
+    <main className="min-h-screen relative">
+      {/* 인트로 섹션 */}
+      {showIntro && (
+        <IntroSection
+          groomName={weddingData.groom.name}
+          brideName={weddingData.bride.name}
+          weddingDate={weddingData.wedding.date}
+          onComplete={() => setShowIntro(false)}
+        />
+      )}
+
+      {/* BGM 플레이어 - 인트로 완료 후 자동 재생 */}
+      <BGMPlayer audioSrc="/audio/bgm.mp3" autoPlay={!showIntro} />
 
       {/* 히어로 섹션 */}
       <HeroSection
@@ -165,16 +178,18 @@ export default function Home() {
         description={`${weddingData.wedding.date}에 저희 두 사람이 결혼합니다. 참석하셔서 축복해 주시면 감사하겠습니다.`}
       />
 
-      {/* 푸터 */}
-      <footer className="py-12 bg-gray-50 text-center text-sm text-gray-500">
-        <p className="mb-2">
-          {weddingData.groom.name} & {weddingData.bride.name}
-        </p>
-        <p>{weddingData.wedding.date}</p>
-        <div className="mt-6 flex justify-center items-center gap-2">
-          <div className="w-1 h-1 rounded-full bg-rose-300" />
-          <div className="w-1 h-1 rounded-full bg-rose-300" />
-          <div className="w-1 h-1 rounded-full bg-rose-300" />
+      {/* 푸터 - Glassmorphism */}
+      <footer className="py-12 relative">
+        <div className="max-w-2xl mx-auto text-center glass-strong rounded-3xl p-8 shadow-xl mx-6">
+          <p className="mb-2 text-gray-800 font-serif text-lg">
+            {weddingData.groom.name} <span className="text-rose-400 mx-2">&</span> {weddingData.bride.name}
+          </p>
+          <p className="text-gray-600">{weddingData.wedding.date}</p>
+          <div className="mt-6 flex justify-center items-center gap-3">
+            <div className="w-2 h-2 rounded-full bg-rose-400 shadow-lg" />
+            <div className="w-2 h-2 rounded-full bg-rose-400 shadow-lg" />
+            <div className="w-2 h-2 rounded-full bg-rose-400 shadow-lg" />
+          </div>
         </div>
       </footer>
     </main>
