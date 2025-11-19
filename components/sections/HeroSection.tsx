@@ -58,9 +58,9 @@ export default function HeroSection({
           className="mb-10"
         >
           <h1
-            className="text-5xl md:text-6xl lg:text-7xl font-serif mb-6"
+            className="text-5xl md:text-6xl lg:text-7xl mb-6"
             style={{
-              fontFamily: 'var(--font-gyeonggi), serif',
+              fontFamily: '-apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Serif KR", Georgia, "Times New Roman", serif',
               color: '#FFFEF9',
               textShadow: '0 2px 20px rgba(0, 0, 0, 0.4), 0 0 40px rgba(0, 0, 0, 0.2)'
             }}

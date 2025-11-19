@@ -50,8 +50,9 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --font-pretendard: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  --font-gyeonggi: 'GyeonggiCheonnyeonBatang', serif;
+  /* iOS 시스템 폰트를 우선 적용 */
+  --font-pretendard: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", Helvetica, Arial, sans-serif;
+  --font-gyeonggi: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Serif KR", Georgia, "Times New Roman", serif;
 }
 
 @theme inline {
@@ -67,7 +68,8 @@ body {
   background-size: 400% 400%;
   animation: gradientShift 20s ease infinite;
   color: #3d3427;
-  font-family: var(--font-pretendard), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  /* iOS 시스템 폰트 우선 적용 */
+  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   overflow-x: hidden;
   position: relative;
   /* iOS Safari 폰트 렌더링 최적화 */
