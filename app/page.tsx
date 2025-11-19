@@ -88,6 +88,21 @@ export default function Home() {
         caption: '영원히',
         rotation: 1,
       },
+      {
+        src: '/images/photo7.jpg',
+        caption: '특별한 날',
+        rotation: -2,
+      },
+      {
+        src: '/images/photo8.jpg',
+        caption: '사랑의 순간',
+        rotation: 3,
+      },
+      {
+        src: '/images/photo9.jpg',
+        caption: '함께 걸을 길',
+        rotation: -1,
+      },
     ],
   };
 
@@ -182,7 +197,7 @@ export default function Home() {
         groomName={weddingData.groom.name}
         brideName={weddingData.bride.name}
         weddingDate={weddingData.wedding.date}
-        thumbnailImage="/images/og-image.jpg"
+        thumbnailImage="/images/hero-bg.jpg"
         description={`${weddingData.wedding.date}에 저희 두 사람이 결혼합니다. 참석하셔서 축복해 주시면 감사하겠습니다.`}
       />
 

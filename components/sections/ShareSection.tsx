@@ -76,7 +76,7 @@ export default function ShareSection({
       : `${origin}/images/hero-bg.jpg`;
 
     // description 생성
-    const shareDescription = description || [weddingDate, weddingTime, venue].filter(Boolean).join(' · ');
+    const shareDescription = description || `${weddingDate} ${weddingTime} · ${venue}`;
 
     window.Kakao.Link.sendDefault({
       objectType: 'feed',

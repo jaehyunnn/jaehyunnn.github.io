@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "💍 가인 & 재현의 결혼식에 초대합니다.",
     description: "2026년 8월 23일(일) 오전 11시·라브르 에드니아",
-    images: ["/images/og-image.jpg"],
+    images: ["/images/hero-bg.jpg"],
   },
 };
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Music, Pause, Play, Volume2, VolumeX } from 'lucide-react';
+import { Pause, Play } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface BGMPlayerProps {
@@ -11,74 +11,115 @@ interface BGMPlayerProps {
 
 export default function BGMPlayer({ audioSrc = '/audio/bgm.mp3', autoPlay = false }: BGMPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
-  const [volume, setVolume] = useState(0.5);
-  const [showControls, setShowControls] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  // 볼륨 설정
+  // 초기 볼륨 설정 (고정값)
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
-    audio.volume = volume;
-  }, [volume]);
+    audio.volume = 0.3; // 30% 볼륨으로 고정
+    console.log('[BGM] 초기 볼륨 설정: 30%');
+  }, []);
 
-  // 자동재생 (한 번만 실행)
+  // 자동재생 (컴포넌트 마운트 시 한 번만)
   useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio || !autoPlay) return;
+    if (!autoPlay) {
+      console.log('[BGM] 자동재생 비활성화됨');
+      return;
+    }
 
-    const playAudio = async () => {
+    const audio = audioRef.current;
+    if (!audio) {
+      console.log('[BGM] Audio 요소를 찾을 수 없음');
+      return;
+    }
+
+    const attemptAutoplay = async () => {
+      console.log('[BGM] 자동재생 시도 중...');
       try {
+        // 먼저 unmuted로 재생 시도
+        audio.muted = false;
         await audio.play();
         setIsPlaying(true);
+        console.log('[BGM] ✅ 자동재생 성공 (unmuted)');
       } catch (error) {
-        console.log('자동재생이 차단되었습니다:', error);
+        console.log('[BGM] ⚠️ unmuted 자동재생 실패, muted로 재시도:', error);
+        // 실패하면 muted로 재생 시도
+        try {
+          audio.muted = true;
+          await audio.play();
+          setIsPlaying(true);
+          console.log('[BGM] ✅ 음소거 상태로 자동재생 성공');
+
+          // muted 상태로 재생된 경우, 바로 unmute
+          setTimeout(() => {
+            audio.muted = false;
+            console.log('[BGM] 음소거 해제됨');
+          }, 100);
+        } catch (mutedError) {
+          console.log('[BGM] ❌ 자동재생 완전히 차단됨:', mutedError);
+          setIsPlaying(false);
+        }
       }
     };
 
-    playAudio();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // 마운트 시 한 번만 실행
+    // audio가 로드될 때까지 대기
+    if (audio.readyState >= 2) {
+      console.log('[BGM] Audio 준비됨, 즉시 자동재생 시도');
+      attemptAutoplay();
+    } else {
+      console.log('[BGM] Audio 로딩 중, canplay 이벤트 대기');
+      audio.addEventListener('canplay', attemptAutoplay, { once: true });
+    }
+
+    return () => {
+      audio.removeEventListener('canplay', attemptAutoplay);
+    };
+  }, [autoPlay]);
 
   const togglePlay = async (e: React.MouseEvent) => {
     e.stopPropagation();
+    console.log('[BGM] 버튼 클릭됨');
+
     const audio = audioRef.current;
-    if (!audio) return;
+    if (!audio) {
+      console.log('[BGM] ❌ Audio 요소를 찾을 수 없음');
+      return;
+    }
+
+    console.log('[BGM] 현재 상태 - isPlaying:', isPlaying, ', audio.paused:', audio.paused);
 
     try {
       if (isPlaying) {
+        console.log('[BGM] 일시정지 시도...');
         audio.pause();
-        setIsPlaying(false);
+        console.log('[BGM] ✅ pause() 호출 완료');
       } else {
+        console.log('[BGM] 재생 시도...');
+        // 재생 시 음소거 해제
+        audio.muted = false;
         await audio.play();
-        setIsPlaying(true);
+        console.log('[BGM] ✅ play() 호출 완료');
       }
     } catch (error) {
-      console.error('재생 오류:', error);
+      console.error('[BGM] ❌ 재생/일시정지 오류:', error);
     }
   };
 
-  const toggleMute = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    audio.muted = !isMuted;
-    setIsMuted(!isMuted);
+  // Audio 이벤트 핸들러 - 상태 동기화
+  const handlePlay = () => {
+    console.log('[BGM] 🎵 onPlay 이벤트 발생');
+    setIsPlaying(true);
   };
 
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = parseFloat(e.target.value);
-    setVolume(newVolume);
-    if (audioRef.current) {
-      audioRef.current.volume = newVolume;
-      if (newVolume === 0) {
-        setIsMuted(true);
-      } else if (isMuted) {
-        setIsMuted(false);
-      }
-    }
+  const handlePause = () => {
+    console.log('[BGM] ⏸️ onPause 이벤트 발생');
+    setIsPlaying(false);
+  };
+
+  const handleEnded = () => {
+    console.log('[BGM] 🔚 onEnded 이벤트 발생');
+    setIsPlaying(false);
   };
 
   return (
@@ -88,7 +129,9 @@ export default function BGMPlayer({ audioSrc = '/audio/bgm.mp3', autoPlay = fals
         src={audioSrc}
         loop
         preload="auto"
-        onEnded={() => setIsPlaying(false)}
+        onPlay={handlePlay}
+        onPause={handlePause}
+        onEnded={handleEnded}
       />
 
       <motion.div
@@ -97,114 +140,49 @@ export default function BGMPlayer({ audioSrc = '/audio/bgm.mp3', autoPlay = fals
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 1, duration: 0.5, type: 'spring' }}
       >
-        <div
-          className="relative"
-          onMouseEnter={() => setShowControls(true)}
-          onMouseLeave={() => setShowControls(false)}
+        {/* 메인 컨트롤 버튼 - Enhanced Glassmorphism */}
+        <motion.button
+          onClick={togglePlay}
+          className="glass-strong shadow-2xl rounded-full p-4 hover:glass transition-all duration-300 hover:shadow-[0_20px_50px_rgba(251,113,133,0.4)] relative z-10"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          aria-label={isPlaying ? '음악 일시정지' : '음악 재생'}
         >
-          {/* 메인 컨트롤 버튼 - Enhanced Glassmorphism */}
-          <motion.button
-            onClick={togglePlay}
-            className="glass-strong shadow-2xl rounded-full p-4 hover:glass transition-all duration-300 hover:shadow-[0_20px_50px_rgba(251,113,133,0.4)]"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            aria-label={isPlaying ? '음악 일시정지' : '음악 재생'}
-          >
-            <AnimatePresence mode="wait">
-              {isPlaying ? (
-                <motion.div
-                  key="pause"
-                  initial={{ rotate: -180, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: 180, opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <Pause className="w-6 h-6 text-rose-600" />
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="play"
-                  initial={{ rotate: -180, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: 180, opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <Play className="w-6 h-6 text-rose-600 ml-0.5" />
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.button>
-
-          {/* 재생 중 애니메이션 링 */}
-          {isPlaying && (
-            <motion.div
-              className="absolute inset-0 rounded-full border-2 border-rose-300/50"
-              initial={{ scale: 1, opacity: 0.7 }}
-              animate={{ scale: 1.3, opacity: 0 }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-            />
-          )}
-
-          {/* 확장 컨트롤 - Glassmorphism */}
-          <AnimatePresence>
-            {showControls && (
+          <AnimatePresence mode="wait">
+            {isPlaying ? (
               <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                className="absolute right-full mr-3 top-1/2 -translate-y-1/2 glass-strong shadow-xl rounded-full px-4 py-2 flex items-center gap-3"
+                key="pause"
+                initial={{ rotate: -180, opacity: 0 }}
+                animate={{ rotate: 0, opacity: 1 }}
+                exit={{ rotate: 180, opacity: 0 }}
+                transition={{ duration: 0.3 }}
               >
-                {/* 음소거 버튼 */}
-                <button
-                  onClick={toggleMute}
-                  className="hover:scale-110 transition-transform"
-                  aria-label={isMuted ? '음소거 해제' : '음소거'}
-                >
-                  {isMuted || volume === 0 ? (
-                    <VolumeX className="w-5 h-5 text-gray-700" />
-                  ) : (
-                    <Volume2 className="w-5 h-5 text-gray-700" />
-                  )}
-                </button>
-
-                {/* 볼륨 슬라이더 */}
-                <input
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.01"
-                  value={volume}
-                  onChange={handleVolumeChange}
-                  className="w-20 h-1 bg-white/40 rounded-lg appearance-none cursor-pointer slider"
-                  aria-label="볼륨 조절"
-                />
-
-                <Music className="w-4 h-4 text-rose-500" />
+                <Pause className="w-6 h-6 text-rose-600" />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="play"
+                initial={{ rotate: -180, opacity: 0 }}
+                animate={{ rotate: 0, opacity: 1 }}
+                exit={{ rotate: 180, opacity: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Play className="w-6 h-6 text-rose-600 ml-0.5" />
               </motion.div>
             )}
           </AnimatePresence>
-        </div>
+        </motion.button>
+
+        {/* 재생 중 애니메이션 링 */}
+        {isPlaying && (
+          <motion.div
+            className="absolute inset-0 rounded-full border-2 border-rose-300/50 pointer-events-none"
+            initial={{ scale: 1, opacity: 0.7 }}
+            animate={{ scale: 1.3, opacity: 0 }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          />
+        )}
       </motion.div>
-
-      <style jsx>{`
-        .slider::-webkit-slider-thumb {
-          appearance: none;
-          width: 12px;
-          height: 12px;
-          background: #f43f5e;
-          border-radius: 50%;
-          cursor: pointer;
-        }
-
-        .slider::-moz-range-thumb {
-          width: 12px;
-          height: 12px;
-          background: #f43f5e;
-          border-radius: 50%;
-          cursor: pointer;
-          border: none;
-        }
-      `}</style>
     </>
   );
 }
