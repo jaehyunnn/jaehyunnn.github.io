@@ -2,7 +2,8 @@
 
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { Calendar, Clock, MapPin, Navigation } from 'lucide-react';
+import { Calendar, Clock, MapPin } from 'lucide-react';
+import Image from 'next/image';
 import { useEffect } from 'react';
 
 interface WeddingInfoSectionProps {
@@ -17,7 +18,7 @@ interface WeddingInfoSectionProps {
 
 declare global {
   interface Window {
-    kakao: any;
+    naver: any;
   }
 }
 
@@ -36,31 +37,35 @@ export default function WeddingInfoSection({
   });
 
   useEffect(() => {
-    // 카카오맵 스크립트 로드
+    // 네이버 지도 스크립트 로드
     const script = document.createElement('script');
-    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=3cd74c7f5d1d79108ec506779a38c9db&autoload=false`;
+    script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=0ft29k7u1e`;
     script.async = true;
     document.head.appendChild(script);
 
     script.onload = () => {
-      if (window.kakao && window.kakao.maps) {
-        window.kakao.maps.load(() => {
-          const container = document.getElementById('map');
-          if (!container) return;
+      if (window.naver && window.naver.maps) {
+        const container = document.getElementById('naverMap');
+        if (!container) return;
 
-          const options = {
-            center: new window.kakao.maps.LatLng(latitude, longitude),
-            level: 3
-          };
+        const location = new window.naver.maps.LatLng(latitude, longitude);
 
-          const map = new window.kakao.maps.Map(container, options);
+        const mapOptions = {
+          center: location,
+          zoom: 17,
+          zoomControl: true,
+          zoomControlOptions: {
+            position: window.naver.maps.Position.TOP_RIGHT
+          }
+        };
 
-          // 마커 생성
-          const markerPosition = new window.kakao.maps.LatLng(latitude, longitude);
-          const marker = new window.kakao.maps.Marker({
-            position: markerPosition
-          });
-          marker.setMap(map);
+        const map = new window.naver.maps.Map(container, mapOptions);
+
+        // 마커 생성
+        new window.naver.maps.Marker({
+          position: location,
+          map: map,
+          title: venue
         });
       }
     };
@@ -70,7 +75,7 @@ export default function WeddingInfoSection({
         document.head.removeChild(script);
       }
     };
-  }, [latitude, longitude]);
+  }, [latitude, longitude, venue]);
 
   const openNavigation = (type: 'kakao' | 'naver' | 'tmap') => {
     if (type === 'kakao') {
@@ -155,7 +160,7 @@ export default function WeddingInfoSection({
           </div>
         </motion.div>
 
-        {/* 지도 - 심플한 프레임 */}
+        {/* 지도 - 네이버 지도 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -163,11 +168,11 @@ export default function WeddingInfoSection({
           className="mb-8"
         >
           <div
-            id="map"
+            id="naverMap"
             className="w-full h-80 rounded-2xl overflow-hidden bg-amber-50/30 shadow-lg"
             style={{ border: '1px solid rgba(205, 186, 150, 0.2)' }}
           >
-            {/* 카카오맵이 여기에 로드됩니다 */}
+            {/* 네이버 지도가 여기에 로드됩니다 */}
             <div className="w-full h-full flex items-center justify-center text-amber-400/70">
               <p className="text-sm font-light">지도 로딩 중...</p>
             </div>
@@ -186,7 +191,7 @@ export default function WeddingInfoSection({
             className="flex items-center justify-center gap-2 py-4 px-6 rounded-xl transition-all duration-300 hover:scale-105 font-medium"
             style={{ backgroundColor: 'rgba(255, 253, 245, 0.7)', border: '1px solid rgba(205, 186, 150, 0.3)', color: '#78350f' }}
           >
-            <Navigation className="w-5 h-5" />
+            <Image src="/icons/kakao_map.webp" alt="카카오맵" width={24} height={24} />
             카카오맵
           </button>
           <button
@@ -194,7 +199,7 @@ export default function WeddingInfoSection({
             className="flex items-center justify-center gap-2 py-4 px-6 rounded-xl transition-all duration-300 hover:scale-105 font-medium"
             style={{ backgroundColor: 'rgba(255, 253, 245, 0.7)', border: '1px solid rgba(205, 186, 150, 0.3)', color: '#78350f' }}
           >
-            <Navigation className="w-5 h-5" />
+            <Image src="/icons/naver_map.webp" alt="네이버지도" width={24} height={24} />
             네이버지도
           </button>
           <button
@@ -202,7 +207,7 @@ export default function WeddingInfoSection({
             className="flex items-center justify-center gap-2 py-4 px-6 rounded-xl transition-all duration-300 hover:scale-105 font-medium"
             style={{ backgroundColor: 'rgba(255, 253, 245, 0.7)', border: '1px solid rgba(205, 186, 150, 0.3)', color: '#78350f' }}
           >
-            <Navigation className="w-5 h-5" />
+            <Image src="/icons/tmap.webp" alt="TMAP" width={24} height={24} />
             TMAP
           </button>
         </motion.div>
@@ -216,9 +221,9 @@ export default function WeddingInfoSection({
         >
           <h3 className="text-lg font-semibold text-gray-800 mb-4">교통편 안내</h3>
           <div className="space-y-3 text-sm text-gray-600">
-            <p>🚇 지하철: 2호선 종합운동장역 10번 출구에서 도보 5분</p>
-            <p>🚌 버스: 146, 740, 341, 360번</p>
-            <p>🚗 주차: 건물 내 주차 가능 (3시간 무료)</p>
+            <p>🚇 지하철: 2·9호선 종합운동장역 9번 출구에서 도보 5분</p>
+            <p>🚌 버스: 340, 350번</p>
+            <p>🚗 주차: 건물 내 주차 / 발렛 가능 (3시간 무료)</p>
           </div>
         </motion.div>
       </div>

@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { Share2, Copy, Check } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 interface ShareSectionProps {
   groomName: string;
@@ -142,13 +143,9 @@ export default function ShareSection({
           {/* 카카오톡 공유 */}
           <button
             onClick={shareKakao}
-            className="w-full flex items-center justify-center gap-3 font-medium py-4 rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105"
-            style={{ backgroundColor: '#FEE500', color: '#3C1E1E' }}
+            className="w-full flex items-center justify-center gap-3 glass-strong hover:glass text-amber-900 font-medium py-4 rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105 border border-amber-200/30"
           >
-            {/* 카카오톡 공식 아이콘 */}
-            <svg className="w-6 h-6" viewBox="0 0 208 191" fill="currentColor">
-              <path fillRule="evenodd" clipRule="evenodd" d="M104 0C46.5618 0 0 36.793 0 82.1312C0 107.546 16.4309 130.003 41.5247 143.503L32.8937 178.558C32.2672 181.059 32.9218 183.715 34.6346 185.674C36.3474 187.634 38.9061 188.618 41.5247 188.113L85.3737 179.786C91.4948 180.712 97.7181 181.162 104 181.162C161.438 181.162 208 144.369 208 99.031C208 53.6929 161.438 16.8998 104 16.8998V0Z" fill="#3C1E1E"/>
-            </svg>
+            <Image src="/icons/kakao_talk.webp" alt="카카오톡" width={24} height={24} />
             카카오톡으로 공유하기
           </button>
 
