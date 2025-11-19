@@ -123,11 +123,11 @@ export default function ShareSection({
           transition={{ duration: 0.8 }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl md:text-4xl font-serif text-gray-800 mb-4">
+          <h2 className="text-4xl md:text-5xl text-amber-900 mb-6" style={{ fontFamily: 'var(--font-gyeonggi), serif' }}>
             Share
           </h2>
-          <div className="w-12 h-0.5 bg-gradient-to-r from-transparent via-rose-300 to-transparent mx-auto mb-4" />
-          <p className="text-gray-600 text-sm">
+          <div className="w-16 h-px bg-gradient-to-r from-transparent via-amber-400/60 to-transparent mx-auto mb-4" />
+          <p className="text-amber-800/70 text-sm font-light">
             소중한 분들과 함께 이 기쁨을 나누고 싶습니다
           </p>
         </motion.div>
@@ -142,7 +142,7 @@ export default function ShareSection({
           {/* 카카오톡 공유 */}
           <button
             onClick={shareKakao}
-            className="w-full flex items-center justify-center gap-3 glass-strong hover:glass text-yellow-700 font-semibold py-4 rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105"
+            className="w-full flex items-center justify-center gap-3 glass-strong hover:glass text-amber-900 font-medium py-4 rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105 border border-amber-200/30"
           >
             <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 3c5.799 0 10.5 3.664 10.5 8.185 0 4.52-4.701 8.184-10.5 8.184a13.5 13.5 0 0 1-1.727-.11l-4.408 2.883c-.501.265-.678.236-.472-.413l.892-3.678c-2.88-1.46-4.785-3.99-4.785-6.866C1.5 6.665 6.201 3 12 3zm5.907 8.06l1.47-1.424a.472.472 0 0 0-.656-.678l-1.928 1.866V9.282a.472.472 0 0 0-.944 0v2.557a.471.471 0 0 0 0 .222V13.5a.472.472 0 0 0 .944 0v-.602l.387-.376 1.558 1.903a.472.472 0 0 0 .733-.596l-1.564-1.77zm-2.342 1.878h-1.378V9.297a.472.472 0 0 0-.943 0v4.114c0 .261.21.472.471.472h1.85a.472.472 0 1 0 0-.943zm-5.806-1.61l.001-2.345a.472.472 0 1 0-.943 0v2.345a.471.471 0 0 0 0 .222V13.5a.472.472 0 1 0 .943 0v-.602l1.957 1.895a.472.472 0 1 0 .656-.678l-2.614-2.533zm-2.987 1.61H5.5V9.297a.472.472 0 0 0-.943 0v4.114c0 .261.21.472.471.472h1.85a.472.472 0 1 0 0-.943z"/>
@@ -153,7 +153,7 @@ export default function ShareSection({
           {/* URL 복사 */}
           <button
             onClick={copyUrl}
-            className="w-full flex items-center justify-center gap-3 glass-strong hover:glass text-blue-700 font-semibold py-4 rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105"
+            className="w-full flex items-center justify-center gap-3 glass-strong hover:glass text-amber-900 font-medium py-4 rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105 border border-amber-200/30"
           >
             {urlCopied ? (
               <>
@@ -171,7 +171,7 @@ export default function ShareSection({
           {/* 네이티브 공유 (모바일에서만 작동) */}
           <button
             onClick={shareNative}
-            className="w-full flex items-center justify-center gap-3 glass-strong hover:glass text-rose-600 font-semibold py-4 rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105"
+            className="w-full flex items-center justify-center gap-3 glass-strong hover:glass text-amber-900 font-medium py-4 rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105 border border-amber-200/30"
           >
             <Share2 className="w-5 h-5" />
             공유하기
@@ -185,7 +185,7 @@ export default function ShareSection({
           transition={{ duration: 0.8, delay: 0.4 }}
           className="mt-8 text-center"
         >
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-amber-800/60 font-light">
             축하의 마음을 함께 나눠주세요
           </p>
         </motion.div>

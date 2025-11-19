@@ -23,30 +23,18 @@ export default function BGMPlayer({ audioSrc = '/audio/bgm.mp3', autoPlay = fals
     audio.volume = volume;
 
     if (autoPlay && !isPlaying) {
-      // 브라우저 자동재생 정책에 따라 사용자 인터랙션 후 재생
+      // 즉시 자동재생 시도
       const playAudio = async () => {
         try {
           await audio.play();
           setIsPlaying(true);
         } catch (error) {
-          console.log('자동재생이 차단되었습니다. 사용자 인터랙션이 필요합니다.');
+          console.log('자동재생이 차단되었습니다:', error);
         }
       };
 
-      // 첫 클릭 이벤트에서 재생 시도
-      const handleFirstInteraction = () => {
-        playAudio();
-        document.removeEventListener('click', handleFirstInteraction);
-        document.removeEventListener('touchstart', handleFirstInteraction);
-      };
-
-      document.addEventListener('click', handleFirstInteraction);
-      document.addEventListener('touchstart', handleFirstInteraction);
-
-      return () => {
-        document.removeEventListener('click', handleFirstInteraction);
-        document.removeEventListener('touchstart', handleFirstInteraction);
-      };
+      // 페이지 로드 시 즉시 재생 시도
+      playAudio();
     }
   }, [autoPlay, volume, isPlaying]);
 

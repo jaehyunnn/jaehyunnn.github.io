@@ -1,31 +1,38 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Noto_Serif_KR, Nanum_Pen_Script, Nanum_Brush_Script } from "next/font/google";
+import localFont from 'next/font/local';
+import { Nanum_Pen_Script } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-const notoSerifKR = Noto_Serif_KR({
-  variable: "--font-noto-serif-kr",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+// Pretendard 폰트 (로컬)
+const pretendard = localFont({
+  src: [
+    {
+      path: '../public/fonts/Pretendard-Regular.woff2',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: '../public/fonts/Pretendard-Medium.woff2',
+      weight: '500',
+      style: 'normal',
+    },
+    {
+      path: '../public/fonts/Pretendard-SemiBold.woff2',
+      weight: '600',
+      style: 'normal',
+    },
+    {
+      path: '../public/fonts/Pretendard-Bold.woff2',
+      weight: '700',
+      style: 'normal',
+    },
+  ],
+  variable: '--font-pretendard',
+  display: 'swap',
 });
 
 const nanumPen = Nanum_Pen_Script({
   variable: "--font-nanum-pen",
-  subsets: ["latin"],
-  weight: ["400"],
-});
-
-const nanumBrush = Nanum_Brush_Script({
-  variable: "--font-nanum-brush",
   subsets: ["latin"],
   weight: ["400"],
 });
@@ -52,7 +59,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${notoSerifKR.variable} ${nanumPen.variable} ${nanumBrush.variable} antialiased`}
+        className={`${pretendard.variable} ${nanumPen.variable} antialiased`}
       >
         {children}
       </body>

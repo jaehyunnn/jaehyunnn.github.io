@@ -18,36 +18,62 @@ export default function IntroSection({
   const [displayedText, setDisplayedText] = useState('');
   const [isComplete, setIsComplete] = useState(false);
   const audioContextRef = useRef<AudioContext | null>(null);
+  const [audioInitialized, setAudioInitialized] = useState(false);
 
-  // 타이핑 소리 재생 함수
-  const playTypingSound = () => {
+  // 오디오 컨텍스트 초기화
+  useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    if (!audioContextRef.current) {
-      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const initAudio = async () => {
+      try {
+        audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+        // AudioContext resume을 시도하여 자동재생 준비
+        await audioContextRef.current.resume();
+        setAudioInitialized(true);
+      } catch (error) {
+        console.log('오디오 초기화 실패:', error);
+      }
+    };
+
+    initAudio();
+  }, []);
+
+  // 타이핑 소리 재생 함수
+  const playTypingSound = async () => {
+    if (typeof window === 'undefined' || !audioContextRef.current) return;
+
+    try {
+      const audioContext = audioContextRef.current;
+
+      // AudioContext가 suspended 상태면 resume
+      if (audioContext.state === 'suspended') {
+        await audioContext.resume();
+      }
+
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      // 타이핑 소리 설정 (부드러운 클릭 소리)
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+      gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.05);
+    } catch (error) {
+      console.log('타이핑 소리 재생 실패:', error);
     }
-
-    const audioContext = audioContextRef.current;
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-
-    // 타이핑 소리 설정 (부드러운 클릭 소리)
-    oscillator.type = 'sine';
-    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
-
-    oscillator.start(audioContext.currentTime);
-    oscillator.stop(audioContext.currentTime + 0.05);
   };
 
   // 표시할 텍스트 라인들
   const lines = [
-    `${groomName} 과 ${brideName}`,
-    `${weddingDate}에 결혼합니다!`,
+    `You are cordially invited`,
+    `to the wedding of`,
+    `${groomName} & ${brideName}`,
   ];
 
   const fullText = lines.join('\n');
@@ -95,30 +121,28 @@ export default function IntroSection({
         isComplete ? 'opacity-0' : 'opacity-100'
       }`}
     >
-      {/* Glassmorphism 배경 - 그라데이션은 body에 있으므로 투명하게 */}
-      <div className="absolute inset-0 backdrop-blur-sm" />
+      {/* 전체화면 배경 - 궁전 테마 */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#fdfcfb] via-[#f8f6f3] to-[#f5f3ef]" />
 
-      {/* 타이핑 텍스트 - Glassmorphism 카드 */}
-      <div className="relative z-10 text-center px-8 max-w-4xl mx-auto">
-        <div className="glass-strong rounded-3xl p-12 md:p-16 shadow-2xl">
-          <pre
-            className="font-brush text-4xl md:text-6xl text-gray-800 leading-relaxed whitespace-pre-wrap"
-            style={{
-              textShadow: '2px 2px 4px rgba(0,0,0,0.1)',
-            }}
-          >
-            {displayedText}
-            <span className="animate-pulse text-rose-400">|</span>
-          </pre>
-        </div>
+      {/* 타이핑 텍스트 - 전체화면 중앙 */}
+      <div className="relative z-10 text-center px-8 w-full h-full flex flex-col items-center justify-center">
+        <pre
+          className="font-gyeonggi text-5xl md:text-7xl lg:text-8xl text-amber-900 leading-relaxed whitespace-pre-wrap"
+          style={{
+            textShadow: '3px 3px 6px rgba(205, 186, 150, 0.3)',
+          }}
+        >
+          {displayedText}
+          <span className="animate-pulse text-amber-600">|</span>
+        </pre>
       </div>
 
-      {/* 장식 요소 - Glassmorphism */}
+      {/* 장식 요소 - 궁전 테마 */}
       <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-10">
         <div className="flex gap-3">
-          <div className="w-3 h-3 rounded-full bg-rose-400 shadow-lg animate-bounce" style={{ animationDelay: '0s' }} />
-          <div className="w-3 h-3 rounded-full bg-rose-400 shadow-lg animate-bounce" style={{ animationDelay: '0.2s' }} />
-          <div className="w-3 h-3 rounded-full bg-rose-400 shadow-lg animate-bounce" style={{ animationDelay: '0.4s' }} />
+          <div className="w-3 h-3 rounded-full bg-amber-500/60 shadow-lg animate-bounce" style={{ animationDelay: '0s' }} />
+          <div className="w-3 h-3 rounded-full bg-amber-500/60 shadow-lg animate-bounce" style={{ animationDelay: '0.2s' }} />
+          <div className="w-3 h-3 rounded-full bg-amber-500/60 shadow-lg animate-bounce" style={{ animationDelay: '0.4s' }} />
         </div>
       </div>
     </div>
