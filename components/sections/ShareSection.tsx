@@ -69,12 +69,21 @@ export default function ShareSection({
       return;
     }
 
+    // 절대 URL 생성
+    const origin = window.location.origin;
+    const absoluteImageUrl = thumbnailImage
+      ? (thumbnailImage.startsWith('http') ? thumbnailImage : `${origin}${thumbnailImage}`)
+      : `${origin}/images/hero-bg.jpg`;
+
+    // description 생성
+    const shareDescription = description || [weddingDate, weddingTime, venue].filter(Boolean).join(' · ');
+
     window.Kakao.Link.sendDefault({
       objectType: 'feed',
       content: {
         title: `${groomName} ❤️ ${brideName}의 결혼식에 초대합니다.`,
-        description: description || [weddingDate, weddingTime, venue].filter(Boolean).join(' · '),
-        imageUrl: thumbnailImage || '/images/hero-bg.jpg',
+        description: shareDescription,
+        imageUrl: absoluteImageUrl,
         link: {
           mobileWebUrl: currentUrl,
           webUrl: currentUrl,

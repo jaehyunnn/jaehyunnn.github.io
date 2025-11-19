@@ -80,41 +80,52 @@ export default function GallerySection({ photos }: GallerySectionProps) {
             <p className="text-amber-800/70 text-sm font-light">우리의 소중한 순간들</p>
           </motion.div>
 
-          {/* 폴라로이드 그리드 */}
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 lg:gap-12">
+          {/* 글라스모피즘 그리드 */}
+          <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
             {photos.map((photo, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 50 }}
+                initial={{ opacity: 0, y: 30 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                whileHover={{ scale: 1.05, rotate: 0, zIndex: 10 }}
-                className="cursor-pointer"
-                style={{ rotate: `${getRotation(index, photo)}deg` }}
+                transition={{ duration: 0.5, delay: index * 0.08 }}
+                whileHover={{ scale: 1.08, y: -8 }}
+                className="cursor-pointer group"
                 onClick={() => setSelectedIndex(index)}
               >
-                {/* 폴라로이드 프레임 - 궁전 테마 */}
-                <div className="glass-strong p-4 pb-12 shadow-2xl hover:shadow-[0_20px_50px_rgba(205,186,150,0.4)] transition-all duration-300 border-2 border-amber-200/20">
-                  <div className="relative w-full aspect-square bg-gradient-to-br from-amber-50/30 to-white/30 overflow-hidden rounded-lg backdrop-blur-sm">
+                {/* 글라스모피즘 플로팅 카드 */}
+                <div className="relative w-full aspect-square overflow-hidden rounded-2xl transition-all duration-500">
+                  {/* 플로팅 효과를 위한 그라데이션 배경 */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-amber-50/40 via-white/30 to-amber-100/40 backdrop-blur-md" />
+
+                  {/* 은은한 테두리 효과 */}
+                  <div className="absolute inset-0 rounded-2xl ring-1 ring-amber-200/20 ring-inset" />
+
+                  {/* 사진 */}
+                  <div className="relative w-full h-full">
                     {photo.src.startsWith('http') || photo.src.startsWith('/images') ? (
                       <Image
                         src={photo.src}
                         alt={photo.caption || `사진 ${index + 1}`}
                         fill
-                        className="object-cover"
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        className="object-cover rounded-2xl"
+                        sizes="(max-width: 640px) 33vw, (max-width: 1024px) 33vw, 25vw"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-amber-50/50 to-amber-100/50 backdrop-blur-sm">
-                        <p className="text-amber-400 text-sm">사진 {index + 1}</p>
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-amber-50/50 to-amber-100/50">
+                        <p className="text-amber-400/60 text-xs">사진 {index + 1}</p>
                       </div>
                     )}
                   </div>
-                  {photo.caption && (
-                    <p className="text-center mt-4 text-amber-900 font-handwriting text-sm font-medium">
-                      {photo.caption}
-                    </p>
-                  )}
+
+                  {/* 호버 시 오버레이 */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-amber-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
+
+                  {/* 플로팅 섀도우 */}
+                  <div className="absolute inset-0 shadow-lg group-hover:shadow-2xl transition-shadow duration-300 rounded-2xl"
+                       style={{
+                         boxShadow: '0 8px 32px rgba(205, 186, 150, 0.15), 0 2px 8px rgba(120, 53, 15, 0.08)'
+                       }}
+                  />
                 </div>
               </motion.div>
             ))}

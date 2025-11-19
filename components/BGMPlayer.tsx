@@ -16,27 +16,30 @@ export default function BGMPlayer({ audioSrc = '/audio/bgm.mp3', autoPlay = fals
   const [showControls, setShowControls] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
+  // 볼륨 설정
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
-
     audio.volume = volume;
+  }, [volume]);
 
-    if (autoPlay && !isPlaying) {
-      // 즉시 자동재생 시도
-      const playAudio = async () => {
-        try {
-          await audio.play();
-          setIsPlaying(true);
-        } catch (error) {
-          console.log('자동재생이 차단되었습니다:', error);
-        }
-      };
+  // 자동재생 (한 번만 실행)
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio || !autoPlay) return;
 
-      // 페이지 로드 시 즉시 재생 시도
-      playAudio();
-    }
-  }, [autoPlay, volume, isPlaying]);
+    const playAudio = async () => {
+      try {
+        await audio.play();
+        setIsPlaying(true);
+      } catch (error) {
+        console.log('자동재생이 차단되었습니다:', error);
+      }
+    };
+
+    playAudio();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // 마운트 시 한 번만 실행
 
   const togglePlay = async (e: React.MouseEvent) => {
     e.stopPropagation();
