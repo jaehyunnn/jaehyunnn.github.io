@@ -1,7 +1,6 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Calendar } from 'lucide-react';
 
 interface CalendarSectionProps {
   year: number;
@@ -42,12 +41,9 @@ export default function CalendarSection({ year, month, day }: CalendarSectionPro
           transition={{ duration: 0.8 }}
           className="text-center mb-12"
         >
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Calendar className="w-6 h-6 text-amber-600/70" />
-            <h2 className="text-3xl md:text-4xl text-amber-900" style={{ fontFamily: 'var(--font-gyeonggi), serif' }}>
-              Wedding Day
-            </h2>
-          </div>
+          <h2 className="text-3xl md:text-4xl text-amber-900 mb-4" style={{ fontFamily: 'var(--font-serif)' }}>
+            Wedding Day
+          </h2>
           <div className="w-16 h-px bg-gradient-to-r from-transparent via-amber-400/60 to-transparent mx-auto" />
         </motion.div>
 
@@ -175,7 +171,7 @@ export default function CalendarSection({ year, month, day }: CalendarSectionPro
               </p>
             </div>
             <p className="text-amber-800/70 text-sm mt-4 font-light">
-              이날 저희 두 사람의 소중한 순간에 함께 해주세요
+              저희 두 사람의 소중한 순간에 함께 해주세요
             </p>
           </motion.div>
         </motion.div>

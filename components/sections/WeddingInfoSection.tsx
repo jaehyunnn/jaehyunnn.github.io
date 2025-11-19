@@ -61,12 +61,58 @@ export default function WeddingInfoSection({
 
         const map = new window.naver.maps.Map(container, mapOptions);
 
-        // 마커 생성
-        new window.naver.maps.Marker({
+        // 커스텀 아이콘 마커 생성
+        const marker = new window.naver.maps.Marker({
           position: location,
           map: map,
-          title: venue
+          title: venue,
+          icon: {
+            url: '/icons/heart_location.png',
+            scaledSize: new window.naver.maps.Size(40, 40),
+            origin: new window.naver.maps.Point(0, 0),
+          }
         });
+
+        // InfoWindow 내용 - 글라스모피즘 스타일
+        const contentString = [
+          '<div class="iw_inner" style="',
+          'padding: 8px 12px;',
+          'width: 160px;',
+          'text-align: center;',
+          'background: rgba(255, 253, 245, 0.85);',
+          'backdrop-filter: blur(12px);',
+          '-webkit-backdrop-filter: blur(12px);',
+          'border-radius: 16px;',
+          'box-shadow: 0 4px 12px rgba(120, 53, 15, 0.15), 0 0 1px rgba(205, 186, 150, 0.3);',
+          'border: 1px solid rgba(251, 191, 36, 0.3);',
+          '">',
+          `   <p style="font-size: 0.85rem; margin: 0 0 3px 0; font-weight: 600; color: #78350f; letter-spacing: -0.02em;">${venue}</p>`,
+          `   <p style="font-size: 0.7rem; margin: 0; color: #92400e; opacity: 0.8; line-height: 1.3;">${address}</p>`,
+          '</div>'
+        ].join('');
+
+        // InfoWindow 생성 - 투명 배경으로 설정
+        const infowindow = new window.naver.maps.InfoWindow({
+          content: contentString,
+          maxWidth: 180,
+          backgroundColor: 'transparent',
+          borderColor: 'transparent',
+          borderWidth: 0,
+          disableAnchor: true,
+          pixelOffset: new window.naver.maps.Point(0, -5)
+        });
+
+        // 마커 클릭 이벤트
+        window.naver.maps.Event.addListener(marker, 'click', function() {
+          if (infowindow.getMap()) {
+            infowindow.close();
+          } else {
+            infowindow.open(map, marker);
+          }
+        });
+
+        // 초기에 InfoWindow 열어두기
+        infowindow.open(map, marker);
       }
     };
 
@@ -116,7 +162,7 @@ export default function WeddingInfoSection({
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl text-amber-900 mb-6" style={{ fontFamily: 'var(--font-gyeonggi), serif' }}>
+          <h2 className="text-4xl md:text-5xl text-amber-900 mb-6" style={{ fontFamily: 'var(--font-serif)' }}>
             Wedding Information
           </h2>
           <div className="w-16 h-px bg-gradient-to-r from-transparent via-amber-400/60 to-transparent mx-auto mb-4" />

@@ -2,8 +2,8 @@
 
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { useState } from 'react';
-import { X } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 
 interface Photo {
@@ -22,7 +22,7 @@ export default function GallerySection({ photos }: GallerySectionProps) {
     threshold: 0.1
   });
 
-  const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   // 무작위 회전 각도 생성 (지정되지 않은 경우)
   const getRotation = (index: number, photo: Photo) => {
@@ -30,6 +30,37 @@ export default function GallerySection({ photos }: GallerySectionProps) {
     const rotations = [-3, -2, -1, 0, 1, 2, 3];
     return rotations[index % rotations.length];
   };
+
+  // 이전/다음 사진으로 이동
+  const goToPrevious = useCallback(() => {
+    if (selectedIndex !== null) {
+      setSelectedIndex(selectedIndex === 0 ? photos.length - 1 : selectedIndex - 1);
+    }
+  }, [selectedIndex, photos.length]);
+
+  const goToNext = useCallback(() => {
+    if (selectedIndex !== null) {
+      setSelectedIndex(selectedIndex === photos.length - 1 ? 0 : selectedIndex + 1);
+    }
+  }, [selectedIndex, photos.length]);
+
+  // 키보드 네비게이션
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (selectedIndex === null) return;
+
+      if (e.key === 'ArrowLeft') {
+        goToPrevious();
+      } else if (e.key === 'ArrowRight') {
+        goToNext();
+      } else if (e.key === 'Escape') {
+        setSelectedIndex(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [selectedIndex, goToPrevious, goToNext]);
 
   return (
     <>
@@ -42,7 +73,7 @@ export default function GallerySection({ photos }: GallerySectionProps) {
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl text-amber-900 mb-6" style={{ fontFamily: 'var(--font-gyeonggi), serif' }}>
+            <h2 className="text-4xl md:text-5xl text-amber-900 mb-6" style={{ fontFamily: 'var(--font-serif)' }}>
               Our Story
             </h2>
             <div className="w-16 h-px bg-gradient-to-r from-transparent via-amber-400/60 to-transparent mx-auto mb-4" />
@@ -50,7 +81,7 @@ export default function GallerySection({ photos }: GallerySectionProps) {
           </motion.div>
 
           {/* 폴라로이드 그리드 */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 lg:gap-12">
             {photos.map((photo, index) => (
               <motion.div
                 key={index}
@@ -60,7 +91,7 @@ export default function GallerySection({ photos }: GallerySectionProps) {
                 whileHover={{ scale: 1.05, rotate: 0, zIndex: 10 }}
                 className="cursor-pointer"
                 style={{ rotate: `${getRotation(index, photo)}deg` }}
-                onClick={() => setSelectedPhoto(photo)}
+                onClick={() => setSelectedIndex(index)}
               >
                 {/* 폴라로이드 프레임 - 궁전 테마 */}
                 <div className="glass-strong p-4 pb-12 shadow-2xl hover:shadow-[0_20px_50px_rgba(205,186,150,0.4)] transition-all duration-300 border-2 border-amber-200/20">
@@ -92,33 +123,58 @@ export default function GallerySection({ photos }: GallerySectionProps) {
       </section>
 
       {/* 이미지 확대 모달 */}
-      {selectedPhoto && (
+      {selectedIndex !== null && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
-          onClick={() => setSelectedPhoto(null)}
+          onClick={() => setSelectedIndex(null)}
         >
           <button
-            onClick={() => setSelectedPhoto(null)}
-            className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors"
+            onClick={() => setSelectedIndex(null)}
+            className="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors z-10"
             aria-label="닫기"
           >
             <X className="w-8 h-8" />
           </button>
 
+          {/* 이전 버튼 */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              goToPrevious();
+            }}
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors z-10 bg-black/30 hover:bg-black/50 rounded-full p-3"
+            aria-label="이전 사진"
+          >
+            <ChevronLeft className="w-8 h-8" />
+          </button>
+
+          {/* 다음 버튼 */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              goToNext();
+            }}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 transition-colors z-10 bg-black/30 hover:bg-black/50 rounded-full p-3"
+            aria-label="다음 사진"
+          >
+            <ChevronRight className="w-8 h-8" />
+          </button>
+
           <motion.div
+            key={selectedIndex}
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             className="relative max-w-4xl w-full max-h-[90vh]"
             onClick={(e) => e.stopPropagation()}
           >
-            {selectedPhoto.src.startsWith('http') || selectedPhoto.src.startsWith('/images') ? (
+            {photos[selectedIndex].src.startsWith('http') || photos[selectedIndex].src.startsWith('/images') ? (
               <div className="relative w-full aspect-square">
                 <Image
-                  src={selectedPhoto.src}
-                  alt={selectedPhoto.caption || '확대 이미지'}
+                  src={photos[selectedIndex].src}
+                  alt={photos[selectedIndex].caption || '확대 이미지'}
                   fill
                   className="object-contain"
                   sizes="90vw"
@@ -129,11 +185,15 @@ export default function GallerySection({ photos }: GallerySectionProps) {
                 <p className="text-gray-400">이미지 미리보기</p>
               </div>
             )}
-            {selectedPhoto.caption && (
+            {photos[selectedIndex].caption && (
               <p className="text-white text-center mt-4 text-lg">
-                {selectedPhoto.caption}
+                {photos[selectedIndex].caption}
               </p>
             )}
+            {/* 사진 카운터 */}
+            <p className="text-white/70 text-center mt-2 text-sm">
+              {selectedIndex + 1} / {photos.length}
+            </p>
           </motion.div>
         </motion.div>
       )}

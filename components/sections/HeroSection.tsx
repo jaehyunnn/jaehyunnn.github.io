@@ -60,12 +60,12 @@ export default function HeroSection({
           <h1
             className="text-5xl md:text-6xl lg:text-7xl mb-6"
             style={{
-              fontFamily: '-apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Serif KR", Georgia, "Times New Roman", serif',
+              fontFamily: 'var(--font-serif)',
               color: '#FFFEF9',
               textShadow: '0 2px 20px rgba(0, 0, 0, 0.4), 0 0 40px rgba(0, 0, 0, 0.2)'
             }}
           >
-            {groomName} <span className="text-3xl md:text-4xl mx-3 text-white/95">&</span> {brideName}
+            {groomName} <span className="text-3xl md:text-4xl mx-3" style={{ color: '#FFB3D9' }}>&</span> {brideName}
           </h1>
           <div className="w-24 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent mx-auto" />
         </motion.div>

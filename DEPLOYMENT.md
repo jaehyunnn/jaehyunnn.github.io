@@ -149,8 +149,8 @@ const nanumPen = Nanum_Pen_Script({
 }
 
 :root {
-  --font-pretendard: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  --font-gyeonggi: 'GyeonggiCheonnyeonBatang', serif;
+  --font-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-serif: 'GyeonggiCheonnyeonBatang', serif;
 }
 ```
 

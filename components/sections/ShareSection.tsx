@@ -10,6 +10,8 @@ interface ShareSectionProps {
   groomName: string;
   brideName: string;
   weddingDate: string;
+  weddingTime?: string;
+  venue?: string;
   thumbnailImage?: string;
   description?: string;
 }
@@ -24,6 +26,8 @@ export default function ShareSection({
   groomName,
   brideName,
   weddingDate,
+  weddingTime,
+  venue,
   thumbnailImage,
   description
 }: ShareSectionProps) {
@@ -68,9 +72,9 @@ export default function ShareSection({
     window.Kakao.Link.sendDefault({
       objectType: 'feed',
       content: {
-        title: `${groomName} ❤️ ${brideName} 결혼합니다`,
-        description: description || `${weddingDate}에 저희 두 사람이 결혼합니다.\n참석하셔서 축복해 주시면 감사하겠습니다.`,
-        imageUrl: thumbnailImage || 'https://via.placeholder.com/800x600?text=Wedding+Invitation',
+        title: `${groomName} ❤️ ${brideName}의 결혼식에 초대합니다.`,
+        description: description || [weddingDate, weddingTime, venue].filter(Boolean).join(' · '),
+        imageUrl: thumbnailImage || '/images/hero-bg.jpg',
         link: {
           mobileWebUrl: currentUrl,
           webUrl: currentUrl,
@@ -102,7 +106,7 @@ export default function ShareSection({
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `${groomName} ❤️ ${brideName} 결혼합니다`,
+          title: `${groomName} ❤️ ${brideName} 결혼식에 초대합니다.`,
           text: description || `${weddingDate}에 저희 두 사람이 결혼합니다.`,
           url: currentUrl,
         });
@@ -124,7 +128,7 @@ export default function ShareSection({
           transition={{ duration: 0.8 }}
           className="text-center mb-12"
         >
-          <h2 className="text-4xl md:text-5xl text-amber-900 mb-6" style={{ fontFamily: 'var(--font-gyeonggi), serif' }}>
+          <h2 className="text-4xl md:text-5xl text-amber-900 mb-6" style={{ fontFamily: 'var(--font-serif)' }}>
             Share
           </h2>
           <div className="w-16 h-px bg-gradient-to-r from-transparent via-amber-400/60 to-transparent mx-auto mb-4" />
