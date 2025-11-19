@@ -1,9 +1,10 @@
 @import "tailwindcss";
 
-/* Pretendard 폰트 */
+/* [수정됨] Pretendard 폰트: 절대 경로(/)를 상대 경로(../)로 변경 */
 @font-face {
   font-family: 'Pretendard';
-  src: url('/fonts/Pretendard-Regular.woff2') format('woff2');
+  /* 빌드된 CSS 위치(assets 폴더 등)에서 상위로 이동해 fonts 폴더를 찾습니다 */
+  src: url('../public/fonts/Pretendard-Regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -11,7 +12,7 @@
 
 @font-face {
   font-family: 'Pretendard';
-  src: url('/fonts/Pretendard-Medium.woff2') format('woff2');
+  src: url('../public/fonts/Pretendard-Medium.woff2') format('woff2');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -19,7 +20,7 @@
 
 @font-face {
   font-family: 'Pretendard';
-  src: url('/fonts/Pretendard-SemiBold.woff2') format('woff2');
+  src: url('../public/fonts/Pretendard-SemiBold.woff2') format('woff2');
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -27,13 +28,13 @@
 
 @font-face {
   font-family: 'Pretendard';
-  src: url('/fonts/Pretendard-Bold.woff2') format('woff2');
+  src: url('../public/fonts/Pretendard-Bold.woff2') format('woff2');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 
-/* 경기천년바탕 폰트 */
+/* 경기천년바탕 폰트 (CDN이므로 수정 불필요) */
 @font-face {
   font-family: 'GyeonggiCheonnyeonBatang';
   src: url('https://cdn.jsdelivr.net/gh/fonts-archive/GyeonggiCheonnyeonBatang/GyeonggiCheonnyeonBatang-Bold.woff2') format('woff2'),
@@ -78,7 +79,7 @@ body {
   }
 }
 
-/* 배경 패턴 오버레이 - 궁전 느낌의 섬세한 패턴 */
+/* 배경 패턴 오버레이 */
 body::before {
   content: '';
   position: fixed;
@@ -100,19 +101,19 @@ html {
   scroll-behavior: smooth;
 }
 
-/* 손글씨 스타일 폰트 (폴라로이드용) */
+/* 손글씨 스타일 폰트 */
 .font-handwriting {
   font-family: 'Nanum Pen Script', cursive;
 }
 
-/* 경기천년바탕 폰트 (인트로용) */
+/* 경기천년바탕 폰트 */
 .font-gyeonggi {
   font-family: var(--font-gyeonggi), serif;
-  font-size: 30;
+  font-size: 30px; /* px 단위 추가 (Tailwind v4가 아니면 필요할 수 있음) */
   font-weight: 400;
 }
 
-/* Glassmorphism 유틸리티 클래스 - 궁전 테마 */
+/* Glassmorphism 유틸리티 클래스 */
 .glass {
   background: rgba(255, 253, 245, 0.65);
   backdrop-filter: blur(12px);
@@ -145,7 +146,7 @@ html {
   box-shadow: 0 4px 24px 0 rgba(205, 186, 150, 0.12);
 }
 
-/* 커스텀 스크롤바 - 골드 액센트 */
+/* 커스텀 스크롤바 */
 ::-webkit-scrollbar {
   width: 8px;
 }
