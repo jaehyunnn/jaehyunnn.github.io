@@ -60,7 +60,7 @@ export default function ShareSection({
 
   const shareKakao = () => {
     if (!window.Kakao || !window.Kakao.isInitialized()) {
-      alert('카카오톡 공유를 위해서는 카카오 앱 키 설정이 필요합니다.');
+      // alert('카카오톡 공유를 위해서는 카카오 앱 키 설정이 필요합니다.');
       return;
     }
 
@@ -142,10 +142,12 @@ export default function ShareSection({
           {/* 카카오톡 공유 */}
           <button
             onClick={shareKakao}
-            className="w-full flex items-center justify-center gap-3 glass-strong hover:glass text-amber-900 font-medium py-4 rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105 border border-amber-200/30"
+            className="w-full flex items-center justify-center gap-3 font-medium py-4 rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105"
+            style={{ backgroundColor: '#FEE500', color: '#3C1E1E' }}
           >
-            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 3c5.799 0 10.5 3.664 10.5 8.185 0 4.52-4.701 8.184-10.5 8.184a13.5 13.5 0 0 1-1.727-.11l-4.408 2.883c-.501.265-.678.236-.472-.413l.892-3.678c-2.88-1.46-4.785-3.99-4.785-6.866C1.5 6.665 6.201 3 12 3zm5.907 8.06l1.47-1.424a.472.472 0 0 0-.656-.678l-1.928 1.866V9.282a.472.472 0 0 0-.944 0v2.557a.471.471 0 0 0 0 .222V13.5a.472.472 0 0 0 .944 0v-.602l.387-.376 1.558 1.903a.472.472 0 0 0 .733-.596l-1.564-1.77zm-2.342 1.878h-1.378V9.297a.472.472 0 0 0-.943 0v4.114c0 .261.21.472.471.472h1.85a.472.472 0 1 0 0-.943zm-5.806-1.61l.001-2.345a.472.472 0 1 0-.943 0v2.345a.471.471 0 0 0 0 .222V13.5a.472.472 0 1 0 .943 0v-.602l1.957 1.895a.472.472 0 1 0 .656-.678l-2.614-2.533zm-2.987 1.61H5.5V9.297a.472.472 0 0 0-.943 0v4.114c0 .261.21.472.471.472h1.85a.472.472 0 1 0 0-.943z"/>
+            {/* 카카오톡 공식 아이콘 */}
+            <svg className="w-6 h-6" viewBox="0 0 208 191" fill="currentColor">
+              <path fillRule="evenodd" clipRule="evenodd" d="M104 0C46.5618 0 0 36.793 0 82.1312C0 107.546 16.4309 130.003 41.5247 143.503L32.8937 178.558C32.2672 181.059 32.9218 183.715 34.6346 185.674C36.3474 187.634 38.9061 188.618 41.5247 188.113L85.3737 179.786C91.4948 180.712 97.7181 181.162 104 181.162C161.438 181.162 208 144.369 208 99.031C208 53.6929 161.438 16.8998 104 16.8998V0Z" fill="#3C1E1E"/>
             </svg>
             카카오톡으로 공유하기
           </button>

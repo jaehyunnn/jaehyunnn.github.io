@@ -21,14 +21,18 @@ export default function HeroSection({
   return (
     <section className="relative h-screen w-full flex items-center justify-center overflow-hidden">
       {/* 배경 이미지 */}
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{
-          backgroundImage: backgroundImage.startsWith('http') || backgroundImage.startsWith('/images')
-            ? `url(${backgroundImage})`
-            : 'linear-gradient(135deg, #fdfcfb 0%, #f8f6f3 50%, #f5f3ef 100%)'
-        }}
-      >
+      <div className="absolute inset-0 bg-cover bg-center">
+        {/* 배경 이미지 - blur 효과 적용 */}
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: backgroundImage.startsWith('http') || backgroundImage.startsWith('/images')
+              ? `url(${backgroundImage})`
+              : 'linear-gradient(135deg, #fdfcfb 0%, #f8f6f3 50%, #f5f3ef 100%)',
+            filter: 'blur(3px)',
+            transform: 'scale(1.1)' // blur로 인한 가장자리 잘림 방지
+          }}
+        />
         <div className="absolute inset-0 bg-gradient-to-b from-amber-900/5 via-transparent to-amber-900/10" />
       </div>
 
@@ -39,7 +43,10 @@ export default function HeroSection({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.3 }}
         >
-          <p className="text-amber-800/80 text-sm md:text-base tracking-[0.3em] mb-8 font-light uppercase">
+          <p
+            className="text-sm md:text-base tracking-[0.3em] mb-8 font-medium uppercase"
+            style={{ color: '#FFFFFF', textShadow: '0 2px 12px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 0, 0, 0.2)' }}
+          >
             Wedding Invitation
           </p>
         </motion.div>
@@ -50,20 +57,36 @@ export default function HeroSection({
           transition={{ duration: 1, delay: 0.5 }}
           className="mb-10"
         >
-          <h1 className="text-5xl md:text-6xl lg:text-7xl text-amber-900 font-serif mb-6" style={{ fontFamily: 'var(--font-gyeonggi), serif' }}>
-            {groomName} <span className="text-3xl md:text-4xl mx-3 text-amber-600">&</span> {brideName}
+          <h1
+            className="text-5xl md:text-6xl lg:text-7xl font-serif mb-6"
+            style={{
+              fontFamily: 'var(--font-gyeonggi), serif',
+              color: '#FFFEF9',
+              textShadow: '0 2px 20px rgba(0, 0, 0, 0.4), 0 0 40px rgba(0, 0, 0, 0.2)'
+            }}
+          >
+            {groomName} <span className="text-3xl md:text-4xl mx-3 text-white/95">&</span> {brideName}
           </h1>
-          <div className="w-24 h-px bg-gradient-to-r from-transparent via-amber-400 to-transparent mx-auto" />
+          <div className="w-24 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent mx-auto" />
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.7 }}
-          className="text-amber-900/90"
         >
-          <p className="text-xl md:text-2xl mb-3 font-light">{weddingDate}</p>
-          <p className="text-lg md:text-xl font-light">{weddingTime}</p>
+          <p
+            className="text-xl md:text-2xl mb-3 font-medium"
+            style={{ color: '#FFFEF9', textShadow: '0 2px 12px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 0, 0, 0.2)' }}
+          >
+            {weddingDate}
+          </p>
+          <p
+            className="text-lg md:text-xl font-medium"
+            style={{ color: '#FFFEF9', textShadow: '0 2px 12px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 0, 0, 0.2)' }}
+          >
+            {weddingTime}
+          </p>
         </motion.div>
 
         {/* 장식 요소 */}
@@ -74,9 +97,9 @@ export default function HeroSection({
           className="mt-12"
         >
           <div className="flex justify-center items-center gap-4">
-            <div className="w-12 h-px bg-gradient-to-r from-transparent to-amber-400/60" />
-            <div className="w-2 h-2 rounded-full bg-amber-500/60 shadow-lg" />
-            <div className="w-12 h-px bg-gradient-to-l from-transparent to-amber-400/60" />
+            <div className="w-12 h-px bg-gradient-to-r from-transparent to-white/60" />
+            <div className="w-2 h-2 rounded-full bg-white/70 shadow-lg" />
+            <div className="w-12 h-px bg-gradient-to-l from-transparent to-white/60" />
           </div>
         </motion.div>
       </div>
@@ -93,8 +116,8 @@ export default function HeroSection({
           transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
           className="flex flex-col items-center"
         >
-          <p className="text-xs mb-2 tracking-[0.2em] text-amber-800/70 font-light uppercase">Scroll</p>
-          <ChevronDown className="w-6 h-6 text-amber-600/70" />
+          <p className="text-xs mb-2 tracking-[0.2em] font-light uppercase" style={{ color: '#FFFFFF', textShadow: '0 1px 8px rgba(0, 0, 0, 0.3)' }}>Scroll</p>
+          <ChevronDown className="w-6 h-6 text-white/90" />
         </motion.div>
       </motion.div>
     </section>

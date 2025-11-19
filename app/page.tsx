@@ -4,6 +4,7 @@ import { useState } from 'react';
 import BGMPlayer from '@/components/BGMPlayer';
 import IntroSection from '@/components/sections/IntroSection';
 import HeroSection from '@/components/sections/HeroSection';
+import CalendarSection from '@/components/sections/CalendarSection';
 import InvitationSection from '@/components/sections/InvitationSection';
 import GallerySection from '@/components/sections/GallerySection';
 import WeddingInfoSection from '@/components/sections/WeddingInfoSection';
@@ -111,6 +112,9 @@ export default function Home() {
         weddingTime={weddingData.wedding.time}
         backgroundImage="/images/hero-bg.jpg"
       />
+
+      {/* 예식일 달력 */}
+      <CalendarSection year={2026} month={8} day={23} />
 
       {/* 초대 인사 */}
       <InvitationSection

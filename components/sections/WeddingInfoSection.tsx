@@ -72,17 +72,32 @@ export default function WeddingInfoSection({
     };
   }, [latitude, longitude]);
 
-  const openNavigation = (type: 'kakao' | 'naver') => {
+  const openNavigation = (type: 'kakao' | 'naver' | 'tmap') => {
     if (type === 'kakao') {
-      window.open(
-        `https://map.kakao.com/link/map/${venue},${latitude},${longitude}`,
-        '_blank'
-      );
-    } else {
-      window.open(
-        `https://map.naver.com/v5/search/${encodeURIComponent(address)}`,
-        '_blank'
-      );
+      // iOS와 Android 모두 지원하는 카카오맵 URL 스킴
+      const kakaoMapUrl = `kakaomap://look?p=${latitude},${longitude}`;
+      const webFallbackUrl = `https://map.kakao.com/link/map/${encodeURIComponent(venue)},${latitude},${longitude}`;
+
+      // 먼저 앱으로 열기 시도
+      window.location.href = kakaoMapUrl;
+
+      // 1.5초 후에도 페이지가 바뀌지 않으면 웹으로 fallback
+      setTimeout(() => {
+        window.open(webFallbackUrl, '_blank');
+      }, 1500);
+    } else if (type === 'naver') {
+      // 네이버 지도 앱 URL 스킴 (iOS, Android 공통)
+      const naverMapUrl = `nmap://place?lat=${latitude}&lng=${longitude}&name=${encodeURIComponent(venue)}&appname=com.wedding.invitation`;
+      const webFallbackUrl = `https://map.naver.com/v5/search/${encodeURIComponent(address)}`;
+
+      window.location.href = naverMapUrl;
+
+      setTimeout(() => {
+        window.open(webFallbackUrl, '_blank');
+      }, 1500);
+    } else if (type === 'tmap') {
+      // TMAP URL 스킴
+      window.location.href = `tmap://search?name=${encodeURIComponent(venue)}`;
     }
   };
 
@@ -111,38 +126,32 @@ export default function WeddingInfoSection({
           className="mb-12 space-y-8"
         >
           {/* 날짜 */}
-          <div className="flex items-center gap-5 justify-center">
-            <Calendar className="w-6 h-6 text-amber-600/70" />
-            <div className="text-center">
-              <p className="text-sm text-amber-800/60 mb-1 font-light uppercase tracking-wider">Date</p>
-              <p className="text-xl font-medium text-amber-900">{date}</p>
-            </div>
+          <div className="flex flex-col items-center justify-center">
+            <Calendar className="w-4 h-4 text-amber-600/70 mb-2" />
+            <p className="text-sm text-amber-800/60 mb-1 font-light uppercase tracking-wider">Date</p>
+            <p className="text-xl font-medium text-amber-900">{date}</p>
           </div>
 
           <div className="w-32 h-px bg-gradient-to-r from-transparent via-amber-400/30 to-transparent mx-auto" />
 
           {/* 시간 */}
-          <div className="flex items-center gap-5 justify-center">
-            <Clock className="w-6 h-6 text-amber-600/70" />
-            <div className="text-center">
-              <p className="text-sm text-amber-800/60 mb-1 font-light uppercase tracking-wider">Time</p>
-              <p className="text-xl font-medium text-amber-900">{time}</p>
-            </div>
+          <div className="flex flex-col items-center justify-center">
+            <Clock className="w-4 h-4 text-amber-600/70 mb-2" />
+            <p className="text-sm text-amber-800/60 mb-1 font-light uppercase tracking-wider">Time</p>
+            <p className="text-xl font-medium text-amber-900">{time}</p>
           </div>
 
           <div className="w-32 h-px bg-gradient-to-r from-transparent via-amber-400/30 to-transparent mx-auto" />
 
           {/* 장소 */}
-          <div className="flex items-center gap-5 justify-center">
-            <MapPin className="w-6 h-6 text-amber-600/70" />
-            <div className="text-center">
-              <p className="text-sm text-amber-800/60 mb-1 font-light uppercase tracking-wider">Location</p>
-              <p className="text-xl font-medium text-amber-900 mb-1">{venue}</p>
-              {venueDetail && (
-                <p className="text-sm text-amber-900/70 mb-1">{venueDetail}</p>
-              )}
-              <p className="text-sm text-amber-800/60 font-light">{address}</p>
-            </div>
+          <div className="flex flex-col items-center justify-center">
+            <MapPin className="w-4 h-4 text-amber-600/70 mb-2" />
+            <p className="text-sm text-amber-800/60 mb-1 font-light uppercase tracking-wider">Location</p>
+            <p className="text-xl font-medium text-amber-900 mb-1">{venue}</p>
+            {venueDetail && (
+              <p className="text-sm text-amber-900/70 mb-1">{venueDetail}</p>
+            )}
+            <p className="text-sm text-amber-800/60 font-light">{address}</p>
           </div>
         </motion.div>
 
@@ -170,7 +179,7 @@ export default function WeddingInfoSection({
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="grid grid-cols-2 gap-4 max-w-md mx-auto"
+          className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto"
         >
           <button
             onClick={() => openNavigation('kakao')}
@@ -188,10 +197,18 @@ export default function WeddingInfoSection({
             <Navigation className="w-5 h-5" />
             네이버지도
           </button>
+          <button
+            onClick={() => openNavigation('tmap')}
+            className="flex items-center justify-center gap-2 py-4 px-6 rounded-xl transition-all duration-300 hover:scale-105 font-medium"
+            style={{ backgroundColor: 'rgba(255, 253, 245, 0.7)', border: '1px solid rgba(205, 186, 150, 0.3)', color: '#78350f' }}
+          >
+            <Navigation className="w-5 h-5" />
+            TMAP
+          </button>
         </motion.div>
 
         {/* 교통편 안내 */}
-        {/* <motion.div
+        <motion.div
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
           transition={{ duration: 0.8, delay: 0.8 }}
@@ -199,11 +216,11 @@ export default function WeddingInfoSection({
         >
           <h3 className="text-lg font-semibold text-gray-800 mb-4">교통편 안내</h3>
           <div className="space-y-3 text-sm text-gray-600">
-            <p>🚇 지하철: 2호선 강남역 10번 출구에서 도보 5분</p>
+            <p>🚇 지하철: 2호선 종합운동장역 10번 출구에서 도보 5분</p>
             <p>🚌 버스: 146, 740, 341, 360번</p>
-            <p>🚗 주차: 건물 내 주차 가능 (2시간 무료)</p>
+            <p>🚗 주차: 건물 내 주차 가능 (3시간 무료)</p>
           </div>
-        </motion.div> */}
+        </motion.div>
       </div>
     </section>
   );

@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
-/* [수정됨] Pretendard 폰트: 절대 경로(/)를 상대 경로(../)로 변경 */
+/* Pretendard 폰트: woff2와 woff 폴백 포함 (iOS 호환성 향상) */
 @font-face {
   font-family: 'Pretendard';
-  /* 빌드된 CSS 위치(assets 폴더 등)에서 상위로 이동해 fonts 폴더를 찾습니다 */
-  src: url('../public/fonts/Pretendard-Regular.woff2') format('woff2');
+  src: url('../public/fonts/Pretendard-Regular.woff2') format('woff2'),
+       url('../public/fonts/Pretendard-Regular.woff') format('woff');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -12,7 +12,8 @@
 
 @font-face {
   font-family: 'Pretendard';
-  src: url('../public/fonts/Pretendard-Medium.woff2') format('woff2');
+  src: url('../public/fonts/Pretendard-Medium.woff2') format('woff2'),
+       url('../public/fonts/Pretendard-Medium.woff') format('woff');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -20,7 +21,8 @@
 
 @font-face {
   font-family: 'Pretendard';
-  src: url('../public/fonts/Pretendard-SemiBold.woff2') format('woff2');
+  src: url('../public/fonts/Pretendard-SemiBold.woff2') format('woff2'),
+       url('../public/fonts/Pretendard-SemiBold.woff') format('woff');
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -28,7 +30,8 @@
 
 @font-face {
   font-family: 'Pretendard';
-  src: url('../public/fonts/Pretendard-Bold.woff2') format('woff2');
+  src: url('../public/fonts/Pretendard-Bold.woff2') format('woff2'),
+       url('../public/fonts/Pretendard-Bold.woff') format('woff');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -67,6 +70,11 @@ body {
   font-family: var(--font-pretendard), -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   overflow-x: hidden;
   position: relative;
+  /* iOS Safari 폰트 렌더링 최적화 */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
 }
 
 /* 배경 애니메이션 */
