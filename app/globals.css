@@ -3,9 +3,11 @@
 /* 경기천년바탕 폰트 */
 @font-face {
   font-family: 'GyeonggiCheonnyeonBatang';
-  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/GyeonggiCheonnyeonBatang.woff') format('woff');
+  src: url('https://cdn.jsdelivr.net/gh/fonts-archive/GyeonggiCheonnyeonBatang/GyeonggiCheonnyeonBatang-Bold.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/gh/fonts-archive/GyeonggiCheonnyeonBatang/GyeonggiCheonnyeonBatang-Bold.woff') format('woff');
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
 :root {
