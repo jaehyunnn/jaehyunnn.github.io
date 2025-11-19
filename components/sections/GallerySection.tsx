@@ -23,6 +23,8 @@ export default function GallerySection({ photos }: GallerySectionProps) {
   });
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
   // 무작위 회전 각도 생성 (지정되지 않은 경우)
   const getRotation = (index: number, photo: Photo) => {
@@ -61,6 +63,32 @@ export default function GallerySection({ photos }: GallerySectionProps) {
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [selectedIndex, goToPrevious, goToNext]);
+
+  // 터치 이벤트 핸들러
+  const minSwipeDistance = 50; // 최소 스와이프 거리 (픽셀)
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      goToNext(); // 왼쪽으로 스와이프 → 다음 사진
+    } else if (isRightSwipe) {
+      goToPrevious(); // 오른쪽으로 스와이프 → 이전 사진
+    }
+  };
 
   return (
     <>
@@ -180,6 +208,9 @@ export default function GallerySection({ photos }: GallerySectionProps) {
             animate={{ scale: 1, opacity: 1 }}
             className="relative max-w-4xl w-full max-h-[90vh]"
             onClick={(e) => e.stopPropagation()}
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
           >
             {photos[selectedIndex].src.startsWith('http') || photos[selectedIndex].src.startsWith('/images') ? (
               <div className="relative w-full aspect-square">

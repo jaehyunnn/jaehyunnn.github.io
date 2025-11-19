@@ -198,13 +198,13 @@ export default function Home() {
         brideName={weddingData.bride.name}
         weddingDate={weddingData.wedding.date}
         thumbnailImage="/images/hero-bg.jpg"
-        description={`${weddingData.wedding.date}에 저희 두 사람이 결혼합니다. 참석하셔서 축복해 주시면 감사하겠습니다.`}
+        description={`${weddingData.wedding.date} ${weddingData.wedding.time} · ${weddingData.wedding.venue}`}
       />
 
       {/* 푸터 - 궁전 테마 */}
       <footer className="py-12 relative">
         <div className="max-w-2xl mx-auto text-center glass-strong rounded-3xl p-8 shadow-xl mx-6 border-2 border-amber-200/40">
-          <p className="mb-2 text-amber-900 font-serif text-lg tracking-wide">
+          <p className="mb-2 text-amber-900 text-lg tracking-wide" style={{ fontFamily: 'var(--font-serif)' }}>
             {weddingData.groom.name} <span className="text-amber-600 mx-2">&</span> {weddingData.bride.name}
           </p>
           <p className="text-amber-800/80">{weddingData.wedding.date}</p>

@@ -1,11 +1,17 @@
 import type { Metadata } from "next";
-import { Nanum_Pen_Script } from "next/font/google";
+import { Nanum_Pen_Script, Noto_Serif_KR } from "next/font/google";
 import "./globals.css";
 
 const nanumPen = Nanum_Pen_Script({
   variable: "--font-nanum-pen",
   subsets: ["latin"],
   weight: ["400"],
+});
+
+const notoSerifKR = Noto_Serif_KR({
+  variable: "--font-noto-serif",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -52,7 +58,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${nanumPen.variable} antialiased`}
+        className={`${nanumPen.variable} ${notoSerifKR.variable} antialiased`}
       >
         {children}
       </body>

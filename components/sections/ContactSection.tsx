@@ -144,10 +144,14 @@ export default function ContactSection({
             <div className="flex-1 h-px bg-gradient-to-r from-amber-400/40 to-transparent" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {/* 부모님 - 모바일에서 가로 2열, 데스크톱에서도 가로 배열 */}
             {groomFather && <PersonCard person={groomFather} label="신랑 아버지" />}
             {groomMother && <PersonCard person={groomMother} label="신랑 어머니" />}
-            <PersonCard person={groom} label="신랑" />
+            {/* 신랑 - 모바일에서 full width */}
+            <div className="col-span-2 md:col-span-1">
+              <PersonCard person={groom} label="신랑" />
+            </div>
           </div>
         </motion.div>
 
@@ -163,10 +167,14 @@ export default function ContactSection({
             <div className="flex-1 h-px bg-gradient-to-r from-amber-400/40 to-transparent" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {/* 부모님 - 모바일에서 가로 2열, 데스크톱에서도 가로 배열 */}
             {brideFather && <PersonCard person={brideFather} label="신부 아버지" />}
             {brideMother && <PersonCard person={brideMother} label="신부 어머니" />}
-            <PersonCard person={bride} label="신부" />
+            {/* 신부 - 모바일에서 full width */}
+            <div className="col-span-2 md:col-span-1">
+              <PersonCard person={bride} label="신부" />
+            </div>
           </div>
         </motion.div>
 

@@ -11,6 +11,7 @@ interface BGMPlayerProps {
 
 export default function BGMPlayer({ audioSrc = '/audio/bgm.mp3', autoPlay = false }: BGMPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [autoplayFailed, setAutoplayFailed] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   // 초기 볼륨 설정 (고정값)
@@ -57,8 +58,9 @@ export default function BGMPlayer({ audioSrc = '/audio/bgm.mp3', autoPlay = fals
             console.log('[BGM] 음소거 해제됨');
           }, 100);
         } catch (mutedError) {
-          console.log('[BGM] ❌ 자동재생 완전히 차단됨:', mutedError);
+          console.log('[BGM] ❌ 자동재생 완전히 차단됨 (iOS일 가능성 높음):', mutedError);
           setIsPlaying(false);
+          setAutoplayFailed(true);
         }
       }
     };
@@ -80,6 +82,11 @@ export default function BGMPlayer({ audioSrc = '/audio/bgm.mp3', autoPlay = fals
   const togglePlay = async (e: React.MouseEvent) => {
     e.stopPropagation();
     console.log('[BGM] 버튼 클릭됨');
+
+    // 자동재생 실패 상태 초기화
+    if (autoplayFailed) {
+      setAutoplayFailed(false);
+    }
 
     const audio = audioRef.current;
     if (!audio) {
@@ -146,6 +153,8 @@ export default function BGMPlayer({ audioSrc = '/audio/bgm.mp3', autoPlay = fals
           className="glass-strong shadow-2xl rounded-full p-4 hover:glass transition-all duration-300 hover:shadow-[0_20px_50px_rgba(251,113,133,0.4)] relative z-10"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
+          animate={autoplayFailed ? { scale: [1, 1.1, 1] } : {}}
+          transition={autoplayFailed ? { duration: 1.5, repeat: Infinity } : {}}
           aria-label={isPlaying ? '음악 일시정지' : '음악 재생'}
         >
           <AnimatePresence mode="wait">
@@ -179,6 +188,16 @@ export default function BGMPlayer({ audioSrc = '/audio/bgm.mp3', autoPlay = fals
             className="absolute inset-0 rounded-full border-2 border-rose-300/50 pointer-events-none"
             initial={{ scale: 1, opacity: 0.7 }}
             animate={{ scale: 1.3, opacity: 0 }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          />
+        )}
+
+        {/* 자동재생 실패 시 알림 링 */}
+        {autoplayFailed && !isPlaying && (
+          <motion.div
+            className="absolute inset-0 rounded-full border-2 border-amber-400/60 pointer-events-none"
+            initial={{ scale: 1, opacity: 0.8 }}
+            animate={{ scale: 1.4, opacity: 0 }}
             transition={{ duration: 1.5, repeat: Infinity }}
           />
         )}
