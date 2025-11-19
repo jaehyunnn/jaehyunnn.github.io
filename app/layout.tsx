@@ -1,35 +1,6 @@
 import type { Metadata } from "next";
-import localFont from 'next/font/local';
 import { Nanum_Pen_Script } from "next/font/google";
 import "./globals.css";
-
-// Pretendard 폰트 (로컬)
-const pretendard = localFont({
-  src: [
-    {
-      path: './fonts/Pretendard-Regular.woff2',
-      weight: '400',
-      style: 'normal',
-    },
-    {
-      path: './fonts/Pretendard-Medium.woff2',
-      weight: '500',
-      style: 'normal',
-    },
-    {
-      path: './fonts/Pretendard-SemiBold.woff2',
-      weight: '600',
-      style: 'normal',
-    },
-    {
-      path: './fonts/Pretendard-Bold.woff2',
-      weight: '700',
-      style: 'normal',
-    },
-  ],
-  variable: '--font-pretendard',
-  display: 'swap',
-});
 
 const nanumPen = Nanum_Pen_Script({
   variable: "--font-nanum-pen",
@@ -59,7 +30,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body
-        className={`${pretendard.variable} ${nanumPen.variable} antialiased`}
+        className={`${nanumPen.variable} antialiased`}
       >
         {children}
       </body>

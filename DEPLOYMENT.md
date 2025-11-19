@@ -1,17 +1,19 @@
 # GitHub Pages 배포 가이드
 
-## 폰트 문제 해결 완료
+## 폰트 문제 해결 완료 ✅
 
-### 적용된 해결책
+### 최종 해결책
 
-1. **Pretendard 폰트**: `app/fonts/` 디렉토리로 이동
-   - Next.js의 `localFont` API가 `app` 디렉토리 내 폰트를 자동으로 최적화
-   - 경로: `./fonts/Pretendard-*.woff2` (상대 경로)
+1. **Pretendard 폰트**: CSS @font-face 방식으로 전환
+   - Next.js `localFont` API 제거 (GitHub Pages static export와 호환성 문제)
+   - 폰트 파일 위치: `/public/fonts/Pretendard-*.woff2`
+   - CSS에서 `/fonts/` 경로로 직접 참조
+   - 빌드 시 자동으로 `/out/fonts/`에 복사됨
 
-2. **경기천년바탕 폰트**: CDN 개선
-   - 더 안정적인 CDN 사용 (`fonts-archive`)
-   - woff2와 woff fallback 추가
-   - `font-display: swap` 추가로 로딩 성능 개선
+2. **경기천년바탕 폰트**: CDN 사용
+   - jsdelivr CDN (`fonts-archive`)
+   - woff2와 woff fallback 제공
+   - `font-display: swap` 적용
 
 ## 배포 방법
 
@@ -117,25 +119,38 @@ images: {
 
 ### app/layout.tsx
 ```typescript
-// Pretendard: app 디렉토리 내 폰트 사용
-const pretendard = localFont({
-  src: [
-    { path: './fonts/Pretendard-Regular.woff2', weight: '400' },
-    // ...
-  ],
-  variable: '--font-pretendard',
-  display: 'swap',
+// Pretendard는 CSS @font-face로 로드 (localFont 미사용)
+// 오직 Google Fonts만 Next.js API 사용
+const nanumPen = Nanum_Pen_Script({
+  variable: "--font-nanum-pen",
+  subsets: ["latin"],
+  weight: ["400"],
 });
 ```
 
 ### app/globals.css
 ```css
+/* Pretendard: 로컬 폰트 @font-face로 로드 */
+@font-face {
+  font-family: 'Pretendard';
+  src: url('/fonts/Pretendard-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+/* Medium (500), SemiBold (600), Bold (700) 동일 방식으로 정의 */
+
 /* 경기천년바탕: CDN 사용 */
 @font-face {
   font-family: 'GyeonggiCheonnyeonBatang';
-  src: url('https://cdn.jsdelivr.net/gh/fonts-archive/...') format('woff2'),
-       url('https://cdn.jsdelivr.net/gh/fonts-archive/...') format('woff');
+  src: url('https://cdn.jsdelivr.net/gh/fonts-archive/GyeonggiCheonnyeonBatang/GyeonggiCheonnyeonBatang-Bold.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/gh/fonts-archive/GyeonggiCheonnyeonBatang/GyeonggiCheonnyeonBatang-Bold.woff') format('woff');
   font-display: swap;
+}
+
+:root {
+  --font-pretendard: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-gyeonggi: 'GyeonggiCheonnyeonBatang', serif;
 }
 ```
 
