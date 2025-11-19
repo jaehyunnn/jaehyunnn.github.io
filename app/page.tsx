@@ -16,6 +16,7 @@ export default function Home() {
   const weddingData = {
     groom: {
       name: '박재현',
+      name_eng: 'Jae-Hyun',
       father: '박준길',
       mother: '이상숙',
       phone: '010-2788-2543',
@@ -25,6 +26,7 @@ export default function Home() {
     },
     bride: {
       name: '김가인',
+      name_eng: 'Gaain',
       father: '김연재',
       mother: '김선화',
       phone: '010-2450-4137',
@@ -35,7 +37,7 @@ export default function Home() {
     wedding: {
       date: '2026년 8월 23일 일요일',
       time: '오전 11시',
-      venue: '라브르 에드니아',
+      venue: '라브르에드니아',
       venueDetail: '단독홀',
       address: '서울특별시 송파구 백제고분로 95',
       latitude: 37.508439,
@@ -91,8 +93,8 @@ export default function Home() {
       {/* 인트로 섹션 */}
       {showIntro && (
         <IntroSection
-          groomName={weddingData.groom.name}
-          brideName={weddingData.bride.name}
+          groomName={weddingData.groom.name_eng}
+          brideName={weddingData.bride.name_eng}
           weddingDate={weddingData.wedding.date}
           onComplete={() => setShowIntro(false)}
         />
@@ -178,17 +180,17 @@ export default function Home() {
         description={`${weddingData.wedding.date}에 저희 두 사람이 결혼합니다. 참석하셔서 축복해 주시면 감사하겠습니다.`}
       />
 
-      {/* 푸터 - Glassmorphism */}
+      {/* 푸터 - 궁전 테마 */}
       <footer className="py-12 relative">
-        <div className="max-w-2xl mx-auto text-center glass-strong rounded-3xl p-8 shadow-xl mx-6">
-          <p className="mb-2 text-gray-800 font-serif text-lg">
-            {weddingData.groom.name} <span className="text-rose-400 mx-2">&</span> {weddingData.bride.name}
+        <div className="max-w-2xl mx-auto text-center glass-strong rounded-3xl p-8 shadow-xl mx-6 border-2 border-amber-200/40">
+          <p className="mb-2 text-amber-900 font-serif text-lg tracking-wide">
+            {weddingData.groom.name} <span className="text-amber-600 mx-2">&</span> {weddingData.bride.name}
           </p>
-          <p className="text-gray-600">{weddingData.wedding.date}</p>
+          <p className="text-amber-800/80">{weddingData.wedding.date}</p>
           <div className="mt-6 flex justify-center items-center gap-3">
-            <div className="w-2 h-2 rounded-full bg-rose-400 shadow-lg" />
-            <div className="w-2 h-2 rounded-full bg-rose-400 shadow-lg" />
-            <div className="w-2 h-2 rounded-full bg-rose-400 shadow-lg" />
+            <div className="w-2 h-2 rounded-full bg-amber-500/60 shadow-lg" />
+            <div className="w-2 h-2 rounded-full bg-amber-500/60 shadow-lg" />
+            <div className="w-2 h-2 rounded-full bg-amber-500/60 shadow-lg" />
           </div>
         </div>
       </footer>

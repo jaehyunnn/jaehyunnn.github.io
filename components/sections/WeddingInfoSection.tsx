@@ -96,97 +96,94 @@ export default function WeddingInfoSection({
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-serif text-gray-800 mb-4">
+          <h2 className="text-4xl md:text-5xl text-amber-900 mb-6" style={{ fontFamily: 'var(--font-gyeonggi), serif' }}>
             Wedding Information
           </h2>
-          <div className="w-12 h-0.5 bg-gradient-to-r from-transparent via-rose-300 to-transparent mx-auto mb-4" />
-          <p className="text-gray-600 text-sm">예식 안내</p>
+          <div className="w-16 h-px bg-gradient-to-r from-transparent via-amber-400/60 to-transparent mx-auto mb-4" />
+          <p className="text-amber-800/70 text-sm font-light">예식 안내</p>
         </motion.div>
 
-        {/* 정보 카드 - Glassmorphism */}
+        {/* 정보 - 카드 없이 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="glass-strong rounded-3xl p-8 mb-8 shadow-xl"
+          className="mb-12 space-y-8"
         >
-          <div className="space-y-6">
-            {/* 날짜 */}
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 glass-subtle rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
-                <Calendar className="w-6 h-6 text-rose-500" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-600 mb-1 font-medium">날짜</p>
-                <p className="text-lg font-semibold text-gray-800">{date}</p>
-              </div>
+          {/* 날짜 */}
+          <div className="flex items-center gap-5 justify-center">
+            <Calendar className="w-6 h-6 text-amber-600/70" />
+            <div className="text-center">
+              <p className="text-sm text-amber-800/60 mb-1 font-light uppercase tracking-wider">Date</p>
+              <p className="text-xl font-medium text-amber-900">{date}</p>
             </div>
+          </div>
 
-            {/* 시간 */}
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 glass-subtle rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
-                <Clock className="w-6 h-6 text-rose-500" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-600 mb-1 font-medium">시간</p>
-                <p className="text-lg font-semibold text-gray-800">{time}</p>
-              </div>
+          <div className="w-32 h-px bg-gradient-to-r from-transparent via-amber-400/30 to-transparent mx-auto" />
+
+          {/* 시간 */}
+          <div className="flex items-center gap-5 justify-center">
+            <Clock className="w-6 h-6 text-amber-600/70" />
+            <div className="text-center">
+              <p className="text-sm text-amber-800/60 mb-1 font-light uppercase tracking-wider">Time</p>
+              <p className="text-xl font-medium text-amber-900">{time}</p>
             </div>
+          </div>
 
-            {/* 장소 */}
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 glass-subtle rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
-                <MapPin className="w-6 h-6 text-rose-500" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-600 mb-1 font-medium">장소</p>
-                <p className="text-lg font-semibold text-gray-800 mb-1">{venue}</p>
-                {venueDetail && (
-                  <p className="text-sm text-gray-700 mb-1">{venueDetail}</p>
-                )}
-                <p className="text-sm text-gray-600">{address}</p>
-              </div>
+          <div className="w-32 h-px bg-gradient-to-r from-transparent via-amber-400/30 to-transparent mx-auto" />
+
+          {/* 장소 */}
+          <div className="flex items-center gap-5 justify-center">
+            <MapPin className="w-6 h-6 text-amber-600/70" />
+            <div className="text-center">
+              <p className="text-sm text-amber-800/60 mb-1 font-light uppercase tracking-wider">Location</p>
+              <p className="text-xl font-medium text-amber-900 mb-1">{venue}</p>
+              {venueDetail && (
+                <p className="text-sm text-amber-900/70 mb-1">{venueDetail}</p>
+              )}
+              <p className="text-sm text-amber-800/60 font-light">{address}</p>
             </div>
           </div>
         </motion.div>
 
-        {/* 지도 - Glassmorphism 프레임 */}
+        {/* 지도 - 심플한 프레임 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="mb-6"
+          className="mb-8"
         >
-          <div className="glass p-2 rounded-3xl shadow-xl">
-            <div
-              id="map"
-              className="w-full h-80 rounded-2xl overflow-hidden bg-gray-100"
-            >
-              {/* 카카오맵이 여기에 로드됩니다 */}
-              <div className="w-full h-full flex items-center justify-center text-gray-400">
-                <p className="text-sm">지도 로딩 중...</p>
-              </div>
+          <div
+            id="map"
+            className="w-full h-80 rounded-2xl overflow-hidden bg-amber-50/30 shadow-lg"
+            style={{ border: '1px solid rgba(205, 186, 150, 0.2)' }}
+          >
+            {/* 카카오맵이 여기에 로드됩니다 */}
+            <div className="w-full h-full flex items-center justify-center text-amber-400/70">
+              <p className="text-sm font-light">지도 로딩 중...</p>
             </div>
           </div>
         </motion.div>
 
-        {/* 네비게이션 버튼 - Glassmorphism */}
+        {/* 네비게이션 버튼 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="grid grid-cols-2 gap-4"
+          className="grid grid-cols-2 gap-4 max-w-md mx-auto"
         >
           <button
             onClick={() => openNavigation('kakao')}
-            className="flex items-center justify-center gap-2 glass-strong hover:glass text-yellow-700 font-semibold py-4 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
+            className="flex items-center justify-center gap-2 py-4 px-6 rounded-xl transition-all duration-300 hover:scale-105 font-medium"
+            style={{ backgroundColor: 'rgba(255, 253, 245, 0.7)', border: '1px solid rgba(205, 186, 150, 0.3)', color: '#78350f' }}
           >
             <Navigation className="w-5 h-5" />
             카카오맵
           </button>
           <button
             onClick={() => openNavigation('naver')}
-            className="flex items-center justify-center gap-2 glass-strong hover:glass text-green-700 font-semibold py-4 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
+            className="flex items-center justify-center gap-2 py-4 px-6 rounded-xl transition-all duration-300 hover:scale-105 font-medium"
+            style={{ backgroundColor: 'rgba(255, 253, 245, 0.7)', border: '1px solid rgba(205, 186, 150, 0.3)', color: '#78350f' }}
           >
             <Navigation className="w-5 h-5" />
             네이버지도

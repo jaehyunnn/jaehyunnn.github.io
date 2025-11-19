@@ -42,11 +42,11 @@ export default function GallerySection({ photos }: GallerySectionProps) {
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-serif text-gray-800 mb-4">
+            <h2 className="text-4xl md:text-5xl text-amber-900 mb-6" style={{ fontFamily: 'var(--font-gyeonggi), serif' }}>
               Our Story
             </h2>
-            <div className="w-12 h-0.5 bg-gradient-to-r from-transparent via-rose-300 to-transparent mx-auto mb-4" />
-            <p className="text-gray-600 text-sm">우리의 소중한 순간들</p>
+            <div className="w-16 h-px bg-gradient-to-r from-transparent via-amber-400/60 to-transparent mx-auto mb-4" />
+            <p className="text-amber-800/70 text-sm font-light">우리의 소중한 순간들</p>
           </motion.div>
 
           {/* 폴라로이드 그리드 */}
@@ -62,9 +62,9 @@ export default function GallerySection({ photos }: GallerySectionProps) {
                 style={{ rotate: `${getRotation(index, photo)}deg` }}
                 onClick={() => setSelectedPhoto(photo)}
               >
-                {/* 폴라로이드 프레임 - Glassmorphism */}
-                <div className="glass-strong p-4 pb-12 shadow-2xl hover:shadow-[0_20px_50px_rgba(251,113,133,0.3)] transition-all duration-300">
-                  <div className="relative w-full aspect-square bg-gradient-to-br from-white/30 to-rose-50/30 overflow-hidden rounded-lg backdrop-blur-sm">
+                {/* 폴라로이드 프레임 - 궁전 테마 */}
+                <div className="glass-strong p-4 pb-12 shadow-2xl hover:shadow-[0_20px_50px_rgba(205,186,150,0.4)] transition-all duration-300 border-2 border-amber-200/20">
+                  <div className="relative w-full aspect-square bg-gradient-to-br from-amber-50/30 to-white/30 overflow-hidden rounded-lg backdrop-blur-sm">
                     {photo.src.startsWith('http') || photo.src.startsWith('/images') ? (
                       <Image
                         src={photo.src}
@@ -74,13 +74,13 @@ export default function GallerySection({ photos }: GallerySectionProps) {
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-rose-100/50 to-pink-100/50 backdrop-blur-sm">
-                        <p className="text-gray-400 text-sm">사진 {index + 1}</p>
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-amber-50/50 to-amber-100/50 backdrop-blur-sm">
+                        <p className="text-amber-400 text-sm">사진 {index + 1}</p>
                       </div>
                     )}
                   </div>
                   {photo.caption && (
-                    <p className="text-center mt-4 text-gray-800 font-handwriting text-sm font-medium">
+                    <p className="text-center mt-4 text-amber-900 font-handwriting text-sm font-medium">
                       {photo.caption}
                     </p>
                   )}
