@@ -77,14 +77,14 @@ export default function WeddingInfoSection({
         const contentString = [
           '<div class="iw_inner" style="',
           'padding: 8px 12px;',
-          'width: 160px;',
+          'width: 200px;',
           'text-align: center;',
           'background: rgba(255, 253, 245, 0.85);',
           'backdrop-filter: blur(12px);',
           '-webkit-backdrop-filter: blur(12px);',
           'border-radius: 16px;',
           'box-shadow: 0 4px 12px rgba(120, 53, 15, 0.15), 0 0 1px rgba(205, 186, 150, 0.3);',
-          'border: 1px solid rgba(251, 191, 36, 0.3);',
+          'border: 0.5px solid rgba(251, 191, 36, 0.3);',
           '">',
           `   <p style="font-size: 0.85rem; margin: 0 0 3px 0; font-weight: 600; color: #78350f; letter-spacing: -0.02em;">${venue}</p>`,
           `   <p style="font-size: 0.7rem; margin: 0; color: #92400e; opacity: 0.8; line-height: 1.3;">${address}</p>`,
@@ -162,11 +162,11 @@ export default function WeddingInfoSection({
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl text-amber-900 mb-6" style={{ fontFamily: 'var(--font-serif)' }}>
+          <h2 className="text-3xl md:text-4xl text-amber-900 mb-6" style={{ fontFamily: 'var(--font-serif)' }}>
             Wedding Information
           </h2>
           <div className="w-16 h-px bg-gradient-to-r from-transparent via-amber-400/60 to-transparent mx-auto mb-4" />
-          <p className="text-amber-800/70 text-sm font-light">예식 안내</p>
+          <p className="text-amber-800/70 text-xs font-light">예식 안내</p>
         </motion.div>
 
         {/* 정보 - 카드 없이 */}
@@ -179,8 +179,8 @@ export default function WeddingInfoSection({
           {/* 날짜 */}
           <div className="flex flex-col items-center justify-center">
             <Calendar className="w-4 h-4 text-amber-600/70 mb-2" />
-            <p className="text-sm text-amber-800/60 mb-1 font-light uppercase tracking-wider">Date</p>
-            <p className="text-xl font-medium text-amber-900">{date}</p>
+            <p className="text-xs text-amber-800/60 mb-1 font-light uppercase tracking-wider">Date</p>
+            <p className="text-base font-medium text-amber-900">{date}</p>
           </div>
 
           <div className="w-32 h-px bg-gradient-to-r from-transparent via-amber-400/30 to-transparent mx-auto" />
@@ -188,8 +188,8 @@ export default function WeddingInfoSection({
           {/* 시간 */}
           <div className="flex flex-col items-center justify-center">
             <Clock className="w-4 h-4 text-amber-600/70 mb-2" />
-            <p className="text-sm text-amber-800/60 mb-1 font-light uppercase tracking-wider">Time</p>
-            <p className="text-xl font-medium text-amber-900">{time}</p>
+            <p className="text-xs text-amber-800/60 mb-1 font-light uppercase tracking-wider">Time</p>
+            <p className="text-base font-medium text-amber-900">{time}</p>
           </div>
 
           <div className="w-32 h-px bg-gradient-to-r from-transparent via-amber-400/30 to-transparent mx-auto" />
@@ -197,12 +197,12 @@ export default function WeddingInfoSection({
           {/* 장소 */}
           <div className="flex flex-col items-center justify-center">
             <MapPin className="w-4 h-4 text-amber-600/70 mb-2" />
-            <p className="text-sm text-amber-800/60 mb-1 font-light uppercase tracking-wider">Location</p>
-            <p className="text-xl font-medium text-amber-900 mb-1">{venue}</p>
+            <p className="text-xs text-amber-800/60 mb-1 font-light uppercase tracking-wider">Location</p>
+            <p className="text-base font-medium text-amber-900 mb-1">{venue}</p>
             {venueDetail && (
-              <p className="text-sm text-amber-900/70 mb-1">{venueDetail}</p>
+              <p className="text-xs text-amber-900/70 mb-1">{venueDetail}</p>
             )}
-            <p className="text-sm text-amber-800/60 font-light">{address}</p>
+            <p className="text-xs text-amber-800/60 font-light">{address}</p>
           </div>
         </motion.div>
 
@@ -211,7 +211,7 @@ export default function WeddingInfoSection({
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="mb-8"
+          className="mb-4"
         >
           <div
             id="naverMap"
@@ -230,30 +230,30 @@ export default function WeddingInfoSection({
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="grid grid-cols-3 gap-4 max-w-2xl mx-auto"
+          className="grid grid-cols-3 gap-2 max-w-xl mx-auto"
         >
           <button
             onClick={() => openNavigation('naver')}
-            className="flex items-center justify-center gap-1.5 py-3 px-4 rounded-xl transition-all duration-300 hover:scale-105 font-medium text-sm"
+            className="flex items-center justify-center gap-1 py-2 px-2.5 rounded-xl transition-all duration-300 hover:scale-105 font-medium text-xs"
             style={{ backgroundColor: 'rgba(255, 253, 245, 0.7)', border: '1px solid rgba(205, 186, 150, 0.3)', color: '#78350f' }}
           >
-            <Image src="/icons/naver_map.webp" alt="네이버지도" width={20} height={20} />
+            <Image src="/icons/naver_map.webp" alt="네이버지도" width={16} height={16} />
             네이버지도
           </button>
           <button
             onClick={() => openNavigation('kakao')}
-            className="flex items-center justify-center gap-1.5 py-3 px-4 rounded-xl transition-all duration-300 hover:scale-105 font-medium text-sm"
+            className="flex items-center justify-center gap-1 py-2 px-2.5 rounded-xl transition-all duration-300 hover:scale-105 font-medium text-xs"
             style={{ backgroundColor: 'rgba(255, 253, 245, 0.7)', border: '1px solid rgba(205, 186, 150, 0.3)', color: '#78350f' }}
           >
-            <Image src="/icons/kakao_map.webp" alt="카카오맵" width={20} height={20} />
+            <Image src="/icons/kakao_map.webp" alt="카카오맵" width={16} height={16} />
             카카오맵
           </button>
           <button
             onClick={() => openNavigation('tmap')}
-            className="flex items-center justify-center gap-1.5 py-3 px-4 rounded-xl transition-all duration-300 hover:scale-105 font-medium text-sm"
+            className="flex items-center justify-center gap-1 py-2 px-2.5 rounded-xl transition-all duration-300 hover:scale-105 font-medium text-xs"
             style={{ backgroundColor: 'rgba(255, 253, 245, 0.7)', border: '1px solid rgba(205, 186, 150, 0.3)', color: '#78350f' }}
           >
-            <Image src="/icons/tmap.webp" alt="TMAP" width={20} height={20} />
+            <Image src="/icons/tmap.webp" alt="TMAP" width={16} height={16} />
             TMAP
           </button>
         </motion.div>
@@ -265,8 +265,8 @@ export default function WeddingInfoSection({
           transition={{ duration: 0.8, delay: 0.8 }}
           className="mt-12 p-6 bg-gray-50 rounded-xl"
         >
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">교통편 안내</h3>
-          <div className="space-y-3 text-sm text-gray-600">
+          <h3 className="text-base font-semibold text-gray-800 mb-4">교통편 안내</h3>
+          <div className="space-y-3 text-xs text-gray-600">
             <p>🚇 지하철: 2·9호선 종합운동장역 9번 출구에서 도보 5분</p>
             <p>🚌 버스: 340, 350번</p>
             <p>🚗 주차: 건물 내 주차 / 발렛 가능 (3시간 무료)</p>

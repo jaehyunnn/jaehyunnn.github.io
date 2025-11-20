@@ -129,6 +129,7 @@ export default function Home() {
         brideName={weddingData.bride.name}
         weddingDate={weddingData.wedding.date}
         weddingTime={weddingData.wedding.time}
+        venue={weddingData.wedding.venue}
         backgroundImage="/images/hero-bg.jpg"
       />
 

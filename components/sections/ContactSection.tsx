@@ -74,7 +74,7 @@ export default function ContactSection({
             className="flex-shrink-0 transition-all duration-300 hover:scale-110"
             aria-label="카카오페이 송금"
           >
-            <Image src="/icons/kakao_pay.svg" alt="카카오페이" width={40} height={40} />
+            <Image src="/icons/kakao_pay.svg" alt="카카오페이" width={50} height={50} />
           </button>
         )}
       </div>
@@ -162,12 +162,12 @@ export default function ContactSection({
             className="w-full flex items-center gap-2 mb-6 hover:opacity-70 transition-opacity"
           >
             <div className="w-8 h-px bg-gradient-to-r from-transparent to-amber-400/40" />
-            <h3 className="text-xl text-amber-900 font-medium">신랑측</h3>
+            <h3 className="text-base text-amber-900 font-medium">신랑측</h3>
             <div className="flex-1 h-px bg-gradient-to-r from-amber-400/40 to-transparent" />
             {groomSideExpanded ? (
-              <ChevronUp className="w-5 h-5 text-amber-700" />
+              <ChevronUp className="w-4 h-4 text-amber-700" />
             ) : (
-              <ChevronDown className="w-5 h-5 text-amber-700" />
+              <ChevronDown className="w-4 h-4 text-amber-700" />
             )}
           </button>
 
@@ -203,12 +203,12 @@ export default function ContactSection({
             className="w-full flex items-center gap-2 mb-6 hover:opacity-70 transition-opacity"
           >
             <div className="w-8 h-px bg-gradient-to-r from-transparent to-amber-400/40" />
-            <h3 className="text-xl text-amber-900 font-medium">신부측</h3>
+            <h3 className="text-base text-amber-900 font-medium">신부측</h3>
             <div className="flex-1 h-px bg-gradient-to-r from-amber-400/40 to-transparent" />
             {brideSideExpanded ? (
-              <ChevronUp className="w-5 h-5 text-amber-700" />
+              <ChevronUp className="w-4 h-4 text-amber-700" />
             ) : (
-              <ChevronDown className="w-5 h-5 text-amber-700" />
+              <ChevronDown className="w-4 h-4 text-amber-700" />
             )}
           </button>
 
@@ -241,7 +241,7 @@ export default function ContactSection({
           className="mt-12 text-center"
         >
           <p className="text-sm text-amber-800/60 leading-relaxed font-light">
-            축하의 마음을 담아 축의금을 전달하고 싶으신 분들을 위해<br />
+            축하의 마음을 전달하고 싶으신 분들을 위해<br />
             계좌번호를 기재하였습니다.
           </p>
         </motion.div>

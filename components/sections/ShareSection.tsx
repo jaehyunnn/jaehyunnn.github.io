@@ -151,42 +151,42 @@ export default function ShareSection({
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="space-y-4"
+          className="grid grid-cols-3 gap-2"
         >
           {/* 카카오톡 공유 */}
           <button
             onClick={shareKakao}
-            className="w-full flex items-center justify-center gap-3 glass-strong hover:glass text-amber-900 font-medium py-4 rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105 border border-amber-200/30"
+            className="flex flex-col items-center justify-center gap-1.5 glass-strong hover:glass text-amber-900 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 border border-amber-200/30"
           >
-            <Image src="/icons/kakao_talk.webp" alt="카카오톡" width={24} height={24} />
-            카카오톡으로 공유하기
-          </button>
-
-          {/* URL 복사 */}
-          <button
-            onClick={copyUrl}
-            className="w-full flex items-center justify-center gap-3 glass-strong hover:glass text-amber-900 font-medium py-4 rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105 border border-amber-200/30"
-          >
-            {urlCopied ? (
-              <>
-                <Check className="w-5 h-5 text-green-600" />
-                링크가 복사되었습니다
-              </>
-            ) : (
-              <>
-                <Copy className="w-5 h-5" />
-                링크 복사하기
-              </>
-            )}
+            <Image src="/icons/kakao_talk.webp" alt="카카오톡" width={20} height={20} />
+            <span className="text-xs font-medium">카톡 공유</span>
           </button>
 
           {/* 네이티브 공유 (모바일에서만 작동) */}
           <button
             onClick={shareNative}
-            className="w-full flex items-center justify-center gap-3 glass-strong hover:glass text-amber-900 font-medium py-4 rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105 border border-amber-200/30"
+            className="flex flex-col items-center justify-center gap-1.5 glass-strong hover:glass text-amber-900 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 border border-amber-200/30"
           >
-            <Share2 className="w-5 h-5" />
-            공유하기
+            <Share2 className="w-4 h-4" />
+            <span className="text-xs font-medium">공유 하기</span>
+          </button>
+
+          {/* URL 복사 */}
+          <button
+            onClick={copyUrl}
+            className="flex flex-col items-center justify-center gap-1.5 glass-strong hover:glass text-amber-900 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 border border-amber-200/30"
+          >
+            {urlCopied ? (
+              <>
+                <Check className="w-4 h-4 text-green-600" />
+                <span className="text-xs font-medium text-green-600">복사 완료</span>
+              </>
+            ) : (
+              <>
+                <Copy className="w-4 h-4" />
+                <span className="text-xs font-medium">링크 복사</span>
+              </>
+            )}
           </button>
         </motion.div>
 

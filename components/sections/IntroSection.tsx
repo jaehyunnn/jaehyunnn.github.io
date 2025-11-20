@@ -17,6 +17,7 @@ export default function IntroSection({
 }: IntroSectionProps) {
   const [displayedText, setDisplayedText] = useState('');
   const [isComplete, setIsComplete] = useState(false);
+  const [showNames, setShowNames] = useState(false);
   const audioContextRef = useRef<AudioContext | null>(null);
   const [audioInitialized, setAudioInitialized] = useState(false);
 
@@ -69,11 +70,10 @@ export default function IntroSection({
     }
   };
 
-  // 표시할 텍스트 라인들
+  // 표시할 텍스트 라인들 (이름 제외)
   const lines = [
     `You are cordially invited`,
     `to the wedding of`,
-    `${groomName} & ${brideName}`,
   ];
 
   const fullText = lines.join('\n');
@@ -101,11 +101,16 @@ export default function IntroSection({
           setTimeout(typeText, typingSpeed);
         }
       } else {
-        // 타이핑 완료 후 2초 대기 후 페이드아웃
+        // 타이핑 완료 후 이름 표시
+        setTimeout(() => {
+          setShowNames(true);
+        }, 500);
+
+        // 이름 표시 후 2초 대기 후 페이드아웃
         setTimeout(() => {
           setIsComplete(true);
           setTimeout(onComplete, 1000); // 페이드아웃 애니메이션 후 완료
-        }, 2000);
+        }, 3000);
       }
     };
 
@@ -113,7 +118,7 @@ export default function IntroSection({
     const initialDelay = setTimeout(typeText, 500);
 
     return () => clearTimeout(initialDelay);
-  }, [fullText, onComplete]);
+  }, [onComplete]);
 
   return (
     <div
@@ -131,17 +136,59 @@ export default function IntroSection({
 
       {/* 타이핑 텍스트 - 전체화면 중앙 */}
       <div className="relative z-10 text-center px-8 w-full h-full flex flex-col items-center justify-center">
-        <pre
-          className="text-5xl md:text-7xl lg:text-8xl text-amber-900 leading-relaxed whitespace-pre-wrap"
-          style={{
-            fontFamily: "'Great Vibes', cursive",
-            textShadow: '3px 3px 6px rgba(205, 186, 150, 0.3)',
-          }}
-        >
-          {displayedText}
-          <span className="animate-pulse text-amber-600">|</span>
-        </pre>
+        {/* 타이핑 효과 텍스트 */}
+        <div className="leading-relaxed">
+          {displayedText.split('\n').map((line, index) => {
+            const lineLength = lines.slice(0, index).join('\n').length + (index > 0 ? index : 0);
+            const isLineComplete = displayedText.length > lineLength + line.length;
+            const visibleText = displayedText.slice(lineLength, lineLength + line.length + 1);
+
+            return (
+              <div
+                key={index}
+                className="text-5xl md:text-7xl lg:text-8xl text-amber-900"
+                style={{
+                  fontFamily: "'Great Vibes', cursive",
+                  textShadow: '3px 3px 6px rgba(205, 186, 150, 0.3)',
+                }}
+              >
+                {visibleText}
+                {!isLineComplete && index === displayedText.split('\n').length - 1 && (
+                  <span className="animate-pulse text-amber-600">|</span>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* 이름 - 페이드인 효과 */}
+        {showNames && (
+          <div
+            className="text-3xl md:text-4xl lg:text-5xl text-amber-900 mt-12 transition-opacity duration-1000"
+            style={{
+              fontFamily: "'Great Vibes', cursive",
+              textShadow: '3px 3px 6px rgba(205, 186, 150, 0.3)',
+              animation: 'fadeIn 1.5s ease-in-out',
+            }}
+          >
+            {groomName} & {brideName}
+          </div>
+        )}
       </div>
+
+      {/* 페이드인 애니메이션 정의 */}
+      <style jsx>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
 
       {/* 장식 요소 - 궁전 테마 */}
       <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-10">

@@ -1,6 +1,8 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useEffect } from 'react';
+import Image from 'next/image';
 
 interface CalendarSectionProps {
   year: number;
@@ -9,6 +11,16 @@ interface CalendarSectionProps {
 }
 
 export default function CalendarSection({ year, month, day }: CalendarSectionProps) {
+  // Google Fonts 로드
+  useEffect(() => {
+    const link = document.createElement('link');
+    link.href = 'https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap';
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
+    return () => {
+      document.head.removeChild(link);
+    };
+  }, []);
   // 해당 월의 첫 날과 마지막 날 계산
   const firstDay = new Date(year, month - 1, 1);
   const lastDay = new Date(year, month, 0);
@@ -39,7 +51,7 @@ export default function CalendarSection({ year, month, day }: CalendarSectionPro
   const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
 
   return (
-    <section className="py-16 px-6 relative">
+    <section className="py-16 px-6 relative" style={{ fontFamily: "'Noto Sans KR', sans-serif" }}>
       <div className="max-w-2xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -118,7 +130,7 @@ export default function CalendarSection({ year, month, day }: CalendarSectionPro
                       >
                         {date}
                       </p>
-                      {/* 예식일에만 손으로 그린 듯한 동그라미 */}
+                      {/* 예식일에만 손으로 그린 동그라미 */}
                       {isWeddingDay && (
                         <motion.div
                           initial={{ scale: 0, rotate: -10 }}
@@ -126,34 +138,14 @@ export default function CalendarSection({ year, month, day }: CalendarSectionPro
                           transition={{ delay: 0.5, type: 'spring', stiffness: 200 }}
                           className="absolute inset-0 flex items-center justify-center"
                         >
-                          <svg
-                            viewBox="0 0 100 100"
-                            className="w-full h-full"
-                            style={{ transform: 'scale(1.1)' }}
-                          >
-                            {/* 손으로 그린 듯한 동그라미 효과 */}
-                            <circle
-                              cx="50"
-                              cy="50"
-                              r="35"
-                              fill="none"
-                              stroke="#e11d48"
-                              strokeWidth="3"
-                              strokeLinecap="round"
-                              style={{
-                                filter: 'url(#roughen)',
-                                opacity: 0.8
-                              }}
-                              strokeDasharray="220"
-                              strokeDashoffset="0"
+                          <div className="relative w-full h-full" style={{ transform: 'scale(1.2)' }}>
+                            <Image
+                              src="/icons/red_circle.png"
+                              alt="Wedding Day"
+                              fill
+                              className="object-contain"
                             />
-                            <defs>
-                              <filter id="roughen">
-                                <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" result="noise" />
-                                <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" />
-                              </filter>
-                            </defs>
-                          </svg>
+                          </div>
                         </motion.div>
                       )}
                     </>

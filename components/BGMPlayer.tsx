@@ -150,7 +150,7 @@ export default function BGMPlayer({ audioSrc = '/audio/bgm.mp3', autoPlay = fals
         {/* 메인 컨트롤 버튼 - Enhanced Glassmorphism */}
         <motion.button
           onClick={togglePlay}
-          className="glass-strong shadow-2xl rounded-full p-4 hover:glass transition-all duration-300 hover:shadow-[0_20px_50px_rgba(251,113,133,0.4)] relative z-10"
+          className="glass-strong shadow-2xl rounded-full p-2.5 hover:glass transition-all duration-300 hover:shadow-[0_20px_50px_rgba(251,113,133,0.4)] relative z-10"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           animate={autoplayFailed ? { scale: [1, 1.1, 1] } : {}}
@@ -166,7 +166,7 @@ export default function BGMPlayer({ audioSrc = '/audio/bgm.mp3', autoPlay = fals
                 exit={{ rotate: 180, opacity: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <Pause className="w-6 h-6 text-rose-600" />
+                <Pause className="w-4 h-4 text-rose-600" />
               </motion.div>
             ) : (
               <motion.div
@@ -176,7 +176,7 @@ export default function BGMPlayer({ audioSrc = '/audio/bgm.mp3', autoPlay = fals
                 exit={{ rotate: 180, opacity: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <Play className="w-6 h-6 text-rose-600 ml-0.5" />
+                <Play className="w-4 h-4 text-rose-600 ml-0.5" />
               </motion.div>
             )}
           </AnimatePresence>

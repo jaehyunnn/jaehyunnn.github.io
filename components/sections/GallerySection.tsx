@@ -116,7 +116,7 @@ export default function GallerySection({ photos }: GallerySectionProps) {
           </motion.div>
 
           {/* 글라스모피즘 그리드 */}
-          <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
+          <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3">
             {displayedPhotos.map((photo, index) => (
               <motion.div
                 key={index}
@@ -128,12 +128,12 @@ export default function GallerySection({ photos }: GallerySectionProps) {
                 onClick={() => setSelectedIndex(index)}
               >
                 {/* 글라스모피즘 플로팅 카드 */}
-                <div className="relative w-full aspect-square overflow-hidden rounded-2xl transition-all duration-500">
+                <div className="relative w-full aspect-square overflow-hidden rounded-lg transition-all duration-500">
                   {/* 플로팅 효과를 위한 그라데이션 배경 */}
                   <div className="absolute inset-0 bg-gradient-to-br from-amber-50/40 via-white/30 to-amber-100/40 backdrop-blur-md" />
 
                   {/* 은은한 테두리 효과 */}
-                  <div className="absolute inset-0 rounded-2xl ring-1 ring-amber-200/20 ring-inset" />
+                  <div className="absolute inset-0 rounded-lg ring-1 ring-amber-200/20 ring-inset" />
 
                   {/* 사진 */}
                   <div className="relative w-full h-full">
@@ -142,7 +142,7 @@ export default function GallerySection({ photos }: GallerySectionProps) {
                         src={photo.src}
                         alt={photo.caption || `사진 ${index + 1}`}
                         fill
-                        className="object-cover rounded-2xl"
+                        className="object-cover rounded-lg"
                         sizes="(max-width: 640px) 33vw, (max-width: 1024px) 33vw, 25vw"
                       />
                     ) : (
@@ -153,10 +153,10 @@ export default function GallerySection({ photos }: GallerySectionProps) {
                   </div>
 
                   {/* 호버 시 오버레이 */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-amber-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-amber-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg" />
 
                   {/* 플로팅 섀도우 */}
-                  <div className="absolute inset-0 shadow-lg group-hover:shadow-2xl transition-shadow duration-300 rounded-2xl"
+                  <div className="absolute inset-0 shadow-lg group-hover:shadow-2xl transition-shadow duration-300 rounded-lg"
                        style={{
                          boxShadow: '0 8px 32px rgba(205, 186, 150, 0.15), 0 2px 8px rgba(120, 53, 15, 0.08)'
                        }}

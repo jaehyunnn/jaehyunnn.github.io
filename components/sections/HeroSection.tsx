@@ -8,6 +8,7 @@ interface HeroSectionProps {
   brideName: string;
   weddingDate: string;
   weddingTime: string;
+  venue?: string;
   backgroundImage?: string;
 }
 
@@ -16,6 +17,7 @@ export default function HeroSection({
   brideName,
   weddingDate,
   weddingTime,
+  venue,
   backgroundImage = '/images/hero-bg.jpg'
 }: HeroSectionProps) {
   return (
@@ -58,14 +60,14 @@ export default function HeroSection({
           className="mb-10"
         >
           <h1
-            className="text-5xl md:text-6xl lg:text-7xl mb-6"
+            className="text-4xl md:text-5xl lg:text-6xl mb-6"
             style={{
               fontFamily: 'var(--font-serif)',
               color: '#FFFEF9',
               textShadow: '0 2px 20px rgba(0, 0, 0, 0.4), 0 0 40px rgba(0, 0, 0, 0.2)'
             }}
           >
-            {groomName} <span className="text-3xl md:text-4xl mx-3" style={{ color: '#FFB3D9' }}>&</span> {brideName}
+            {groomName} <span className="text-2xl md:text-3xl mx-3" style={{ color: '#FFB3D9' }}>&</span> {brideName}
           </h1>
           <div className="w-24 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent mx-auto" />
         </motion.div>
@@ -76,17 +78,25 @@ export default function HeroSection({
           transition={{ duration: 1, delay: 0.7 }}
         >
           <p
-            className="text-xl md:text-2xl mb-3 font-medium"
+            className="text-base md:text-lg mb-2 font-medium"
             style={{ color: '#FFFEF9', textShadow: '0 2px 12px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 0, 0, 0.2)' }}
           >
             {weddingDate}
           </p>
           <p
-            className="text-lg md:text-xl font-medium"
+            className="text-sm md:text-base mb-2 font-medium"
             style={{ color: '#FFFEF9', textShadow: '0 2px 12px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 0, 0, 0.2)' }}
           >
             {weddingTime}
           </p>
+          {venue && (
+            <p
+              className="text-sm md:text-base font-medium"
+              style={{ color: '#FFFEF9', textShadow: '0 2px 12px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 0, 0, 0.2)' }}
+            >
+              {venue}
+            </p>
+          )}
         </motion.div>
 
         {/* 장식 요소 */}
