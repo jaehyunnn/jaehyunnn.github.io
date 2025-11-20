@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
+import { useEffect } from 'react';
 
 interface InvitationSectionProps {
   invitationMessage: string;
@@ -27,6 +28,23 @@ export default function InvitationSection({
     threshold: 0.2
   });
 
+  // NanumLetter 폰트 로드
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      @font-face {
+        font-family: 'NanumLetter';
+        src: url('/fonts/NanumLetter.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+      }
+    `;
+    document.head.appendChild(style);
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
+
   return (
     <section ref={ref} className="py-24 px-6 relative">
       <div className="max-w-3xl mx-auto">
@@ -50,7 +68,7 @@ export default function InvitationSection({
           transition={{ duration: 0.8, delay: 0.2 }}
           className="mb-24"
         >
-          <div className="text-amber-900/80 leading-loose text-center text-base md:text-lg font-light">
+          <div className="text-amber-900/80 leading-loose text-center text-lg md:text-xl font-light" style={{ fontFamily: "'NanumLetter', sans-serif" }}>
             {invitationMessage.split('\n').map((line, index, array) => {
               // 마지막 줄 처리 - serif 폰트 적용
               if (index === array.length - 1 && line.includes('소중한 분들을 초대합니다')) {
