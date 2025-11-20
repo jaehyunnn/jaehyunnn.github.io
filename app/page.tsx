@@ -24,6 +24,7 @@ export default function Home() {
       accountBank: '기업은행',
       accountNumber: '065-154410-01-010',
       accountHolder: '박재현',
+      kakaopayLink: 'https://link.kakaopay.com/__/dESqQ9P',
     },
     bride: {
       name: '김가인',
@@ -34,6 +35,7 @@ export default function Home() {
       accountBank: '하나은행',
       accountNumber: '215-910417-00707',
       accountHolder: '김가인',
+      kakaopayLink: 'https://link.kakaopay.com/__/YOUR_LINK',
     },
     wedding: {
       date: '2026년 8월 23일 일요일',
@@ -166,6 +168,7 @@ export default function Home() {
           accountBank: weddingData.groom.accountBank,
           accountNumber: weddingData.groom.accountNumber,
           accountHolder: weddingData.groom.accountHolder,
+          kakaopayLink: weddingData.groom.kakaopayLink,
         }}
         groomFather={{
           name: weddingData.groom.father,
@@ -181,6 +184,7 @@ export default function Home() {
           accountBank: weddingData.bride.accountBank,
           accountNumber: weddingData.bride.accountNumber,
           accountHolder: weddingData.bride.accountHolder,
+          kakaopayLink: weddingData.bride.kakaopayLink,
         }}
         brideFather={{
           name: weddingData.bride.father,
@@ -213,6 +217,9 @@ export default function Home() {
             <div className="w-2 h-2 rounded-full bg-amber-500/60 shadow-lg" />
             <div className="w-2 h-2 rounded-full bg-amber-500/60 shadow-lg" />
           </div>
+          <p className="mt-6 text-xs text-amber-700/60 font-light">
+            All rights reserved © 2025 Jae-Hyun Park
+          </p>
         </div>
       </footer>
     </main>

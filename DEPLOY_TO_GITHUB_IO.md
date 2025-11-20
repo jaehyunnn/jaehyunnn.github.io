@@ -35,7 +35,7 @@ ls -la temp-backup/
 #### 옵션 A: 기존 내용 모두 교체 (청첩장만 배포)
 
 ```bash
-cd /home/ibk/workspace/mobile_invitation
+cd /home/ibk/workspace/jaehyunnn.github.io
 
 # Git 원격 저장소 확인
 git remote -v

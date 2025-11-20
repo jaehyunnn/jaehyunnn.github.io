@@ -230,30 +230,30 @@ export default function WeddingInfoSection({
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto"
+          className="grid grid-cols-3 gap-4 max-w-2xl mx-auto"
         >
           <button
-            onClick={() => openNavigation('kakao')}
-            className="flex items-center justify-center gap-2 py-4 px-6 rounded-xl transition-all duration-300 hover:scale-105 font-medium"
-            style={{ backgroundColor: 'rgba(255, 253, 245, 0.7)', border: '1px solid rgba(205, 186, 150, 0.3)', color: '#78350f' }}
-          >
-            <Image src="/icons/kakao_map.webp" alt="카카오맵" width={24} height={24} />
-            카카오맵
-          </button>
-          <button
             onClick={() => openNavigation('naver')}
-            className="flex items-center justify-center gap-2 py-4 px-6 rounded-xl transition-all duration-300 hover:scale-105 font-medium"
+            className="flex items-center justify-center gap-1.5 py-3 px-4 rounded-xl transition-all duration-300 hover:scale-105 font-medium text-sm"
             style={{ backgroundColor: 'rgba(255, 253, 245, 0.7)', border: '1px solid rgba(205, 186, 150, 0.3)', color: '#78350f' }}
           >
-            <Image src="/icons/naver_map.webp" alt="네이버지도" width={24} height={24} />
+            <Image src="/icons/naver_map.webp" alt="네이버지도" width={20} height={20} />
             네이버지도
           </button>
           <button
-            onClick={() => openNavigation('tmap')}
-            className="flex items-center justify-center gap-2 py-4 px-6 rounded-xl transition-all duration-300 hover:scale-105 font-medium"
+            onClick={() => openNavigation('kakao')}
+            className="flex items-center justify-center gap-1.5 py-3 px-4 rounded-xl transition-all duration-300 hover:scale-105 font-medium text-sm"
             style={{ backgroundColor: 'rgba(255, 253, 245, 0.7)', border: '1px solid rgba(205, 186, 150, 0.3)', color: '#78350f' }}
           >
-            <Image src="/icons/tmap.webp" alt="TMAP" width={24} height={24} />
+            <Image src="/icons/kakao_map.webp" alt="카카오맵" width={20} height={20} />
+            카카오맵
+          </button>
+          <button
+            onClick={() => openNavigation('tmap')}
+            className="flex items-center justify-center gap-1.5 py-3 px-4 rounded-xl transition-all duration-300 hover:scale-105 font-medium text-sm"
+            style={{ backgroundColor: 'rgba(255, 253, 245, 0.7)', border: '1px solid rgba(205, 186, 150, 0.3)', color: '#78350f' }}
+          >
+            <Image src="/icons/tmap.webp" alt="TMAP" width={20} height={20} />
             TMAP
           </button>
         </motion.div>

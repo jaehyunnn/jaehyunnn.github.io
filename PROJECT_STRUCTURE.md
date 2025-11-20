@@ -3,7 +3,7 @@
 모바일 청첩장 웹 애플리케이션의 전체 파일 구조와 각 파일의 역할을 설명합니다.
 
 ```
-mobile-wedding-invitation/
+jaehyunnn.github.io/
 ├── app/                          # Next.js App Router
 │   ├── globals.css              # 전역 CSS 스타일
 │   ├── layout.tsx               # 루트 레이아웃 (메타데이터, 폰트)
@@ -325,7 +325,18 @@ npm run start    # 프로덕션 서버
 
 ## 🚀 배포 구조
 
-### Vercel (권장)
+### GitHub Pages (현재 설정)
+```
+GitHub Push
+    ↓
+GitHub Actions 자동 빌드
+    ↓
+GitHub Pages 배포
+    ↓
+https://jaehyunnn.github.io/
+```
+
+### Vercel (대안)
 ```
 GitHub 연동
     ↓

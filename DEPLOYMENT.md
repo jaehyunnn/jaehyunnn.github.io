@@ -1,5 +1,13 @@
 # GitHub Pages 배포 가이드
 
+이 문서는 `jaehyunnn.github.io` 저장소를 GitHub Pages에 배포하는 방법을 설명합니다.
+
+## 📌 저장소 정보
+
+- **저장소**: `jaehyunnn/jaehyunnn.github.io`
+- **배포 URL**: `https://jaehyunnn.github.io/`
+- **프로젝트 경로**: `/home/ibk/workspace/jaehyunnn.github.io`
+
 ## 폰트 문제 해결 완료 ✅
 
 ### 최종 해결책
@@ -20,6 +28,8 @@
 ### 1. 빌드 및 배포
 
 ```bash
+cd /home/ibk/workspace/jaehyunnn.github.io
+
 # 빌드
 npm run build
 

@@ -18,6 +18,7 @@
 ### 1. 프로젝트 설치
 
 ```bash
+cd /home/ibk/workspace/jaehyunnn.github.io
 npm install
 ```
 
@@ -107,14 +108,14 @@ npm run build
 무료로 배포하고 싶다면 GitHub Pages를 이용하세요!
 
 **간단한 배포 방법:**
-1. GitHub에 저장소 생성 (예: `mobile_invitation`)
+1. 이 저장소는 `jaehyunnn.github.io` 형태로 GitHub Pages에 바로 배포됩니다
 2. 코드 푸시
 3. Settings → Pages → Source를 "GitHub Actions"로 설정
 4. 자동으로 배포됩니다!
 
-**배포 URL:** `https://your-username.github.io/mobile_invitation/`
+**배포 URL:** `https://jaehyunnn.github.io/`
 
-**상세한 가이드:** [GITHUB_PAGES_DEPLOY.md](GITHUB_PAGES_DEPLOY.md) 참조
+**상세한 가이드:** [DEPLOYMENT.md](DEPLOYMENT.md) 참조
 
 #### Vercel
 

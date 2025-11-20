@@ -124,11 +124,17 @@ export default function IntroSection({
       {/* 전체화면 배경 - 궁전 테마 */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#fdfcfb] via-[#f8f6f3] to-[#f5f3ef]" />
 
+      {/* Google Fonts 로드 */}
+      <style jsx global>{`
+        @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+      `}</style>
+
       {/* 타이핑 텍스트 - 전체화면 중앙 */}
       <div className="relative z-10 text-center px-8 w-full h-full flex flex-col items-center justify-center">
         <pre
-          className="font-gyeonggi text-5xl md:text-7xl lg:text-8xl text-amber-900 leading-relaxed whitespace-pre-wrap"
+          className="text-5xl md:text-7xl lg:text-8xl text-amber-900 leading-relaxed whitespace-pre-wrap"
           style={{
+            fontFamily: "'Great Vibes', cursive",
             textShadow: '3px 3px 6px rgba(205, 186, 150, 0.3)',
           }}
         >

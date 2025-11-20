@@ -16,9 +16,10 @@
 
 ## 1. 사전 준비
 
-### 1.1 GitHub 계정 생성
-- [GitHub](https://github.com)에서 무료 계정 생성
-- 이메일 인증 완료
+### 1.1 저장소 정보
+- **저장소**: `jaehyunnn/jaehyunnn.github.io`
+- **배포 URL**: `https://jaehyunnn.github.io/`
+- **프로젝트 경로**: `/home/ibk/workspace/jaehyunnn.github.io`
 
 ### 1.2 Git 설치 확인
 ```bash
@@ -35,25 +36,15 @@ git --version
 
 ---
 
-## 2. GitHub 저장소 생성
+## 2. GitHub 저장소 확인
 
-### 2.1 새 저장소 생성
+### 2.1 기존 저장소 사용
 
-1. GitHub에 로그인
-2. 우측 상단 `+` 버튼 → "New repository" 클릭
-3. 저장소 정보 입력:
-   ```
-   Repository name: mobile_invitation
-   Description: 모바일 청첩장 (선택사항)
-   Public 선택 (Private도 가능하지만 GitHub Pages는 Public 권장)
-   ✅ Add a README file 체크 해제 (이미 있음)
-   ```
-4. "Create repository" 클릭
+이 프로젝트는 이미 `jaehyunnn.github.io` 저장소에 있습니다.
 
-### 2.2 저장소 URL 복사
-생성 후 표시되는 URL을 복사하세요:
+### 2.2 저장소 URL
 ```
-https://github.com/your-username/mobile_invitation.git
+https://github.com/jaehyunnn/jaehyunnn.github.io.git
 ```
 
 ---
@@ -73,7 +64,7 @@ git config --global user.email "your.email@example.com"
 
 ```bash
 # 프로젝트 디렉토리로 이동
-cd /home/ibk/workspace/mobile_invitation
+cd /home/ibk/workspace/jaehyunnn.github.io
 
 # Git 저장소 확인 (이미 초기화되어 있음)
 git status
@@ -82,16 +73,10 @@ git status
 git add .
 
 # 커밋 생성
-git commit -m "Initial commit: 모바일 청첩장 프로젝트"
-
-# 원격 저장소 연결 (your-username을 실제 GitHub 사용자명으로 변경)
-git remote add origin https://github.com/your-username/mobile_invitation.git
-
-# 기본 브랜치 이름 확인 및 변경
-git branch -M main
+git commit -m "Update: 청첩장 정보 수정"
 
 # GitHub에 푸시
-git push -u origin main
+git push origin main
 ```
 
 ### 3.3 GitHub 인증
@@ -149,12 +134,8 @@ Source: GitHub Actions 선택
 
 배포가 완료되면 다음 URL로 접속 가능:
 ```
-https://your-username.github.io/mobile_invitation/
+https://jaehyunnn.github.io/
 ```
-
-예시:
-- GitHub 사용자명이 `johndoe`라면
-- URL: `https://johndoe.github.io/mobile_invitation/`
 
 ### 6.2 URL 확인 방법
 
@@ -201,10 +182,9 @@ git push
 
 ### 7.2 페이지가 404 에러
 
-**원인 1: basePath 설정 확인**
-- `next.config.ts`의 `basePath`가 저장소 이름과 일치하는지 확인
-- 저장소 이름: `mobile_invitation`
-- basePath: `/mobile_invitation`
+**원인 1: 배포 설정 확인**
+- `next.config.ts`에 `output: 'export'` 설정 확인
+- `jaehyunnn.github.io`는 루트 경로 배포이므로 basePath 없음
 
 **원인 2: GitHub Pages 설정 확인**
 - Settings → Pages → Source가 "GitHub Actions"인지 확인
@@ -231,7 +211,7 @@ git push
 3. 플랫폼 → Web 플랫폼 추가
 4. 사이트 도메인 등록:
    ```
-   https://your-username.github.io
+   https://jaehyunnn.github.io
    ```
 5. JavaScript 키 복사
 6. 코드에 키 적용:

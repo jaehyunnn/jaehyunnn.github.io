@@ -15,6 +15,13 @@ export default function CalendarSection({ year, month, day }: CalendarSectionPro
   const daysInMonth = lastDay.getDate();
   const startingDayOfWeek = firstDay.getDay(); // 0 (일요일) ~ 6 (토요일)
 
+  // D-Day 계산
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // 시간 제거
+  const weddingDate = new Date(year, month - 1, day);
+  weddingDate.setHours(0, 0, 0, 0);
+  const daysUntilWedding = Math.ceil((weddingDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+
   // 달력 배열 생성
   const calendar: (number | null)[] = [];
 
@@ -170,6 +177,33 @@ export default function CalendarSection({ year, month, day }: CalendarSectionPro
                 {year}년 {month}월 {day}일 일요일
               </p>
             </div>
+
+            {/* D-Day 표시 */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.7 }}
+              className="mt-6"
+            >
+              {daysUntilWedding === 0 ? (
+                <p className="text-xl font-semibold text-rose-500">
+                  바로 오늘이에요. 💕
+                </p>
+              ) : daysUntilWedding > 0 ? (
+                <p className="text-lg text-amber-900">
+                  <span className="text-3xl font-bold text-pink-300 mx-1">
+                    {daysUntilWedding}
+                  </span>
+                  일 남았어요.
+                </p>
+              ) : (
+                <p className="text-lg text-amber-800/70">
+                  소중한 추억이 되었습니다.
+                </p>
+              )}
+            </motion.div>
+
             <p className="text-amber-800/70 text-sm mt-4 font-light">
               저희 두 사람의 소중한 순간에 함께 해주세요
             </p>

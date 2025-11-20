@@ -8,7 +8,7 @@
 - ✅ 청첩장 정보 입력
 - ✅ GitHub에 업로드
 - ✅ 무료로 배포
-- ✅ `https://your-username.github.io/mobile_invitation/` URL 획득
+- ✅ `https://jaehyunnn.github.io/` URL 획득
 
 ---
 
@@ -16,7 +16,7 @@
 
 ### 1.1 프로젝트 열기
 ```bash
-cd /home/ibk/workspace/mobile_invitation
+cd /home/ibk/workspace/jaehyunnn.github.io
 ```
 
 ### 1.2 정보 수정
@@ -48,13 +48,9 @@ const weddingData = {
 
 ## 🚀 Step 2: GitHub에 업로드 (2분)
 
-### 2.1 GitHub 저장소 생성
+### 2.1 GitHub 저장소 확인
 
-1. [github.com](https://github.com) 로그인
-2. 우측 상단 `+` → "New repository"
-3. Repository name: `mobile_invitation`
-4. Public 선택
-5. "Create repository" 클릭
+이 프로젝트는 이미 `jaehyunnn.github.io` 저장소에 있습니다.
 
 ### 2.2 코드 업로드
 
@@ -62,7 +58,7 @@ const weddingData = {
 
 ```bash
 # Git 사용자 설정 (최초 1회만)
-git config --global user.name "Your Name"
+git config --global user.name "jaehyunnn"
 git config --global user.email "your@email.com"
 
 # 현재 상태 확인
@@ -72,14 +68,10 @@ git status
 git add .
 
 # 커밋
-git commit -m "Initial commit: 모바일 청첩장"
-
-# GitHub 연결 (your-username을 실제 사용자명으로!)
-git remote add origin https://github.com/your-username/mobile_invitation.git
+git commit -m "Update: 청첩장 정보 수정"
 
 # 업로드
-git branch -M main
-git push -u origin main
+git push origin main
 ```
 
 > **Personal Access Token 필요 시:**
@@ -108,7 +100,7 @@ git push -u origin main
 
 배포 완료 후:
 - Settings → Pages에서 URL 확인
-- `https://your-username.github.io/mobile_invitation/`
+- `https://jaehyunnn.github.io/`
 
 ---
 

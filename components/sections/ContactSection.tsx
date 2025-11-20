@@ -2,8 +2,9 @@
 
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { Phone, MessageCircle, Copy, Check } from 'lucide-react';
+import { Phone, MessageCircle, Copy, Check, ChevronDown, ChevronUp } from 'lucide-react';
 import { useState } from 'react';
+import Image from 'next/image';
 
 interface Person {
   name: string;
@@ -11,6 +12,7 @@ interface Person {
   accountBank?: string;
   accountNumber?: string;
   accountHolder?: string;
+  kakaopayLink?: string;
 }
 
 interface ContactSectionProps {
@@ -36,6 +38,8 @@ export default function ContactSection({
   });
 
   const [copiedAccount, setCopiedAccount] = useState<string | null>(null);
+  const [groomSideExpanded, setGroomSideExpanded] = useState(false);
+  const [brideSideExpanded, setBrideSideExpanded] = useState(false);
 
   const makeCall = (phone: string) => {
     window.location.href = `tel:${phone}`;
@@ -55,34 +59,49 @@ export default function ContactSection({
     }
   };
 
-  const PersonCard = ({ person, label }: { person: Person; label: string }) => (
-    <div className="glass-strong p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 border border-amber-200/30">
-      <p className="text-amber-800/70 text-sm mb-2 font-light">{label}</p>
-      <p className="text-lg font-semibold text-amber-900 mb-4">{person.name}</p>
+  const openKakaoPay = (link: string) => {
+    window.open(link, '_blank');
+  };
 
-      <div className="flex gap-2 mb-4">
+  const PersonCard = ({ person, label }: { person: Person; label: string }) => (
+    <div className="glass-strong p-4 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 border border-amber-200/30">
+      <p className="text-amber-800/70 text-xs mb-1.5 font-light">{label}</p>
+      <div className="flex items-center gap-2 mb-3">
+        <p className="text-base font-semibold text-amber-900">{person.name}</p>
+        {person.kakaopayLink && (
+          <button
+            onClick={() => openKakaoPay(person.kakaopayLink!)}
+            className="flex-shrink-0 transition-all duration-300 hover:scale-110"
+            aria-label="카카오페이 송금"
+          >
+            <Image src="/icons/kakao_pay.svg" alt="카카오페이" width={40} height={40} />
+          </button>
+        )}
+      </div>
+
+      <div className="flex gap-2 mb-3">
         <button
           onClick={() => makeCall(person.phone)}
-          className="flex-1 flex items-center justify-center gap-2 py-2.5 glass hover:glass-strong text-amber-700 rounded-xl transition-all duration-300 text-sm shadow-md hover:shadow-lg font-medium"
+          className="flex-1 flex items-center justify-center gap-1.5 py-2 glass hover:glass-strong text-amber-700 rounded-xl transition-all duration-300 text-xs shadow-md hover:shadow-lg font-medium"
         >
-          <Phone className="w-4 h-4" />
+          <Phone className="w-3.5 h-3.5" />
           전화
         </button>
         <button
           onClick={() => sendMessage(person.phone)}
-          className="flex-1 flex items-center justify-center gap-2 py-2.5 glass hover:glass-strong text-amber-700 rounded-xl transition-all duration-300 text-sm shadow-md hover:shadow-lg font-medium"
+          className="flex-1 flex items-center justify-center gap-1.5 py-2 glass hover:glass-strong text-amber-700 rounded-xl transition-all duration-300 text-xs shadow-md hover:shadow-lg font-medium"
         >
-          <MessageCircle className="w-4 h-4" />
+          <MessageCircle className="w-3.5 h-3.5" />
           문자
         </button>
       </div>
 
       {person.accountBank && person.accountNumber && (
-        <div className="pt-4 border-t border-amber-300/30">
-          <p className="text-xs text-amber-800/60 mb-2 font-light">계좌번호</p>
-          <div className="flex items-center justify-between gap-2 glass-subtle p-3 rounded-xl">
+        <div className="pt-3 border-t border-amber-300/30">
+          <p className="text-xs text-amber-800/60 mb-1.5 font-light">계좌번호</p>
+          <div className="flex items-center justify-between gap-2 glass-subtle p-2.5 rounded-xl">
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-amber-900 truncate">
+              <p className="text-xs font-medium text-amber-900 truncate">
                 {person.accountBank}
               </p>
               <p className="text-xs text-amber-800 truncate">
@@ -99,13 +118,13 @@ export default function ContactSection({
                   `${label}-${person.name}`
                 )
               }
-              className="flex-shrink-0 p-2 hover:bg-amber-100/30 rounded-lg transition-colors"
+              className="flex-shrink-0 p-1.5 hover:bg-amber-100/30 rounded-lg transition-colors"
               aria-label="계좌번호 복사"
             >
               {copiedAccount === `${label}-${person.name}` ? (
-                <Check className="w-4 h-4 text-green-600" />
+                <Check className="w-3.5 h-3.5 text-green-600" />
               ) : (
-                <Copy className="w-4 h-4 text-amber-700" />
+                <Copy className="w-3.5 h-3.5 text-amber-700" />
               )}
             </button>
           </div>
@@ -138,21 +157,39 @@ export default function ContactSection({
           transition={{ duration: 0.8, delay: 0.2 }}
           className="mb-12"
         >
-          <div className="flex items-center gap-2 mb-6">
+          <button
+            onClick={() => setGroomSideExpanded(!groomSideExpanded)}
+            className="w-full flex items-center gap-2 mb-6 hover:opacity-70 transition-opacity"
+          >
             <div className="w-8 h-px bg-gradient-to-r from-transparent to-amber-400/40" />
             <h3 className="text-xl text-amber-900 font-medium">신랑측</h3>
             <div className="flex-1 h-px bg-gradient-to-r from-amber-400/40 to-transparent" />
-          </div>
+            {groomSideExpanded ? (
+              <ChevronUp className="w-5 h-5 text-amber-700" />
+            ) : (
+              <ChevronDown className="w-5 h-5 text-amber-700" />
+            )}
+          </button>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {/* 부모님 - 모바일에서 가로 2열, 데스크톱에서도 가로 배열 */}
-            {groomFather && <PersonCard person={groomFather} label="신랑 아버지" />}
-            {groomMother && <PersonCard person={groomMother} label="신랑 어머니" />}
-            {/* 신랑 - 모바일에서 full width */}
-            <div className="col-span-2 md:col-span-1">
-              <PersonCard person={groom} label="신랑" />
+          <motion.div
+            initial={false}
+            animate={{
+              height: groomSideExpanded ? 'auto' : 0,
+              opacity: groomSideExpanded ? 1 : 0
+            }}
+            transition={{ duration: 0.3 }}
+            className="overflow-hidden"
+          >
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {/* 부모님 - 모바일에서 가로 2열, 데스크톱에서도 가로 배열 */}
+              {groomFather && <PersonCard person={groomFather} label="신랑 아버지" />}
+              {groomMother && <PersonCard person={groomMother} label="신랑 어머니" />}
+              {/* 신랑 - 모바일에서 full width */}
+              <div className="col-span-2 md:col-span-1">
+                <PersonCard person={groom} label="신랑" />
+              </div>
             </div>
-          </div>
+          </motion.div>
         </motion.div>
 
         {/* 신부측 */}
@@ -161,21 +198,39 @@ export default function ContactSection({
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.4 }}
         >
-          <div className="flex items-center gap-2 mb-6">
+          <button
+            onClick={() => setBrideSideExpanded(!brideSideExpanded)}
+            className="w-full flex items-center gap-2 mb-6 hover:opacity-70 transition-opacity"
+          >
             <div className="w-8 h-px bg-gradient-to-r from-transparent to-amber-400/40" />
             <h3 className="text-xl text-amber-900 font-medium">신부측</h3>
             <div className="flex-1 h-px bg-gradient-to-r from-amber-400/40 to-transparent" />
-          </div>
+            {brideSideExpanded ? (
+              <ChevronUp className="w-5 h-5 text-amber-700" />
+            ) : (
+              <ChevronDown className="w-5 h-5 text-amber-700" />
+            )}
+          </button>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {/* 부모님 - 모바일에서 가로 2열, 데스크톱에서도 가로 배열 */}
-            {brideFather && <PersonCard person={brideFather} label="신부 아버지" />}
-            {brideMother && <PersonCard person={brideMother} label="신부 어머니" />}
-            {/* 신부 - 모바일에서 full width */}
-            <div className="col-span-2 md:col-span-1">
-              <PersonCard person={bride} label="신부" />
+          <motion.div
+            initial={false}
+            animate={{
+              height: brideSideExpanded ? 'auto' : 0,
+              opacity: brideSideExpanded ? 1 : 0
+            }}
+            transition={{ duration: 0.3 }}
+            className="overflow-hidden"
+          >
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {/* 부모님 - 모바일에서 가로 2열, 데스크톱에서도 가로 배열 */}
+              {brideFather && <PersonCard person={brideFather} label="신부 아버지" />}
+              {brideMother && <PersonCard person={brideMother} label="신부 어머니" />}
+              {/* 신부 - 모바일에서 full width */}
+              <div className="col-span-2 md:col-span-1">
+                <PersonCard person={bride} label="신부" />
+              </div>
             </div>
-          </div>
+          </motion.div>
         </motion.div>
 
         {/* 안내 메시지 */}

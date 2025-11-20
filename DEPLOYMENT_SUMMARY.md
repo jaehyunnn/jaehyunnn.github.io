@@ -8,13 +8,13 @@
 - ✅ Next.js 프로젝트 생성 및 구성
 - ✅ 모든 컴포넌트 구현 완료
 - ✅ TypeScript + Tailwind CSS 설정
-- ✅ 프로젝트 위치: `/home/ibk/workspace/mobile_invitation`
+- ✅ 프로젝트 위치: `/home/ibk/workspace/jaehyunnn.github.io`
 
 ### 2. GitHub Pages 배포 설정
 - ✅ `next.config.ts` - Static Export 설정
 - ✅ `.github/workflows/deploy.yml` - 자동 배포 워크플로우
 - ✅ `public/.nojekyll` - GitHub Pages Jekyll 우회
-- ✅ `basePath` 설정 - `/mobile_invitation`
+- ✅ 저장소: `jaehyunnn.github.io` (루트 경로 배포, basePath 없음)
 
 ### 3. Git 저장소
 - ✅ Git 초기화 완료
@@ -37,26 +37,21 @@
 nano app/page.tsx  # 또는 원하는 에디터 사용
 ```
 
-### Step 2: GitHub 저장소 생성
-1. https://github.com/new 접속
-2. Repository name: `mobile_invitation`
-3. Public 선택
-4. Create repository
+### Step 2: GitHub 저장소 확인
+이 프로젝트는 이미 `jaehyunnn.github.io` 저장소에 있습니다.
 
 ### Step 3: 코드 업로드
 ```bash
-cd /home/ibk/workspace/mobile_invitation
+cd /home/ibk/workspace/jaehyunnn.github.io
 
 # Git 설정 (최초 1회)
-git config --global user.name "Your Name"
+git config --global user.name "jaehyunnn"
 git config --global user.email "your@email.com"
 
 # 커밋 및 푸시
 git add .
-git commit -m "Initial commit: 모바일 청첩장"
-git remote add origin https://github.com/YOUR-USERNAME/mobile_invitation.git
-git branch -M main
-git push -u origin main
+git commit -m "Update: 청첩장 정보 수정"
+git push origin main
 ```
 
 ### Step 4: GitHub Pages 활성화
@@ -65,14 +60,14 @@ git push -u origin main
 3. 2-5분 대기
 
 ### Step 5: 배포 완료!
-**URL:** `https://YOUR-USERNAME.github.io/mobile_invitation/`
+**URL:** `https://jaehyunnn.github.io/`
 
 ---
 
 ## 📁 프로젝트 구조
 
 ```
-mobile_invitation/
+jaehyunnn.github.io/
 ├── .github/
 │   └── workflows/
 │       └── deploy.yml          # GitHub Actions 배포 설정
@@ -113,7 +108,7 @@ mobile_invitation/
 ```typescript
 {
   output: 'export',  // 정적 사이트 생성
-  basePath: '/mobile_invitation',  // GitHub Pages 경로
+  // basePath 없음 (jaehyunnn.github.io는 루트 경로로 배포)
   images: { unoptimized: true }  // 이미지 최적화 비활성화
 }
 ```
@@ -260,7 +255,7 @@ GitHub 푸시 시 필요할 수 있습니다:
 
 **완성된 청첩장 URL:**
 ```
-https://YOUR-USERNAME.github.io/mobile_invitation/
+https://jaehyunnn.github.io/
 ```
 
 ---

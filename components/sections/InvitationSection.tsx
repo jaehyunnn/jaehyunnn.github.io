@@ -100,10 +100,8 @@ export default function InvitationSection({
               <div className="w-6 md:w-12 h-px bg-gradient-to-l from-transparent to-amber-400/40" />
             </div>
             <p className="text-amber-900/70 mb-2 md:mb-3 text-xs md:text-base">
-              <span className="block md:inline">{groomFather}</span>
-              <span className="hidden md:inline mx-2 text-amber-400">·</span>
-              <span className="block md:inline">{groomMother}</span>
-              <span className="block md:inline text-amber-700/60 mx-0 md:mx-2 text-xs md:text-sm">의 아들</span>
+              <span className="block md:inline">{groomFather} · {groomMother}</span>
+              <span className="block md:inline text-amber-700/60 mx-0 md:mx-2 text-xs md:text-sm">의 장남</span>
             </p>
             <p className="text-xl md:text-3xl text-amber-900 font-medium" style={{ fontFamily: 'var(--font-serif)' }}>{groomName}</p>
           </div>
@@ -116,10 +114,8 @@ export default function InvitationSection({
               <div className="w-6 md:w-12 h-px bg-gradient-to-l from-transparent to-amber-400/40" />
             </div>
             <p className="text-amber-900/70 mb-2 md:mb-3 text-xs md:text-base">
-              <span className="block md:inline">{brideFather}</span>
-              <span className="hidden md:inline mx-2 text-amber-400">·</span>
-              <span className="block md:inline">{brideMother}</span>
-              <span className="block md:inline text-amber-700/60 mx-0 md:mx-2 text-xs md:text-sm">의 딸</span>
+              <span className="block md:inline">{brideFather} · {brideMother}</span>
+              <span className="block md:inline text-amber-700/60 mx-0 md:mx-2 text-xs md:text-sm">의 장녀</span>
             </p>
             <p className="text-xl md:text-3xl text-amber-900 font-medium" style={{ fontFamily: 'var(--font-serif)' }}>{brideName}</p>
           </div>

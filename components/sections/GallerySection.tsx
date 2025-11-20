@@ -25,6 +25,13 @@ export default function GallerySection({ photos }: GallerySectionProps) {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const [showAll, setShowAll] = useState(false);
+
+  // 3 ROW 기준: 그리드가 3열이므로 3 ROW = 9장, 4열이면 12장
+  // 모바일(3열), 태블릿(3열), 데스크톱(4열)을 고려하여 12장을 기준으로 설정
+  const initialDisplayCount = 12;
+  const displayedPhotos = showAll ? photos : photos.slice(0, initialDisplayCount);
+  const hasMorePhotos = photos.length > initialDisplayCount;
 
   // 무작위 회전 각도 생성 (지정되지 않은 경우)
   const getRotation = (index: number, photo: Photo) => {
@@ -110,7 +117,7 @@ export default function GallerySection({ photos }: GallerySectionProps) {
 
           {/* 글라스모피즘 그리드 */}
           <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
-            {photos.map((photo, index) => (
+            {displayedPhotos.map((photo, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 30 }}
@@ -158,6 +165,23 @@ export default function GallerySection({ photos }: GallerySectionProps) {
               </motion.div>
             ))}
           </div>
+
+          {/* 더보기/접기 버튼 */}
+          {hasMorePhotos && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5, delay: displayedPhotos.length * 0.08 + 0.2 }}
+              className="mt-8 text-center"
+            >
+              <button
+                onClick={() => setShowAll(!showAll)}
+                className="glass-strong px-8 py-3 rounded-full text-amber-900 font-medium hover:scale-105 transition-all duration-300 shadow-md hover:shadow-lg border border-amber-200/30"
+              >
+                {showAll ? '접기 ▲' : `더보기 (${photos.length - initialDisplayCount}장 더) ▼`}
+              </button>
+            </motion.div>
+          )}
         </div>
       </section>
 
