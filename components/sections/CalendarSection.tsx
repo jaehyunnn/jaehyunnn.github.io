@@ -8,9 +8,11 @@ interface CalendarSectionProps {
   year: number;
   month: number;
   day: number;
+  date: string;
+  time: string;
 }
 
-export default function CalendarSection({ year, month, day }: CalendarSectionProps) {
+export default function CalendarSection({ year, month, day, date, time }: CalendarSectionProps) {
   // Google Fonts 로드
   useEffect(() => {
     const link = document.createElement('link');
@@ -61,11 +63,19 @@ export default function CalendarSection({ year, month, day }: CalendarSectionPro
           transition={{ duration: 0.8 }}
           className="text-center mb-14"
         >
-          <h2 className="text-2xl text-amber-900/80 tracking-[0.2em] uppercase mb-3">
+          <h2 className="text-2xl text-amber-900/80 tracking-[0.2em] uppercase mb-10">
             Wedding Day
           </h2>
-          <div className="text-2xl md:text-4xl text-amber-950 font-medium">
-            {year}.{String(month).padStart(2, '0')}.{String(day).padStart(2, '0')}
+          <div className="flex flex-col items-center gap-6">
+            <div className="text-center">
+              <p className="text-stone-400 text-xs mb-2 tracking-widest uppercase">Date</p>
+              <p className="text-xl md:text-2xl text-amber-950 font-medium">{date}</p>
+            </div>
+            <div className="w-px h-4 bg-stone-300/50 hidden" />
+            <div className="text-center">
+              <p className="text-stone-400 text-xs mb-2 tracking-widest uppercase">Time</p>
+              <p className="text-xl md:text-2xl text-amber-950 font-medium">{time}</p>
+            </div>
           </div>
         </motion.div>
 

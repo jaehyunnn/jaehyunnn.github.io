@@ -7,8 +7,6 @@ import Image from 'next/image';
 import { useEffect } from 'react';
 
 interface WeddingInfoSectionProps {
-  date: string;
-  time: string;
   venue: string;
   address: string;
   venueDetail?: string;
@@ -23,8 +21,6 @@ declare global {
 }
 
 export default function WeddingInfoSection({
-  date,
-  time,
   venue,
   address,
   venueDetail,
@@ -99,7 +95,7 @@ export default function WeddingInfoSection({
           borderColor: 'transparent',
           borderWidth: 0,
           disableAnchor: true,
-          pixelOffset: new window.naver.maps.Point(0, 10)
+          pixelOffset: new window.naver.maps.Point(0, 0)
         });
 
         // 마커 클릭 이벤트
@@ -177,25 +173,9 @@ export default function WeddingInfoSection({
           transition={{ duration: 0.8, delay: 0.2 }}
           className="mb-12 space-y-8"
         >
-          {/* 날짜 */}
-          <div className="flex flex-col items-center justify-center">
-            <p className="text-xs text-stone-400 mb-2 font-medium uppercase tracking-widest">Date</p>
-            <p className="text-lg font-medium text-stone-700">{date}</p>
-          </div>
-
-          <div className="w-8 h-px bg-stone-200 mx-auto" />
-
-          {/* 시간 */}
-          <div className="flex flex-col items-center justify-center">
-            <p className="text-xs text-stone-400 mb-2 font-medium uppercase tracking-widest">Time</p>
-            <p className="text-lg font-medium text-stone-700">{time}</p>
-          </div>
-
-          <div className="w-8 h-px bg-stone-200 mx-auto" />
-
           {/* 장소 */}
           <div className="flex flex-col items-center justify-center">
-            <p className="text-xs text-stone-400 mb-2 font-medium uppercase tracking-widest">Location</p>
+            {/* <p className="text-xs text-stone-400 mb-2 font-medium uppercase tracking-widest">Location</p> */}
             <p className="text-lg font-medium text-stone-700 mb-1">{venue}</p>
             {venueDetail && (
               <p className="text-sm text-stone-500 mb-1">{venueDetail}</p>

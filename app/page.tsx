@@ -136,7 +136,13 @@ export default function Home() {
       />
 
       {/* 예식일 달력 */}
-      <CalendarSection year={2026} month={8} day={23} />
+      <CalendarSection
+        year={2026}
+        month={8}
+        day={23}
+        date={weddingData.wedding.date}
+        time={weddingData.wedding.time}
+      />
 
       {/* 초대 인사 */}
 
@@ -155,8 +161,6 @@ export default function Home() {
 
       {/* 예식 정보 */}
       <WeddingInfoSection
-        date={weddingData.wedding.date}
-        time={weddingData.wedding.time}
         venue={weddingData.wedding.venue}
         address={weddingData.wedding.address}
         venueDetail={weddingData.wedding.venueDetail}
@@ -219,7 +223,8 @@ export default function Home() {
           <p className="text-stone-500 text-sm font-light tracking-wider mb-8">{weddingData.wedding.date}</p>
 
           <p className="text-[10px] text-stone-400 font-light tracking-widest uppercase">
-            Copyright © 2025 Jae-Hyun Park. All rights reserved.
+            Copyright © 2025 Jae-Hyun Park.<br />
+            All rights reserved.
           </p>
         </div>
       </footer>
