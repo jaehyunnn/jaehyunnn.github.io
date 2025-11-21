@@ -28,25 +28,19 @@ export default function InvitationSection({
     threshold: 0.2
   });
 
-  // NanumLetter 폰트 로드
+  // Google Fonts 로드 (Noto Serif KR)
   useEffect(() => {
-    const style = document.createElement('style');
-    style.textContent = `
-      @font-face {
-        font-family: 'NanumLetter';
-        src: url('/fonts/NanumLetter.ttf') format('truetype');
-        font-weight: normal;
-        font-style: normal;
-      }
-    `;
-    document.head.appendChild(style);
+    const link = document.createElement('link');
+    link.href = 'https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;600&display=swap';
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
     return () => {
-      document.head.removeChild(style);
+      document.head.removeChild(link);
     };
   }, []);
 
   return (
-    <section ref={ref} className="py-24 px-6 relative">
+    <section ref={ref} className="py-24 px-6 relative bg-[#fbfaf8]" style={{ fontFamily: "'Noto Serif KR', serif" }}>
       <div className="max-w-3xl mx-auto">
         {/* 제목 */}
         <motion.div
@@ -55,25 +49,28 @@ export default function InvitationSection({
           transition={{ duration: 0.8 }}
           className="text-center mb-20"
         >
-          <h2 className="text-4xl md:text-5xl text-amber-900 mb-6" style={{ fontFamily: 'var(--font-serif)' }}>
-            초대합니다
+          <h2 className="text-2xl text-amber-900/80 tracking-[0.2em] uppercase mb-3">
+            Invitation
           </h2>
-          <div className="w-16 h-px bg-gradient-to-r from-transparent via-amber-400/60 to-transparent mx-auto" />
+          <div className="text-2xl md:text-4xl text-amber-950 font-medium mb-6">
+            <span className="block md:hidden">소중한 초대</span>
+            <span className="hidden md:block">소중한 분들을 초대합니다</span>
+          </div>
         </motion.div>
 
-        {/* 초대 메시지 - 카드 없이 */}
+        {/* 초대 메시지 */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
           transition={{ duration: 0.8, delay: 0.2 }}
           className="mb-24"
         >
-          <div className="text-amber-900/80 leading-loose text-center text-lg md:text-xl font-light" style={{ fontFamily: "'NanumLetter', sans-serif" }}>
+          <div className="text-stone-600 leading-loose text-center text-base md:text-lg font-light">
             {invitationMessage.split('\n').map((line, index, array) => {
-              // 마지막 줄 처리 - serif 폰트 적용
+              // 마지막 줄 처리
               if (index === array.length - 1 && line.includes('소중한 분들을 초대합니다')) {
                 return (
-                  <p key={index} className="text-amber-900 font-semibold mt-4" style={{ fontFamily: 'var(--font-serif)' }}>
+                  <p key={index} className="text-amber-900 font-medium mt-6">
                     {line}
                   </p>
                 );
@@ -92,7 +89,7 @@ export default function InvitationSection({
                 <p key={index} className="mb-2">
                   {parts.map((part, i) =>
                     boldWords.some(word => part === `'${word}'`) ? (
-                      <span key={i} className="font-semibold">{part}</span>
+                      <span key={i} className="font-medium text-stone-800">{part}</span>
                     ) : (
                       part
                     )
@@ -111,45 +108,27 @@ export default function InvitationSection({
           className="grid grid-cols-2 gap-4 md:gap-8"
         >
           {/* 신랑 측 */}
-          <div className="text-center border-r border-amber-300/30 pr-2 md:pr-8">
-            <div className="flex justify-center items-center gap-1 md:gap-3 mb-3 md:mb-5">
-              <div className="w-6 md:w-12 h-px bg-gradient-to-r from-transparent to-amber-400/40" />
-              <p className="text-xs md:text-sm text-amber-800/70 tracking-[0.2em] md:tracking-[0.3em] font-light uppercase">Groom</p>
-              <div className="w-6 md:w-12 h-px bg-gradient-to-l from-transparent to-amber-400/40" />
+          <div className="text-center border-r border-stone-200 pr-2 md:pr-8">
+            <div className="flex justify-center items-center gap-1 md:gap-3 mb-4">
+              <p className="text-xs md:text-sm text-stone-400 tracking-[0.2em] font-medium uppercase">Groom</p>
             </div>
-            <p className="text-amber-900/70 mb-2 md:mb-3 text-xs md:text-base">
+            <p className="text-stone-500 mb-3 text-sm md:text-base">
               <span className="block md:inline">{groomFather} · {groomMother}</span>
-              <span className="block md:inline text-amber-700/60 mx-0 md:mx-2 text-xs md:text-sm">의 장남</span>
+              <span className="block md:inline text-stone-400 mx-0 md:mx-2 text-xs md:text-sm">의 장남</span>
             </p>
-            <p className="text-xl md:text-3xl text-amber-900 font-medium" style={{ fontFamily: 'var(--font-serif)' }}>{groomName}</p>
+            <p className="text-xl md:text-2xl text-amber-950 font-medium">{groomName}</p>
           </div>
 
           {/* 신부 측 */}
           <div className="text-center pl-2 md:pl-8">
-            <div className="flex justify-center items-center gap-1 md:gap-3 mb-3 md:mb-5">
-              <div className="w-6 md:w-12 h-px bg-gradient-to-r from-transparent to-amber-400/40" />
-              <p className="text-xs md:text-sm text-amber-800/70 tracking-[0.2em] md:tracking-[0.3em] font-light uppercase">Bride</p>
-              <div className="w-6 md:w-12 h-px bg-gradient-to-l from-transparent to-amber-400/40" />
+            <div className="flex justify-center items-center gap-1 md:gap-3 mb-4">
+              <p className="text-xs md:text-sm text-stone-400 tracking-[0.2em] font-medium uppercase">Bride</p>
             </div>
-            <p className="text-amber-900/70 mb-2 md:mb-3 text-xs md:text-base">
+            <p className="text-stone-500 mb-3 text-sm md:text-base">
               <span className="block md:inline">{brideFather} · {brideMother}</span>
-              <span className="block md:inline text-amber-700/60 mx-0 md:mx-2 text-xs md:text-sm">의 장녀</span>
+              <span className="block md:inline text-stone-400 mx-0 md:mx-2 text-xs md:text-sm">의 장녀</span>
             </p>
-            <p className="text-xl md:text-3xl text-amber-900 font-medium" style={{ fontFamily: 'var(--font-serif)' }}>{brideName}</p>
-          </div>
-        </motion.div>
-
-        {/* 장식 요소 */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="mt-20 flex justify-center"
-        >
-          <div className="flex items-center gap-2">
-            <div className="w-1 h-1 rounded-full bg-amber-400/40" />
-            <div className="w-1.5 h-1.5 rounded-full bg-amber-400/60" />
-            <div className="w-1 h-1 rounded-full bg-amber-400/40" />
+            <p className="text-xl md:text-2xl text-amber-950 font-medium">{brideName}</p>
           </div>
         </motion.div>
       </div>

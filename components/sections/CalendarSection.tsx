@@ -14,13 +14,14 @@ export default function CalendarSection({ year, month, day }: CalendarSectionPro
   // Google Fonts 로드
   useEffect(() => {
     const link = document.createElement('link');
-    link.href = 'https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap';
+    link.href = 'https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;600&display=swap';
     link.rel = 'stylesheet';
     document.head.appendChild(link);
     return () => {
       document.head.removeChild(link);
     };
   }, []);
+
   // 해당 월의 첫 날과 마지막 날 계산
   const firstDay = new Date(year, month - 1, 1);
   const lastDay = new Date(year, month, 0);
@@ -47,48 +48,48 @@ export default function CalendarSection({ year, month, day }: CalendarSectionPro
     calendar.push(i);
   }
 
-  const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
-  const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+  const weekDays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
   return (
-    <section className="py-16 px-6 relative" style={{ fontFamily: "'Noto Sans KR', sans-serif" }}>
+    <section className="py-20 px-6 relative bg-[#fbfaf8]" style={{ fontFamily: "'Noto Serif KR', serif" }}>
       <div className="max-w-2xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-12"
+          className="text-center mb-14"
         >
-          <h2 className="text-3xl md:text-4xl text-amber-900 mb-4" style={{ fontFamily: 'var(--font-serif)' }}>
+          <h2 className="text-2xl text-amber-900/80 tracking-[0.2em] uppercase mb-3">
             Wedding Day
           </h2>
-          <div className="w-16 h-px bg-gradient-to-r from-transparent via-amber-400/60 to-transparent mx-auto" />
+          <div className="text-2xl md:text-4xl text-amber-950 font-medium">
+            {year}.{String(month).padStart(2, '0')}.{String(day).padStart(2, '0')}
+          </div>
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
+          initial={{ opacity: 0, scale: 0.98 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="glass-strong rounded-3xl p-8 shadow-2xl border-2 border-amber-200/30"
+          className="bg-white/40 backdrop-blur-sm rounded-sm p-8 md:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-stone-200/50"
         >
           {/* 년월 표시 */}
-          <div className="text-center mb-8">
-            <p className="text-2xl md:text-3xl font-semibold text-amber-900 mb-2">
-              {year}년 {monthNames[month - 1]}
+          <div className="text-center mb-10">
+            <p className="text-xl text-amber-900/90 font-medium tracking-widest uppercase border-b border-stone-200 inline-block pb-2 px-4">
+              {monthNames[month - 1]}
             </p>
-            <div className="w-20 h-px bg-gradient-to-r from-transparent via-amber-400/40 to-transparent mx-auto mt-3" />
           </div>
 
           {/* 요일 헤더 */}
-          <div className="grid grid-cols-7 gap-2 mb-4">
+          <div className="grid grid-cols-7 gap-2 mb-6">
             {weekDays.map((day, index) => (
               <div
                 key={day}
-                className={`text-center font-medium text-sm py-2 ${
-                  index === 0 ? 'text-rose-500' : index === 6 ? 'text-blue-500' : 'text-amber-800/70'
-                }`}
+                className={`text-center text-[0.7rem] tracking-widest font-medium ${index === 0 ? 'text-rose-400' : 'text-stone-400'
+                  }`}
               >
                 {day}
               </div>
@@ -96,18 +97,17 @@ export default function CalendarSection({ year, month, day }: CalendarSectionPro
           </div>
 
           {/* 날짜 그리드 */}
-          <div className="grid grid-cols-7 gap-2">
+          <div className="grid grid-cols-7 gap-y-4 gap-x-2">
             {calendar.map((date, index) => {
               const dayOfWeek = index % 7;
               const isWeddingDay = date === day;
               const isSunday = dayOfWeek === 0;
-              const isSaturday = dayOfWeek === 6;
 
               return (
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.3, delay: index * 0.01 }}
                   className="aspect-square flex items-center justify-center relative"
@@ -116,36 +116,26 @@ export default function CalendarSection({ year, month, day }: CalendarSectionPro
                     <>
                       <p
                         className={`
-                          font-medium transition-all relative z-10
-                          ${
-                            isWeddingDay
-                              ? 'text-lg md:text-xl text-rose-600 font-semibold'
-                              : isSunday
-                              ? 'text-rose-500'
-                              : isSaturday
-                              ? 'text-blue-500'
-                              : 'text-amber-900/80'
+                          font-medium transition-all relative z-10 text-lg
+                          ${isWeddingDay
+                            ? 'text-white'
+                            : isSunday
+                              ? 'text-rose-400'
+                              : 'text-stone-600'
                           }
                         `}
                       >
                         {date}
                       </p>
-                      {/* 예식일에만 손으로 그린 동그라미 */}
+                      {/* 예식일 원형 배경 */}
                       {isWeddingDay && (
                         <motion.div
-                          initial={{ scale: 0, rotate: -10 }}
-                          animate={{ scale: 1, rotate: 0 }}
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
                           transition={{ delay: 0.5, type: 'spring', stiffness: 200 }}
                           className="absolute inset-0 flex items-center justify-center"
                         >
-                          <div className="relative w-full h-full" style={{ transform: 'scale(1.2)' }}>
-                            <Image
-                              src="/icons/red_circle.png"
-                              alt="Wedding Day"
-                              fill
-                              className="object-contain"
-                            />
-                          </div>
+                          <div className="w-8 h-8 rounded-full bg-amber-900/80 shadow-md" />
                         </motion.div>
                       )}
                     </>
@@ -155,50 +145,27 @@ export default function CalendarSection({ year, month, day }: CalendarSectionPro
             })}
           </div>
 
-          {/* 예식일 강조 */}
+          {/* D-Day 표시 */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.5 }}
-            className="mt-8 text-center"
+            className="mt-12 text-center border-t border-stone-200 pt-8"
           >
-            <div className="inline-flex items-center gap-2 glass rounded-full px-6 py-3 shadow-md border border-rose-300/30">
-              <div className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
-              <p className="text-amber-900 font-medium">
-                {year}년 {month}월 {day}일 일요일
+            {daysUntilWedding === 0 ? (
+              <p className="text-lg text-amber-900/90">
+                Today is the day
               </p>
-            </div>
-
-            {/* D-Day 표시 */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.7 }}
-              className="mt-6"
-            >
-              {daysUntilWedding === 0 ? (
-                <p className="text-xl font-semibold text-rose-500">
-                  바로 오늘이에요. 💕
-                </p>
-              ) : daysUntilWedding > 0 ? (
-                <p className="text-lg text-amber-900">
-                  <span className="text-3xl font-bold text-pink-300 mx-1">
-                    {daysUntilWedding}
-                  </span>
-                  일 남았어요.
-                </p>
-              ) : (
-                <p className="text-lg text-amber-800/70">
-                  소중한 추억이 되었습니다.
-                </p>
-              )}
-            </motion.div>
-
-            <p className="text-amber-800/70 text-sm mt-4 font-light">
-              저희 두 사람의 소중한 순간에 함께 해주세요
-            </p>
+            ) : daysUntilWedding > 0 ? (
+              <p className="text-lg text-stone-600">
+                예식이 <span className="text-amber-900 font-medium mx-1">{daysUntilWedding}</span>일 남았습니다
+              </p>
+            ) : (
+              <p className="text-lg text-stone-500">
+                소중한 추억이 되었습니다
+              </p>
+            )}
           </motion.div>
         </motion.div>
       </div>

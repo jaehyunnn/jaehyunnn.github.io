@@ -103,7 +103,7 @@ export default function WeddingInfoSection({
         });
 
         // 마커 클릭 이벤트
-        window.naver.maps.Event.addListener(marker, 'click', function() {
+        window.naver.maps.Event.addListener(marker, 'click', function () {
           if (infowindow.getMap()) {
             infowindow.close();
           } else {
@@ -153,7 +153,7 @@ export default function WeddingInfoSection({
   };
 
   return (
-    <section ref={ref} className="py-20 px-6 relative">
+    <section ref={ref} className="py-20 px-6 relative bg-[#fbfaf8]" style={{ fontFamily: "'Noto Serif KR', serif" }}>
       <div className="max-w-4xl mx-auto">
         {/* 제목 */}
         <motion.div
@@ -162,14 +162,15 @@ export default function WeddingInfoSection({
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl text-amber-900 mb-6" style={{ fontFamily: 'var(--font-serif)' }}>
-            Wedding Information
+          <h2 className="text-2xl text-amber-900/80 tracking-[0.2em] uppercase mb-3">
+            Location
           </h2>
-          <div className="w-16 h-px bg-gradient-to-r from-transparent via-amber-400/60 to-transparent mx-auto mb-4" />
-          <p className="text-amber-800/70 text-xs font-light">예식 안내</p>
+          <div className="text-2xl md:text-4xl text-amber-950 font-medium mb-4">
+            오시는 길
+          </div>
         </motion.div>
 
-        {/* 정보 - 카드 없이 */}
+        {/* 정보 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -178,31 +179,28 @@ export default function WeddingInfoSection({
         >
           {/* 날짜 */}
           <div className="flex flex-col items-center justify-center">
-            <Calendar className="w-4 h-4 text-amber-600/70 mb-2" />
-            <p className="text-xs text-amber-800/60 mb-1 font-light uppercase tracking-wider">Date</p>
-            <p className="text-base font-medium text-amber-900">{date}</p>
+            <p className="text-xs text-stone-400 mb-2 font-medium uppercase tracking-widest">Date</p>
+            <p className="text-lg font-medium text-stone-700">{date}</p>
           </div>
 
-          <div className="w-32 h-px bg-gradient-to-r from-transparent via-amber-400/30 to-transparent mx-auto" />
+          <div className="w-8 h-px bg-stone-200 mx-auto" />
 
           {/* 시간 */}
           <div className="flex flex-col items-center justify-center">
-            <Clock className="w-4 h-4 text-amber-600/70 mb-2" />
-            <p className="text-xs text-amber-800/60 mb-1 font-light uppercase tracking-wider">Time</p>
-            <p className="text-base font-medium text-amber-900">{time}</p>
+            <p className="text-xs text-stone-400 mb-2 font-medium uppercase tracking-widest">Time</p>
+            <p className="text-lg font-medium text-stone-700">{time}</p>
           </div>
 
-          <div className="w-32 h-px bg-gradient-to-r from-transparent via-amber-400/30 to-transparent mx-auto" />
+          <div className="w-8 h-px bg-stone-200 mx-auto" />
 
           {/* 장소 */}
           <div className="flex flex-col items-center justify-center">
-            <MapPin className="w-4 h-4 text-amber-600/70 mb-2" />
-            <p className="text-xs text-amber-800/60 mb-1 font-light uppercase tracking-wider">Location</p>
-            <p className="text-base font-medium text-amber-900 mb-1">{venue}</p>
+            <p className="text-xs text-stone-400 mb-2 font-medium uppercase tracking-widest">Location</p>
+            <p className="text-lg font-medium text-stone-700 mb-1">{venue}</p>
             {venueDetail && (
-              <p className="text-xs text-amber-900/70 mb-1">{venueDetail}</p>
+              <p className="text-sm text-stone-500 mb-1">{venueDetail}</p>
             )}
-            <p className="text-xs text-amber-800/60 font-light">{address}</p>
+            <p className="text-sm text-stone-400 font-light mt-1">{address}</p>
           </div>
         </motion.div>
 
@@ -211,15 +209,14 @@ export default function WeddingInfoSection({
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="mb-4"
+          className="mb-6"
         >
           <div
             id="naverMap"
-            className="w-full h-80 rounded-2xl overflow-hidden bg-amber-50/30 shadow-lg"
-            style={{ border: '1px solid rgba(205, 186, 150, 0.2)' }}
+            className="w-full h-80 rounded-sm overflow-hidden bg-stone-100 shadow-md border border-stone-200"
           >
             {/* 네이버 지도가 여기에 로드됩니다 */}
-            <div className="w-full h-full flex items-center justify-center text-amber-400/70">
+            <div className="w-full h-full flex items-center justify-center text-stone-400">
               <p className="text-sm font-light">지도 로딩 중...</p>
             </div>
           </div>
@@ -230,30 +227,27 @@ export default function WeddingInfoSection({
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="grid grid-cols-3 gap-2 max-w-xl mx-auto"
+          className="grid grid-cols-3 gap-3 max-w-xl mx-auto"
         >
           <button
             onClick={() => openNavigation('naver')}
-            className="flex items-center justify-center gap-1 py-2 px-2.5 rounded-xl transition-all duration-300 hover:scale-105 font-medium text-xs"
-            style={{ backgroundColor: 'rgba(255, 253, 245, 0.7)', border: '1px solid rgba(205, 186, 150, 0.3)', color: '#78350f' }}
+            className="flex flex-col items-center justify-center gap-2 py-4 rounded-sm transition-all duration-300 hover:bg-stone-50 font-medium text-xs border border-stone-200 bg-white text-stone-600 shadow-sm hover:shadow-md"
           >
-            <Image src="/icons/naver_map.webp" alt="네이버지도" width={16} height={16} />
+            <Image src="/icons/naver_map.webp" alt="네이버지도" width={24} height={24} className="opacity-90" />
             네이버지도
           </button>
           <button
             onClick={() => openNavigation('kakao')}
-            className="flex items-center justify-center gap-1 py-2 px-2.5 rounded-xl transition-all duration-300 hover:scale-105 font-medium text-xs"
-            style={{ backgroundColor: 'rgba(255, 253, 245, 0.7)', border: '1px solid rgba(205, 186, 150, 0.3)', color: '#78350f' }}
+            className="flex flex-col items-center justify-center gap-2 py-4 rounded-sm transition-all duration-300 hover:bg-stone-50 font-medium text-xs border border-stone-200 bg-white text-stone-600 shadow-sm hover:shadow-md"
           >
-            <Image src="/icons/kakao_map.webp" alt="카카오맵" width={16} height={16} />
+            <Image src="/icons/kakao_map.webp" alt="카카오맵" width={24} height={24} className="opacity-90" />
             카카오맵
           </button>
           <button
             onClick={() => openNavigation('tmap')}
-            className="flex items-center justify-center gap-1 py-2 px-2.5 rounded-xl transition-all duration-300 hover:scale-105 font-medium text-xs"
-            style={{ backgroundColor: 'rgba(255, 253, 245, 0.7)', border: '1px solid rgba(205, 186, 150, 0.3)', color: '#78350f' }}
+            className="flex flex-col items-center justify-center gap-2 py-4 rounded-sm transition-all duration-300 hover:bg-stone-50 font-medium text-xs border border-stone-200 bg-white text-stone-600 shadow-sm hover:shadow-md"
           >
-            <Image src="/icons/tmap.webp" alt="TMAP" width={16} height={16} />
+            <Image src="/icons/tmap.webp" alt="TMAP" width={24} height={24} className="opacity-90" />
             TMAP
           </button>
         </motion.div>
@@ -263,13 +257,22 @@ export default function WeddingInfoSection({
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
           transition={{ duration: 0.8, delay: 0.8 }}
-          className="mt-12 p-6 bg-gray-50 rounded-xl"
+          className="mt-12 p-8 bg-white border border-stone-100 rounded-sm shadow-sm"
         >
-          <h3 className="text-base font-semibold text-gray-800 mb-4">교통편 안내</h3>
-          <div className="space-y-3 text-xs text-gray-600">
-            <p>🚇 지하철: 2·9호선 종합운동장역 9번 출구에서 도보 5분</p>
-            <p>🚌 버스: 340, 350번</p>
-            <p>🚗 주차: 건물 내 주차 / 발렛 가능 (3시간 무료)</p>
+          <h3 className="text-sm font-medium text-stone-800 mb-6 tracking-wide uppercase border-b border-stone-100 pb-2 inline-block">교통편 안내</h3>
+          <div className="space-y-4 text-sm text-stone-600 font-light leading-relaxed">
+            <div className="flex gap-3">
+              <span className="font-medium text-stone-800 min-w-[60px]">지하철</span>
+              <p>2·9호선 종합운동장역 9번 출구에서 도보 5분</p>
+            </div>
+            <div className="flex gap-3">
+              <span className="font-medium text-stone-800 min-w-[60px]">버스</span>
+              <p>340, 350번</p>
+            </div>
+            <div className="flex gap-3">
+              <span className="font-medium text-stone-800 min-w-[60px]">주차</span>
+              <p>건물 내 주차 / 발렛 가능 (3시간 무료)</p>
+            </div>
           </div>
         </motion.div>
       </div>

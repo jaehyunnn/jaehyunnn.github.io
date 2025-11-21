@@ -16,8 +16,8 @@ export default function Home() {
   // 청첩장 데이터 (실제 사용시 수정하세요)
   const weddingData = {
     groom: {
-      name: '박재현',
-      name_eng: 'Jae-Hyun',
+      name: '재현',
+      name_eng: 'JaeHyun',
       father: '박준길',
       mother: '이상숙',
       phone: '010-2788-2543',
@@ -27,7 +27,7 @@ export default function Home() {
       kakaopayLink: 'https://link.kakaopay.com/__/dESqQ9P',
     },
     bride: {
-      name: '김가인',
+      name: '가인',
       name_eng: 'Gaain',
       father: '김연재',
       mother: '김선화',
@@ -206,20 +206,17 @@ export default function Home() {
         description={`${weddingData.wedding.date} ${weddingData.wedding.time} · ${weddingData.wedding.venue}`}
       />
 
-      {/* 푸터 - 궁전 테마 */}
-      <footer className="py-12 relative">
-        <div className="max-w-2xl mx-auto text-center glass-strong rounded-3xl p-8 shadow-xl mx-6 border-2 border-amber-200/40">
-          <p className="mb-2 text-amber-900 text-lg tracking-wide" style={{ fontFamily: 'var(--font-serif)' }}>
-            {weddingData.groom.name} <span className="text-amber-600 mx-2">&</span> {weddingData.bride.name}
+      {/* 푸터 */}
+      <footer className="py-16 relative bg-[#fbfaf8]" style={{ fontFamily: "'Noto Serif KR', serif" }}>
+        <div className="max-w-2xl mx-auto text-center px-6">
+          <div className="w-8 h-px bg-stone-200 mx-auto mb-8" />
+          <p className="mb-3 text-amber-950 text-lg font-medium tracking-widest">
+            {weddingData.groom.name} <span className="text-stone-400 mx-2 text-sm">|</span> {weddingData.bride.name}
           </p>
-          <p className="text-amber-800/80">{weddingData.wedding.date}</p>
-          <div className="mt-6 flex justify-center items-center gap-3">
-            <div className="w-2 h-2 rounded-full bg-amber-500/60 shadow-lg" />
-            <div className="w-2 h-2 rounded-full bg-amber-500/60 shadow-lg" />
-            <div className="w-2 h-2 rounded-full bg-amber-500/60 shadow-lg" />
-          </div>
-          <p className="mt-6 text-xs text-amber-700/60 font-light">
-            All rights reserved © 2025 Jae-Hyun Park
+          <p className="text-stone-500 text-sm font-light tracking-wider mb-8">{weddingData.wedding.date}</p>
+
+          <p className="text-[10px] text-stone-400 font-light tracking-widest uppercase">
+            Copyright © 2025 Jae-Hyun Park. All rights reserved.
           </p>
         </div>
       </footer>

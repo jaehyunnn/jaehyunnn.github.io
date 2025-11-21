@@ -15,56 +15,86 @@ export default function IntroSection({
   weddingDate,
   onComplete,
 }: IntroSectionProps) {
+  const [hasStarted, setHasStarted] = useState(true);
   const [displayedText, setDisplayedText] = useState('');
   const [isComplete, setIsComplete] = useState(false);
   const [showNames, setShowNames] = useState(false);
   const audioContextRef = useRef<AudioContext | null>(null);
-  const [audioInitialized, setAudioInitialized] = useState(false);
 
-  // 오디오 컨텍스트 초기화
+  // 오디오 컨텍스트 초기화 및 자동 시작
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    const initAudio = async () => {
-      try {
-        audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
-        // AudioContext resume을 시도하여 자동재생 준비
-        await audioContextRef.current.resume();
-        setAudioInitialized(true);
-      } catch (error) {
-        console.log('오디오 초기화 실패:', error);
-      }
-    };
+    // 오디오 컨텍스트 생성 시도
+    try {
+      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+    } catch (e) {
+      console.error('AudioContext creation failed', e);
+    }
 
-    initAudio();
+    // 자동 시작
+    setHasStarted(true);
   }, []);
 
-  // 타이핑 소리 재생 함수
+  // 타이핑 소리 재생 함수 (기계식 키보드 느낌)
   const playTypingSound = async () => {
     if (typeof window === 'undefined' || !audioContextRef.current) return;
 
     try {
       const audioContext = audioContextRef.current;
+      const t = audioContext.currentTime;
 
-      // AudioContext가 suspended 상태면 resume
-      if (audioContext.state === 'suspended') {
-        await audioContext.resume();
-      }
-
+      // 메인 톤 (타건음)
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
 
       oscillator.connect(gainNode);
       gainNode.connect(audioContext.destination);
 
-      // 타이핑 소리 설정 (부드러운 클릭 소리)
-      oscillator.type = 'sine';
-      oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-      gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+      // Triangle 파형으로 좀 더 "틱" 하는 소리 구현
+      oscillator.type = 'triangle';
 
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.05);
+      // 피치 랜덤화 (자연스러움 추가)
+      const randomDetune = Math.random() * 100 - 50; // ±50 cents
+      oscillator.detune.value = randomDetune;
+
+      // 주파수: 약간 낮은 톤으로 무게감 있게
+      oscillator.frequency.setValueAtTime(300, t);
+      oscillator.frequency.exponentialRampToValueAtTime(100, t + 0.05);
+
+      // 볼륨 엔벨로프: 짧고 강하게
+      gainNode.gain.setValueAtTime(0, t);
+      gainNode.gain.linearRampToValueAtTime(0.15, t + 0.01);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, t + 0.08);
+
+      oscillator.start(t);
+      oscillator.stop(t + 0.1);
+
+      // 노이즈 (스위치 클릭음/찰칵거림) 추가
+      const bufferSize = audioContext.sampleRate * 0.05; // 0.05초
+      const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+
+      const noiseSource = audioContext.createBufferSource();
+      noiseSource.buffer = buffer;
+      const noiseGain = audioContext.createGain();
+
+      // 하이패스 필터로 "틱" 소리 강조
+      const filter = audioContext.createBiquadFilter();
+      filter.type = 'highpass';
+      filter.frequency.value = 1000;
+
+      noiseSource.connect(filter);
+      filter.connect(noiseGain);
+      noiseGain.connect(audioContext.destination);
+
+      noiseGain.gain.setValueAtTime(0.05, t);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, t + 0.03);
+
+      noiseSource.start(t);
     } catch (error) {
       console.log('타이핑 소리 재생 실패:', error);
     }
@@ -78,7 +108,11 @@ export default function IntroSection({
 
   const fullText = lines.join('\n');
 
+
+
   useEffect(() => {
+    if (!hasStarted) return;
+
     let currentIndex = 0;
     const typingSpeed = 80; // 타이핑 속도 (ms)
     const lineDelay = 300; // 줄 바꿈 후 딜레이 (ms)
@@ -106,11 +140,11 @@ export default function IntroSection({
           setShowNames(true);
         }, 500);
 
-        // 이름 표시 후 2초 대기 후 페이드아웃
+        // 이름 표시 후 3초 대기 후 페이드아웃 (자연스러운 종료)
         setTimeout(() => {
           setIsComplete(true);
           setTimeout(onComplete, 1000); // 페이드아웃 애니메이션 후 완료
-        }, 3000);
+        }, 3500);
       }
     };
 
@@ -118,23 +152,22 @@ export default function IntroSection({
     const initialDelay = setTimeout(typeText, 500);
 
     return () => clearTimeout(initialDelay);
-  }, [onComplete]);
+  }, [hasStarted, onComplete]);
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-1000 ${
-        isComplete ? 'opacity-0' : 'opacity-100'
-      }`}
+      className={`fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-1000 ${isComplete ? 'opacity-0 pointer-events-none' : 'opacity-100'
+        }`}
     >
-      {/* 전체화면 배경 - 궁전 테마 */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#fdfcfb] via-[#f8f6f3] to-[#f5f3ef]" />
+      {/* 전체화면 배경 - 부드러운 웜톤 */}
+      <div className="absolute inset-0 bg-[#fbfaf8]" />
 
-      {/* Google Fonts 로드 */}
+      {/* Google Fonts 로드 (Noto Serif KR) */}
       <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500&display=swap');
       `}</style>
 
-      {/* 타이핑 텍스트 - 전체화면 중앙 */}
+      {/* 시작 후: 타이핑 텍스트 */}
       <div className="relative z-10 text-center px-8 w-full h-full flex flex-col items-center justify-center">
         {/* 타이핑 효과 텍스트 */}
         <div className="leading-relaxed">
@@ -143,18 +176,22 @@ export default function IntroSection({
             const isLineComplete = displayedText.length > lineLength + line.length;
             const visibleText = displayedText.slice(lineLength, lineLength + line.length + 1);
 
+            // 타이핑이 완전히 끝났는지 확인 (커서 숨김용)
+            const isAllTypingDone = displayedText.length === fullText.length;
+
             return (
               <div
                 key={index}
-                className="text-5xl md:text-7xl lg:text-8xl text-amber-900"
+                className="text-3xl md:text-4xl lg:text-5xl text-amber-950/90 mb-4"
                 style={{
-                  fontFamily: "'Great Vibes', cursive",
-                  textShadow: '3px 3px 6px rgba(205, 186, 150, 0.3)',
+                  fontFamily: "'Noto Serif KR', serif",
+                  fontWeight: 300,
+                  letterSpacing: '0.05em',
                 }}
               >
                 {visibleText}
-                {!isLineComplete && index === displayedText.split('\n').length - 1 && (
-                  <span className="animate-pulse text-amber-600">|</span>
+                {!isLineComplete && index === displayedText.split('\n').length - 1 && !isAllTypingDone && (
+                  <span className="animate-pulse text-amber-400/60 ml-1">|</span>
                 )}
               </div>
             );
@@ -164,17 +201,19 @@ export default function IntroSection({
         {/* 이름 - 페이드인 효과 */}
         {showNames && (
           <div
-            className="text-3xl md:text-4xl lg:text-5xl text-amber-900 mt-12 transition-opacity duration-1000"
+            className="text-2xl md:text-3xl lg:text-4xl text-amber-900 mt-12 transition-opacity duration-1000"
             style={{
-              fontFamily: "'Great Vibes', cursive",
-              textShadow: '3px 3px 6px rgba(205, 186, 150, 0.3)',
+              fontFamily: "'Noto Serif KR', serif",
+              fontWeight: 400,
+              letterSpacing: '0.1em',
               animation: 'fadeIn 1.5s ease-in-out',
             }}
           >
-            {groomName} & {brideName}
+            {groomName} <span className="text-amber-400/60 mx-2">|</span> {brideName}
           </div>
         )}
       </div>
+
 
       {/* 페이드인 애니메이션 정의 */}
       <style jsx>{`
@@ -188,16 +227,19 @@ export default function IntroSection({
             transform: translateY(0);
           }
         }
+        .animate-fade-in {
+          animation: fadeIn 1s ease-out;
+        }
       `}</style>
 
-      {/* 장식 요소 - 궁전 테마 */}
+      {/* 장식 요소 - 로딩 인디케이터 */}
       <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-10">
-        <div className="flex gap-3">
-          <div className="w-3 h-3 rounded-full bg-amber-500/60 shadow-lg animate-bounce" style={{ animationDelay: '0s' }} />
-          <div className="w-3 h-3 rounded-full bg-amber-500/60 shadow-lg animate-bounce" style={{ animationDelay: '0.2s' }} />
-          <div className="w-3 h-3 rounded-full bg-amber-500/60 shadow-lg animate-bounce" style={{ animationDelay: '0.4s' }} />
+        <div className="flex gap-2">
+          <div className="w-1.5 h-1.5 rounded-full bg-amber-900/20 animate-bounce" style={{ animationDelay: '0s' }} />
+          <div className="w-1.5 h-1.5 rounded-full bg-amber-900/20 animate-bounce" style={{ animationDelay: '0.2s' }} />
+          <div className="w-1.5 h-1.5 rounded-full bg-amber-900/20 animate-bounce" style={{ animationDelay: '0.4s' }} />
         </div>
       </div>
-    </div>
+    </div >
   );
 }

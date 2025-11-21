@@ -128,78 +128,68 @@ export default function ShareSection({
   };
 
   return (
-    <section ref={ref} className="py-20 px-6 relative">
+    <section ref={ref} className="py-24 px-6 relative bg-[#fbfaf8]" style={{ fontFamily: "'Noto Serif KR', serif" }}>
       <div className="max-w-2xl mx-auto">
         {/* 제목 */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
-          className="text-center mb-12"
+          className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl text-amber-900 mb-6" style={{ fontFamily: 'var(--font-serif)' }}>
+          <h2 className="text-2xl text-amber-900/80 tracking-[0.2em] uppercase mb-3">
             Share
           </h2>
-          <div className="w-16 h-px bg-gradient-to-r from-transparent via-amber-400/60 to-transparent mx-auto mb-4" />
-          <p className="text-amber-800/70 text-sm font-light">
+          <div className="text-2xl md:text-4xl text-amber-950 font-medium mb-4">
+            공유하기
+          </div>
+          <p className="text-stone-500 text-sm font-light">
             소중한 분들과 함께 이 기쁨을 나누고 싶습니다
           </p>
         </motion.div>
 
-        {/* 공유 버튼들 - Glassmorphism */}
+        {/* 공유 버튼들 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="grid grid-cols-3 gap-2"
+          className="grid grid-cols-3 gap-3"
         >
           {/* 카카오톡 공유 */}
           <button
             onClick={shareKakao}
-            className="flex flex-col items-center justify-center gap-1.5 glass-strong hover:glass text-amber-900 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 border border-amber-200/30"
+            className="flex flex-col items-center justify-center gap-2 bg-[#FAE100] hover:bg-[#F9E000]/90 text-[#371D1E] py-4 rounded-sm transition-all duration-300 shadow-sm hover:shadow-md"
           >
-            <Image src="/icons/kakao_talk.webp" alt="카카오톡" width={20} height={20} />
-            <span className="text-xs font-medium">카톡 공유</span>
+            <Image src="/icons/kakao_talk.webp" alt="카카오톡" width={24} height={24} />
+            <span className="text-xs font-medium">카카오톡</span>
           </button>
 
           {/* 네이티브 공유 (모바일에서만 작동) */}
           <button
             onClick={shareNative}
-            className="flex flex-col items-center justify-center gap-1.5 glass-strong hover:glass text-amber-900 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 border border-amber-200/30"
+            className="flex flex-col items-center justify-center gap-2 bg-white hover:bg-stone-50 text-stone-700 py-4 rounded-sm transition-all duration-300 shadow-sm hover:shadow-md border border-stone-200"
           >
-            <Share2 className="w-4 h-4" />
-            <span className="text-xs font-medium">공유 하기</span>
+            <Share2 className="w-5 h-5" />
+            <span className="text-xs font-medium">공유하기</span>
           </button>
 
           {/* URL 복사 */}
           <button
             onClick={copyUrl}
-            className="flex flex-col items-center justify-center gap-1.5 glass-strong hover:glass text-amber-900 py-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 border border-amber-200/30"
+            className="flex flex-col items-center justify-center gap-2 bg-white hover:bg-stone-50 text-stone-700 py-4 rounded-sm transition-all duration-300 shadow-sm hover:shadow-md border border-stone-200"
           >
             {urlCopied ? (
               <>
-                <Check className="w-4 h-4 text-green-600" />
+                <Check className="w-5 h-5 text-green-600" />
                 <span className="text-xs font-medium text-green-600">복사 완료</span>
               </>
             ) : (
               <>
-                <Copy className="w-4 h-4" />
+                <Copy className="w-5 h-5" />
                 <span className="text-xs font-medium">링크 복사</span>
               </>
             )}
           </button>
-        </motion.div>
-
-        {/* 안내 문구 */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="mt-8 text-center"
-        >
-          <p className="text-sm text-amber-800/60 font-light">
-            축하의 마음을 함께 나눠주세요
-          </p>
         </motion.div>
       </div>
     </section>
