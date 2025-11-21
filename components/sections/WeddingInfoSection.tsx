@@ -67,8 +67,8 @@ export default function WeddingInfoSection({
           map: map,
           title: venue,
           icon: {
-            url: '/icons/heart_location.png',
-            scaledSize: new window.naver.maps.Size(40, 40),
+            url: '/icons/diamond-marker.png',
+            scaledSize: new window.naver.maps.Size(50, 50),
             origin: new window.naver.maps.Point(0, 0),
           }
         });
@@ -76,7 +76,7 @@ export default function WeddingInfoSection({
         // InfoWindow 내용 - 글라스모피즘 스타일
         const contentString = [
           '<div class="iw_inner" style="',
-          'padding: 8px 12px;',
+          'padding: 8px 8px;',
           'width: 200px;',
           'text-align: center;',
           'background: rgba(255, 253, 245, 0.85);',
@@ -99,7 +99,7 @@ export default function WeddingInfoSection({
           borderColor: 'transparent',
           borderWidth: 0,
           disableAnchor: true,
-          pixelOffset: new window.naver.maps.Point(0, -5)
+          pixelOffset: new window.naver.maps.Point(0, 10)
         });
 
         // 마커 클릭 이벤트

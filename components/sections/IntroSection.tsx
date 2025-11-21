@@ -19,86 +19,8 @@ export default function IntroSection({
   const [displayedText, setDisplayedText] = useState('');
   const [isComplete, setIsComplete] = useState(false);
   const [showNames, setShowNames] = useState(false);
-  const audioContextRef = useRef<AudioContext | null>(null);
+  // 오디오 컨텍스트 관련 코드 제거됨
 
-  // 오디오 컨텍스트 초기화 및 자동 시작
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    // 오디오 컨텍스트 생성 시도
-    try {
-      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
-    } catch (e) {
-      console.error('AudioContext creation failed', e);
-    }
-
-    // 자동 시작
-    setHasStarted(true);
-  }, []);
-
-  // 타이핑 소리 재생 함수 (기계식 키보드 느낌)
-  const playTypingSound = async () => {
-    if (typeof window === 'undefined' || !audioContextRef.current) return;
-
-    try {
-      const audioContext = audioContextRef.current;
-      const t = audioContext.currentTime;
-
-      // 메인 톤 (타건음)
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-
-      // Triangle 파형으로 좀 더 "틱" 하는 소리 구현
-      oscillator.type = 'triangle';
-
-      // 피치 랜덤화 (자연스러움 추가)
-      const randomDetune = Math.random() * 100 - 50; // ±50 cents
-      oscillator.detune.value = randomDetune;
-
-      // 주파수: 약간 낮은 톤으로 무게감 있게
-      oscillator.frequency.setValueAtTime(300, t);
-      oscillator.frequency.exponentialRampToValueAtTime(100, t + 0.05);
-
-      // 볼륨 엔벨로프: 짧고 강하게
-      gainNode.gain.setValueAtTime(0, t);
-      gainNode.gain.linearRampToValueAtTime(0.15, t + 0.01);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, t + 0.08);
-
-      oscillator.start(t);
-      oscillator.stop(t + 0.1);
-
-      // 노이즈 (스위치 클릭음/찰칵거림) 추가
-      const bufferSize = audioContext.sampleRate * 0.05; // 0.05초
-      const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
-      const data = buffer.getChannelData(0);
-      for (let i = 0; i < bufferSize; i++) {
-        data[i] = Math.random() * 2 - 1;
-      }
-
-      const noiseSource = audioContext.createBufferSource();
-      noiseSource.buffer = buffer;
-      const noiseGain = audioContext.createGain();
-
-      // 하이패스 필터로 "틱" 소리 강조
-      const filter = audioContext.createBiquadFilter();
-      filter.type = 'highpass';
-      filter.frequency.value = 1000;
-
-      noiseSource.connect(filter);
-      filter.connect(noiseGain);
-      noiseGain.connect(audioContext.destination);
-
-      noiseGain.gain.setValueAtTime(0.05, t);
-      noiseGain.gain.exponentialRampToValueAtTime(0.001, t + 0.03);
-
-      noiseSource.start(t);
-    } catch (error) {
-      console.log('타이핑 소리 재생 실패:', error);
-    }
-  };
 
   // 표시할 텍스트 라인들 (이름 제외)
   const lines = [
@@ -121,10 +43,10 @@ export default function IntroSection({
       if (currentIndex < fullText.length) {
         setDisplayedText(fullText.slice(0, currentIndex + 1));
 
-        // 줄바꿈이 아닌 경우에만 타이핑 소리 재생
-        if (fullText[currentIndex] !== '\n') {
+        // 줄바꿈이 아닌 경우에만 타이핑 소리 재생 (제거됨)
+        /* if (fullText[currentIndex] !== '\n') {
           playTypingSound();
-        }
+        } */
 
         currentIndex++;
 

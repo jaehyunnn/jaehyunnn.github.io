@@ -16,7 +16,8 @@ export default function Home() {
   // 청첩장 데이터 (실제 사용시 수정하세요)
   const weddingData = {
     groom: {
-      name: '재현',
+      firstName: '재현',
+      lastName: '박',
       name_eng: 'JaeHyun',
       father: '박준길',
       mother: '이상숙',
@@ -27,7 +28,8 @@ export default function Home() {
       kakaopayLink: 'https://link.kakaopay.com/__/dESqQ9P',
     },
     bride: {
-      name: '가인',
+      firstName: '가인',
+      lastName: '김',
       name_eng: 'Gaain',
       father: '김연재',
       mother: '김선화',
@@ -35,7 +37,7 @@ export default function Home() {
       accountBank: '하나은행',
       accountNumber: '215-910417-00707',
       accountHolder: '김가인',
-      kakaopayLink: 'https://link.kakaopay.com/__/YOUR_LINK',
+      kakaopayLink: 'https://link.kakaopay.com/__/48elydi',
     },
     wedding: {
       date: '2026년 8월 23일 일요일',
@@ -62,47 +64,47 @@ export default function Home() {
     photos: [
       {
         src: '/images/photo1.jpg',
-        caption: '첫 만남',
+        caption: '',
         rotation: -2,
       },
       {
         src: '/images/photo2.jpg',
-        caption: '행복한 순간',
+        caption: '',
         rotation: 1,
       },
       {
         src: '/images/photo3.jpg',
-        caption: '프로포즈',
+        caption: '',
         rotation: -1,
       },
       {
         src: '/images/photo4.jpg',
-        caption: '함께한 시간',
+        caption: '',
         rotation: 2,
       },
       {
         src: '/images/photo5.jpg',
-        caption: '우리의 약속',
+        caption: '',
         rotation: -3,
       },
       {
         src: '/images/photo6.jpg',
-        caption: '영원히',
+        caption: '',
         rotation: 1,
       },
       {
         src: '/images/photo7.jpg',
-        caption: '특별한 날',
+        caption: '',
         rotation: -2,
       },
       {
         src: '/images/photo8.jpg',
-        caption: '사랑의 순간',
+        caption: '',
         rotation: 3,
       },
       {
         src: '/images/photo9.jpg',
-        caption: '함께 걸을 길',
+        caption: '',
         rotation: -1,
       },
     ],
@@ -125,8 +127,8 @@ export default function Home() {
 
       {/* 히어로 섹션 */}
       <HeroSection
-        groomName={weddingData.groom.name}
-        brideName={weddingData.bride.name}
+        groomName={`${weddingData.groom.lastName}${weddingData.groom.firstName}`}
+        brideName={`${weddingData.bride.lastName}${weddingData.bride.firstName}`}
         weddingDate={weddingData.wedding.date}
         weddingTime={weddingData.wedding.time}
         venue={weddingData.wedding.venue}
@@ -137,14 +139,15 @@ export default function Home() {
       <CalendarSection year={2026} month={8} day={23} />
 
       {/* 초대 인사 */}
+
       <InvitationSection
         invitationMessage={weddingData.invitation.message}
         groomFather={weddingData.groom.father}
         groomMother={weddingData.groom.mother}
-        groomName={weddingData.groom.name}
+        groomName={weddingData.groom.firstName}
         brideFather={weddingData.bride.father}
         brideMother={weddingData.bride.mother}
-        brideName={weddingData.bride.name}
+        brideName={weddingData.bride.firstName}
       />
 
       {/* 갤러리 */}
@@ -164,7 +167,7 @@ export default function Home() {
       {/* 연락처 및 계좌정보 */}
       <ContactSection
         groom={{
-          name: weddingData.groom.name,
+          name: `${weddingData.groom.lastName}${weddingData.groom.firstName}`,
           phone: weddingData.groom.phone,
           accountBank: weddingData.groom.accountBank,
           accountNumber: weddingData.groom.accountNumber,
@@ -180,7 +183,7 @@ export default function Home() {
           phone: '010-3333-4444',
         }}
         bride={{
-          name: weddingData.bride.name,
+          name: `${weddingData.bride.lastName}${weddingData.bride.firstName}`,
           phone: weddingData.bride.phone,
           accountBank: weddingData.bride.accountBank,
           accountNumber: weddingData.bride.accountNumber,
@@ -199,8 +202,8 @@ export default function Home() {
 
       {/* 공유하기 */}
       <ShareSection
-        groomName={weddingData.groom.name}
-        brideName={weddingData.bride.name}
+        groomName={weddingData.groom.firstName}
+        brideName={weddingData.bride.firstName}
         weddingDate={weddingData.wedding.date}
         thumbnailImage="/images/hero-bg.jpg"
         description={`${weddingData.wedding.date} ${weddingData.wedding.time} · ${weddingData.wedding.venue}`}
@@ -211,7 +214,7 @@ export default function Home() {
         <div className="max-w-2xl mx-auto text-center px-6">
           <div className="w-8 h-px bg-stone-200 mx-auto mb-8" />
           <p className="mb-3 text-amber-950 text-lg font-medium tracking-widest">
-            {weddingData.groom.name} <span className="text-stone-400 mx-2 text-sm">|</span> {weddingData.bride.name}
+            {weddingData.groom.firstName} <span className="text-stone-400 mx-2 text-sm">|</span> {weddingData.bride.firstName}
           </p>
           <p className="text-stone-500 text-sm font-light tracking-wider mb-8">{weddingData.wedding.date}</p>
 

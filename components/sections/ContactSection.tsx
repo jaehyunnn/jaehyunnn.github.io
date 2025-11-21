@@ -152,6 +152,20 @@ export default function ContactSection({
           </div>
         </motion.div>
 
+        {/* 안내 메시지 */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={inView ? { opacity: 1 } : {}}
+          transition={{ duration: 0.8, delay: 0.6 }}
+          className="mt-6 mb-16 text-center"
+        >
+          <p className="text-sm text-stone-500 leading-relaxed font-light">
+            참석이 어려우신 분들을 위해<br />
+            계좌번호를 기재하였습니다.<br />
+            너그러운 마음으로 양해 부탁드립니다.
+          </p>
+        </motion.div>
+
         {/* 신랑측 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -235,18 +249,6 @@ export default function ContactSection({
           </motion.div>
         </motion.div>
 
-        {/* 안내 메시지 */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="mt-16 text-center"
-        >
-          <p className="text-sm text-stone-500 leading-relaxed font-light">
-            축하의 마음을 전달하고 싶으신 분들을 위해<br />
-            계좌번호를 기재하였습니다.
-          </p>
-        </motion.div>
       </div>
     </section>
   );

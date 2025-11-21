@@ -24,16 +24,8 @@ export default function BGMPlayer({ audioSrc = '/audio/bgm.mp3', autoPlay = fals
 
   // 자동재생 (컴포넌트 마운트 시 한 번만)
   useEffect(() => {
-    if (!autoPlay) {
-      console.log('[BGM] 자동재생 비활성화됨');
-      return;
-    }
-
     const audio = audioRef.current;
-    if (!audio) {
-      console.log('[BGM] Audio 요소를 찾을 수 없음');
-      return;
-    }
+    if (!audio) return;
 
     const attemptAutoplay = async () => {
       console.log('[BGM] 자동재생 시도 중...');
@@ -52,11 +44,22 @@ export default function BGMPlayer({ audioSrc = '/audio/bgm.mp3', autoPlay = fals
           setIsPlaying(true);
           console.log('[BGM] ✅ 음소거 상태로 자동재생 성공');
 
-          // muted 상태로 재생된 경우, 바로 unmute
-          setTimeout(() => {
-            audio.muted = false;
-            console.log('[BGM] 음소거 해제됨');
-          }, 100);
+          // iOS 등에서 muted autoplay 후 사용자 인터랙션 시 음소거 해제 시도
+          const unmuteOnInteraction = () => {
+            if (audio.muted) {
+              audio.muted = false;
+              console.log('[BGM] 사용자 인터랙션으로 음소거 해제됨');
+              // 이벤트 리스너 제거
+              ['click', 'touchstart', 'scroll'].forEach(event =>
+                document.removeEventListener(event, unmuteOnInteraction)
+              );
+            }
+          };
+
+          ['click', 'touchstart', 'scroll'].forEach(event =>
+            document.addEventListener(event, unmuteOnInteraction, { once: true })
+          );
+
         } catch (mutedError) {
           console.log('[BGM] ❌ 자동재생 완전히 차단됨 (iOS일 가능성 높음):', mutedError);
           setIsPlaying(false);
@@ -65,13 +68,12 @@ export default function BGMPlayer({ audioSrc = '/audio/bgm.mp3', autoPlay = fals
       }
     };
 
-    // audio가 로드될 때까지 대기
-    if (audio.readyState >= 2) {
-      console.log('[BGM] Audio 준비됨, 즉시 자동재생 시도');
-      attemptAutoplay();
-    } else {
-      console.log('[BGM] Audio 로딩 중, canplay 이벤트 대기');
-      audio.addEventListener('canplay', attemptAutoplay, { once: true });
+    if (autoPlay) {
+      if (audio.readyState >= 2) {
+        attemptAutoplay();
+      } else {
+        audio.addEventListener('canplay', attemptAutoplay, { once: true });
+      }
     }
 
     return () => {

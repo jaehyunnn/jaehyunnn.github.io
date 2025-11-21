@@ -15,7 +15,7 @@ const notoSerifKR = Noto_Serif_KR({
 });
 
 export const metadata: Metadata = {
-  title: "재현 & 가인 - 우리 결혼합니다",
+  title: "재현 & 가인 - 결혼합니다",
   description: "소중한 분들을 초대합니다",
   openGraph: {
     title: "💍 가인 & 재현의 결혼식에 초대합니다.",

@@ -53,7 +53,7 @@ export default function InvitationSection({
             Invitation
           </h2>
           <div className="text-2xl md:text-4xl text-amber-950 font-medium mb-6">
-            <span className="block md:hidden">소중한 초대</span>
+            <span className="block md:hidden">초대합니다</span>
             <span className="hidden md:block">소중한 분들을 초대합니다</span>
           </div>
         </motion.div>

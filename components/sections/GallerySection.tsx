@@ -94,7 +94,7 @@ export default function GallerySection({ photos }: GallerySectionProps) {
               Gallery
             </h2>
             <div className="text-2xl md:text-4xl text-amber-950 font-medium mb-4">
-              <span className="block md:hidden">우리의 순간</span>
+              <span className="block md:hidden">웨딩 갤러리</span>
               <span className="hidden md:block">우리의 소중한 순간들</span>
             </div>
           </motion.div>
