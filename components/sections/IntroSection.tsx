@@ -60,11 +60,6 @@ export default function IntroSection({
       className={`fixed inset-0 h-[100dvh] z-50 flex flex-col items-center justify-between bg-[#fbfaf8] overflow-hidden cursor-pointer ${!isVisible ? 'pointer-events-none' : ''}`}
       onClick={handleComplete}
     >
-      <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&display=swap');
-      `}</style>
-
       {/* Top Spacer */}
       <div className="h-[5dvh]" />
 
@@ -77,9 +72,9 @@ export default function IntroSection({
           transition={{ duration: 0.8 }}
           className="text-center z-20 relative w-full"
         >
-          <h1 className="text-[17vw] md:text-[140px] text-amber-950 leading-[0.9] tracking-tight whitespace-nowrap" style={{ fontFamily: "'Cinzel', serif" }}>
+          <h1 className="text-[17vw] md:text-[140px] text-amber-950 leading-[0.9] tracking-tight whitespace-nowrap" style={{ fontFamily: "var(--font-cinzel), serif" }}>
             <span className="block">{groomName.toUpperCase()}</span>
-            <span className="block">& {brideName.toUpperCase()}</span>
+            <span className="block">&  {brideName.toUpperCase()}</span>
           </h1>
         </motion.div>
 

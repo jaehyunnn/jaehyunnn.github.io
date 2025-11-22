@@ -1,17 +1,26 @@
 import type { Metadata, Viewport } from "next";
-import { Nanum_Pen_Script, Noto_Serif_KR } from "next/font/google";
+import { Nanum_Pen_Script, Noto_Serif_KR, Cinzel } from "next/font/google";
 import "./globals.css";
 
 const nanumPen = Nanum_Pen_Script({
   variable: "--font-nanum-pen",
   subsets: ["latin"],
   weight: ["400"],
+  display: "swap",
 });
 
 const notoSerifKR = Noto_Serif_KR({
   variable: "--font-noto-serif",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
+const cinzel = Cinzel({
+  variable: "--font-cinzel",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -59,7 +68,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${nanumPen.variable} ${notoSerifKR.variable} antialiased`}
+        className={`${nanumPen.variable} ${notoSerifKR.variable} ${cinzel.variable} antialiased`}
       >
         {children}
       </body>
