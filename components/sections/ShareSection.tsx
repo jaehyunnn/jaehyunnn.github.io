@@ -52,7 +52,7 @@ export default function ShareSection({
 
     script.onload = () => {
       if (window.Kakao && !window.Kakao.isInitialized()) {
-        // 실제 사용시 YOUR_KAKAO_APP_KEY를 카카오 앱 키로 교체하세요
+        // 실제 사용시 YOUR_KAKAO_APP_KEY를 카카오 앱 키로 교체
         window.Kakao.init('3cd74c7f5d1d79108ec506779a38c9db');
         // console.log('카카오 SDK 로드 완료. 실제 사용을 위해서는 카카오 앱 키가 필요합니다.');
       }
@@ -75,7 +75,7 @@ export default function ShareSection({
     const origin = window.location.origin;
     const absoluteImageUrl = thumbnailImage
       ? (thumbnailImage.startsWith('http') ? thumbnailImage : `${origin}${thumbnailImage}`)
-      : `${origin}/images/hero-bg.jpg`;
+      : `${origin}/images/share-bg.jpg`;
 
     // description 생성
     const shareDescription = description || `${weddingDate} ${weddingTime} · ${venue}`;
