@@ -18,6 +18,7 @@ interface ShareSectionProps {
 
 declare global {
   interface Window {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     Kakao: any;
   }
 }
@@ -40,7 +41,8 @@ export default function ShareSection({
   const [currentUrl, setCurrentUrl] = useState('');
 
   useEffect(() => {
-    setCurrentUrl(window.location.href);
+    // Avoid synchronous state update warning
+    setTimeout(() => setCurrentUrl(window.location.href), 0);
 
     // 카카오 SDK 로드
     const script = document.createElement('script');

@@ -119,11 +119,12 @@ export default function Home() {
           brideName={weddingData.bride.name_eng}
           weddingDate={weddingData.wedding.date}
           onComplete={() => setShowIntro(false)}
+          mainPhoto="/images/intro-bg.jpg"
         />
       )}
 
       {/* BGM 플레이어 - 인트로 완료 후 자동 재생 */}
-      <BGMPlayer audioSrc="/audio/bgm.mp3" autoPlay={!showIntro} />
+      <BGMPlayer audioSrc="/audio/bgm.mp3" autoPlay={true} />
 
       {/* 히어로 섹션 */}
       <HeroSection

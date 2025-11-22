@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { Calendar, Clock, MapPin } from 'lucide-react';
+
 import Image from 'next/image';
 import { useEffect } from 'react';
 
@@ -16,6 +16,7 @@ interface WeddingInfoSectionProps {
 
 declare global {
   interface Window {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     naver: any;
   }
 }
@@ -117,7 +118,7 @@ export default function WeddingInfoSection({
         document.head.removeChild(script);
       }
     };
-  }, [latitude, longitude, venue]);
+  }, [latitude, longitude, venue, address]);
 
   const openNavigation = (type: 'kakao' | 'naver' | 'tmap') => {
     if (type === 'kakao') {
