@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import { Pause, Play } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -9,10 +9,30 @@ interface BGMPlayerProps {
   autoPlay?: boolean;
 }
 
-export default function BGMPlayer({ audioSrc = '/audio/bgm.mp3', autoPlay = false }: BGMPlayerProps) {
+export interface BGMPlayerHandle {
+  play: () => Promise<void>;
+}
+
+const BGMPlayer = forwardRef<BGMPlayerHandle, BGMPlayerProps>(({ audioSrc = '/audio/bgm.mp3', autoPlay = false }, ref) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [autoplayFailed, setAutoplayFailed] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
+
+  // 부모 컴포넌트에서 제어할 수 있도록 play 함수 노출
+  useImperativeHandle(ref, () => ({
+    play: async () => {
+      const audio = audioRef.current;
+      if (!audio) return;
+      try {
+        audio.muted = false;
+        await audio.play();
+        setIsPlaying(true);
+        console.log('[BGM] 외부 요청으로 재생 성공');
+      } catch (error) {
+        console.error('[BGM] 외부 요청 재생 실패:', error);
+      }
+    }
+  }));
 
   // 초기 볼륨 설정 (고정값)
   useEffect(() => {
@@ -206,4 +226,8 @@ export default function BGMPlayer({ audioSrc = '/audio/bgm.mp3', autoPlay = fals
       </motion.div>
     </>
   );
-}
+});
+
+BGMPlayer.displayName = 'BGMPlayer';
+
+export default BGMPlayer;

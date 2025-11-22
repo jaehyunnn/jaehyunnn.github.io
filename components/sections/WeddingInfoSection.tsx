@@ -64,7 +64,7 @@ export default function WeddingInfoSection({
           map: map,
           title: venue,
           icon: {
-            url: '/icons/diamond-marker.png',
+            url: '/icons/marker-heart.png',
             scaledSize: new window.naver.maps.Size(50, 50),
             origin: new window.naver.maps.Point(0, 0),
           }

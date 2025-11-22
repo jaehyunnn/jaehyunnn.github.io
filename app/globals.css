@@ -69,7 +69,7 @@
 @font-face {
   font-family: 'GyeonggiCheonnyeonBatang';
   src: url('https://cdn.jsdelivr.net/gh/fonts-archive/GyeonggiCheonnyeonBatang/GyeonggiCheonnyeonBatang-Bold.woff2') format('woff2'),
-       url('https://cdn.jsdelivr.net/gh/fonts-archive/GyeonggiCheonnyeonBatang/GyeonggiCheonnyeonBatang-Bold.woff') format('woff');
+    url('https://cdn.jsdelivr.net/gh/fonts-archive/GyeonggiCheonnyeonBatang/GyeonggiCheonnyeonBatang-Bold.woff') format('woff');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -100,6 +100,7 @@ body {
   font-family: var(--font-sans);
   overflow-x: hidden;
   position: relative;
+  min-height: 100dvh;
   /* iOS Safari 폰트 렌더링 최적화 */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -112,9 +113,12 @@ body {
 
 /* 배경 애니메이션 */
 @keyframes gradientShift {
-  0%, 100% {
+
+  0%,
+  100% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
@@ -150,7 +154,8 @@ html {
 /* 경기천년바탕 폰트 */
 .font-gyeonggi {
   font-family: var(--font-serif);
-  font-size: 30px; /* px 단위 추가 (Tailwind v4가 아니면 필요할 수 있음) */
+  font-size: 30px;
+  /* px 단위 추가 (Tailwind v4가 아니면 필요할 수 있음) */
   font-weight: 400;
 }
 
@@ -204,4 +209,21 @@ html {
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(205, 186, 150, 0.7);
+}
+
+/* Safe Area Utilities for iOS */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.pt-safe {
+  padding-top: env(safe-area-inset-top);
+}
+
+.min-h-safe {
+  min-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+}
+
+.h-safe {
+  height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
 }

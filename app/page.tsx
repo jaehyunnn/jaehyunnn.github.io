@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import BGMPlayer from '@/components/BGMPlayer';
+import { useState, useRef } from 'react';
+import BGMPlayer, { BGMPlayerHandle } from '@/components/BGMPlayer';
 import IntroSection from '@/components/sections/IntroSection';
 import HeroSection from '@/components/sections/HeroSection';
 import CalendarSection from '@/components/sections/CalendarSection';
@@ -13,6 +13,12 @@ import ShareSection from '@/components/sections/ShareSection';
 
 export default function Home() {
   const [showIntro, setShowIntro] = useState(true);
+  const bgmRef = useRef<BGMPlayerHandle>(null);
+
+  const handleIntroInteract = () => {
+    bgmRef.current?.play();
+  };
+
   // 청첩장 데이터 (실제 사용시 수정하세요)
   const weddingData = {
     groom: {
@@ -119,12 +125,13 @@ export default function Home() {
           brideName={weddingData.bride.name_eng}
           weddingDate={weddingData.wedding.date}
           onComplete={() => setShowIntro(false)}
+          onInteract={handleIntroInteract}
           mainPhoto="/images/intro-bg.jpg"
         />
       )}
 
       {/* BGM 플레이어 - 인트로 완료 후 자동 재생 */}
-      <BGMPlayer audioSrc="/audio/bgm.mp3" autoPlay={true} />
+      <BGMPlayer ref={bgmRef} audioSrc="/audio/bgm.mp3" autoPlay={true} />
 
       {/* 히어로 섹션 */}
       <HeroSection
@@ -210,8 +217,8 @@ export default function Home() {
         groomName={weddingData.groom.firstName}
         brideName={weddingData.bride.firstName}
         weddingDate={weddingData.wedding.date}
-        thumbnailImage="/images/hero-bg.jpg"
-        description={`${weddingData.wedding.date} ${weddingData.wedding.time} · ${weddingData.wedding.venue}`}
+        thumbnailImage="/images/share-bg.jpg"
+        description={`${weddingData.wedding.date}, ${weddingData.wedding.time} · ${weddingData.wedding.venue}`}
       />
 
       {/* 푸터 */}

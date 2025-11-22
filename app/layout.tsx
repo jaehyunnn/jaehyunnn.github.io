@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Nanum_Pen_Script, Noto_Serif_KR } from "next/font/google";
 import "./globals.css";
 
@@ -22,6 +22,14 @@ export const metadata: Metadata = {
     description: "2026년 8월 23일(일) 오전 11시·라브르 에드니아",
     images: ["/images/hero-bg.jpg"],
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
