@@ -75,7 +75,7 @@ export default function ShareSection({
     const origin = window.location.origin;
     const absoluteImageUrl = thumbnailImage
       ? (thumbnailImage.startsWith('http') ? thumbnailImage : `${origin}${thumbnailImage}`)
-      : `${origin}/images/share-bg.jpg`;
+      : `${origin}/images/share-bg.png`;
 
     // description 생성
     const shareDescription = description || `${weddingDate} ${weddingTime} · ${venue}`;
