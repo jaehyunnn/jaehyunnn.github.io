@@ -218,7 +218,7 @@ export default function Home() {
         brideName={weddingData.bride.firstName}
         weddingDate={weddingData.wedding.date}
         thumbnailImage="/images/share-bg.png"
-        description={`${weddingData.wedding.date}, ${weddingData.wedding.time}\n${weddingData.wedding.venue} 단독홀`}
+        description={`${weddingData.wedding.date}, ${weddingData.wedding.time}\n${weddingData.wedding.venue}, ${weddingData.wedding.venueDetail}`}
       />
 
       {/* 푸터 */}
