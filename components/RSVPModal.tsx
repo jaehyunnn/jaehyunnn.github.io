@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Minus, Plus, Send, Copy } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 interface RSVPModalProps {
   isOpen: boolean;
@@ -32,9 +32,45 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showCopyMessage, setShowCopyMessage] = useState(false);
+  const modalContentRef = useRef<HTMLDivElement>(null);
 
   // 필수 필드 검증
-  const isValid = formData.side && formData.name && formData.attendance && formData.meal;
+  const isValid =
+    formData.side &&
+    formData.name &&
+    formData.attendance &&
+    (formData.attendance !== 'attending' || formData.meal); // 참석일 경우만 식사 여부 필수
+
+  // 모바일 키보드 대응: 입력 필드 포커스 시 스크롤
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleFocusIn = (e: FocusEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+        setTimeout(() => {
+          if (modalContentRef.current) {
+            const modalContent = modalContentRef.current;
+            const targetRect = target.getBoundingClientRect();
+            const modalRect = modalContent.getBoundingClientRect();
+
+            // 모달 내부에서의 상대적 위치 계산
+            const scrollTop = modalContent.scrollTop;
+            const targetTop = targetRect.top - modalRect.top + scrollTop;
+
+            // 입력 필드가 모달의 중앙에 오도록 스크롤
+            modalContent.scrollTo({
+              top: targetTop - modalRect.height / 2 + targetRect.height / 2,
+              behavior: 'smooth',
+            });
+          }
+        }, 100);
+      }
+    };
+
+    document.addEventListener('focusin', handleFocusIn);
+    return () => document.removeEventListener('focusin', handleFocusIn);
+  }, [isOpen]);
 
   // 폼 리셋
   const resetForm = () => {
@@ -54,6 +90,13 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
     onClose();
   };
 
+  // 모바일 기기 감지
+  const isMobile = () => {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent
+    );
+  };
+
   // 카카오톡으로 전송
   const handleKakaoShare = async () => {
     if (!isValid) return;
@@ -61,31 +104,60 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
     setIsSubmitting(true);
 
     try {
-      // 구글 시트에 데이터 저장 (API 구현 필요)
-      await saveToGoogleSheet(formData);
-
-      // 카카오톡 공유 (Kakao SDK 필요)
-      if (window.Kakao && window.Kakao.isInitialized()) {
-        window.Kakao.Share.sendDefault({
-          objectType: 'text',
-          text: formatRSVPMessage(formData),
-          link: {
-            mobileWebUrl: window.location.href,
-            webUrl: window.location.href,
-          },
-        });
-      } else {
-        // Kakao SDK가 없을 경우 클립보드로 복사
-        handleCopyToClipboard();
+      // 구글 시트에 데이터 저장 (옵셔널 - 실패해도 계속 진행)
+      try {
+        await saveToGoogleSheet(formData);
+      } catch (saveError) {
+        console.warn('데이터 저장 실패 (계속 진행):', saveError);
       }
 
-      // 전송 완료 후 모달 닫기
-      setTimeout(() => {
-        handleClose();
+      // 모바일에서만 카카오톡 공유 시도
+      if (isMobile() && window.Kakao && window.Kakao.isInitialized()) {
+        try {
+          // Feed 타입으로 카카오톡 공유
+          window.Kakao.Share.sendDefault({
+            objectType: 'feed',
+            content: {
+              title: `${formData.name}님의 참석 의사`,
+              description: formatRSVPMessage(formData),
+              imageUrl: window.location.origin + '/images/share-bg.png',
+              link: {
+                mobileWebUrl: window.location.href,
+                webUrl: window.location.href,
+              },
+            },
+            buttons: [
+              {
+                title: '청첩장 보기',
+                link: {
+                  mobileWebUrl: window.location.href,
+                  webUrl: window.location.href,
+                },
+              },
+            ],
+          });
+
+          // 전송 완료 후 모달 닫기
+          setTimeout(() => {
+            handleClose();
+            setIsSubmitting(false);
+          }, 500);
+        } catch (kakaoError) {
+          console.error('카카오톡 공유 실패:', kakaoError);
+          // 카카오톡 공유 실패 시 클립보드로 복사
+          handleCopyToClipboard();
+          setIsSubmitting(false);
+          alert('카카오톡 공유에 실패했습니다. 내용이 클립보드에 복사되었습니다.');
+        }
+      } else {
+        // PC 또는 Kakao SDK가 없을 경우 클립보드로 복사
+        handleCopyToClipboard();
         setIsSubmitting(false);
-      }, 500);
+        alert('내용이 클립보드에 복사되었습니다.\n카카오톡이나 문자로 직접 붙여넣어 주세요.');
+      }
     } catch (error) {
       console.error('RSVP 전송 실패:', error);
+      alert('전송 중 오류가 발생했습니다. 다시 시도해주세요.');
       setIsSubmitting(false);
     }
   };
@@ -128,17 +200,18 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
   // 구글 시트 저장
   const saveToGoogleSheet = async (data: RSVPData) => {
     try {
-      const response = await fetch('/api/rsvp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
+      // Google Apps Script Web App URL
+      const scriptUrl = 'https://script.google.com/macros/s/AKfycbx02D055EaD3aJgIo5JikIIwz9AjFoQ6-I_tKvdZM15vy8lGtC_C2g9gRuyyOAVeUCb/exec';
+
+      // GET 요청으로 변경 (CORS 문제 회피)
+      const params = new URLSearchParams({
+        data: JSON.stringify(data),
       });
 
-      if (!response.ok) {
-        throw new Error('저장 실패');
-      }
+      const response = await fetch(`${scriptUrl}?${params.toString()}`, {
+        method: 'GET',
+        redirect: 'follow',
+      });
 
       const result = await response.json();
       console.log('RSVP 저장 성공:', result);
@@ -163,13 +236,13 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
           />
 
           {/* 모달 */}
-          <div className="fixed inset-0 z-[101] flex items-end sm:items-center justify-center p-0 sm:p-4">
+          <div className="fixed inset-0 z-[101] flex items-end sm:items-center justify-center p-0 sm:p-4 pointer-events-none">
             <motion.div
               initial={{ opacity: 0, y: 100, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 100, scale: 0.95 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="glass backdrop-blur-2xl bg-white/95 rounded-t-3xl sm:rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col"
+              className="glass backdrop-blur-2xl bg-white/95 rounded-t-3xl sm:rounded-3xl shadow-2xl w-full max-w-lg max-h-[85vh] sm:max-h-[90vh] overflow-hidden flex flex-col pointer-events-auto"
               style={{ fontFamily: "'Noto Serif KR', serif" }}
             >
               {/* 헤더 */}
@@ -187,8 +260,12 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
               </div>
 
               {/* 폼 */}
-              <div className="overflow-y-auto flex-1 px-6 py-6">
-                <div className="space-y-6">
+              <div
+                ref={modalContentRef}
+                className="overflow-y-auto flex-1 px-6 py-6"
+                style={{ WebkitOverflowScrolling: 'touch' }}
+              >
+                <div className="space-y-6 pb-4">
                   {/* 구분 */}
                   <div>
                     <label className="block text-sm font-medium text-stone-700 mb-3">
@@ -227,6 +304,8 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
                     </label>
                     <input
                       type="text"
+                      inputMode="text"
+                      autoComplete="name"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       placeholder="이름을 입력해주세요"
@@ -348,6 +427,7 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       placeholder="축하 메시지를 남겨주세요"
                       rows={4}
+                      autoComplete="off"
                       className="w-full px-4 py-3 rounded-xl border-2 border-stone-200 focus:border-rose-400 focus:outline-none transition-colors resize-none bg-white/80"
                     />
                   </div>
@@ -367,7 +447,11 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
                   }`}
                 >
                   <Send className="w-5 h-5" />
-                  {isSubmitting ? '전송 중...' : '카카오톡으로 전송하기'}
+                  {isSubmitting
+                    ? '전송 중...'
+                    : isMobile()
+                    ? '카카오톡으로 전송하기'
+                    : '참석 의사 전달하기'}
                 </button>
 
                 {/* 클립보드 복사 버튼 */}

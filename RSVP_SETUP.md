@@ -38,6 +38,73 @@ NEXT_PUBLIC_KAKAO_JS_KEY=your_javascript_key_here
 
 ## 📊 2단계: 구글 스프레드시트 연동 (선택사항)
 
+**⚠️ 중요: GitHub Pages 사용자는 이 기능을 사용할 수 없습니다.**
+
+GitHub Pages는 정적 사이트 호스팅만 지원하므로 API 라우트가 작동하지 않습니다.
+현재 구현은 구글 시트 저장이 실패해도 카카오톡 공유는 정상적으로 작동하도록 되어 있습니다.
+
+구글 시트 연동이 필요한 경우, 다음 중 하나를 선택하세요:
+- **Vercel, Netlify 등 서버리스 함수를 지원하는 플랫폼으로 배포**
+- **Google Apps Script Web App 사용** (아래 참고)
+
+### GitHub Pages에서 구글 시트 연동하기
+
+Google Apps Script를 사용하여 클라이언트에서 직접 구글 시트에 저장할 수 있습니다:
+
+#### 1. 구글 스프레드시트 준비
+
+1. [Google Sheets](https://sheets.google.com/)에서 새 시트 생성
+2. 첫 번째 시트 이름을 **"RSVP"**로 변경
+3. 첫 번째 행에 다음 헤더 입력:
+   ```
+   타임스탬프 | 구분 | 성함 | 참석여부 | 동반인원 | 식사여부 | 메시지
+   ```
+4. 스프레드시트 URL에서 ID 복사:
+   ```
+   https://docs.google.com/spreadsheets/d/[이 부분이 ID]/edit
+   ```
+
+#### 2. Google Apps Script 설정
+
+1. [Google Apps Script](https://script.google.com/) 접속
+2. **새 프로젝트** 클릭
+3. 프로젝트 이름 입력 (예: "청첩장 RSVP")
+4. 프로젝트 루트의 `google-apps-script.js` 파일 내용을 전체 복사하여 붙여넣기
+5. 코드 19번째 줄의 `YOUR_SHEET_ID_HERE`를 위에서 복사한 스프레드시트 ID로 교체
+6. **저장** (Ctrl+S 또는 Cmd+S)
+
+#### 3. 웹 앱 배포
+
+1. **배포 > 새 배포** 클릭
+2. **유형 선택 > 웹 앱** 선택
+3. 설정:
+   - **다음 사용자로 실행**: 나
+   - **액세스 권한**: **모든 사용자**
+4. **배포** 클릭
+5. 권한 승인 (본인 구글 계정 로그인 필요)
+6. **웹 앱 URL** 복사 (예: `https://script.google.com/macros/s/AKfyc...`)
+
+#### 4. 프론트엔드 코드 업데이트
+
+`components/RSVPModal.tsx` 파일에서 Google Apps Script URL을 변경하세요:
+
+```typescript
+// 175번째 줄 근처
+const scriptUrl = 'YOUR_WEB_APP_URL_HERE'; // 복사한 웹 앱 URL로 교체
+```
+
+#### 5. 테스트
+
+1. 개발 서버 재시작: `npm run dev`
+2. 참석 의사 전달 폼 작성 및 전송
+3. 구글 스프레드시트에 데이터가 추가되는지 확인
+
+**중요:** 코드를 수정한 후에는 Google Apps Script에서 **새 배포**를 생성해야 합니다.
+
+---
+
+### Vercel/Netlify 배포 시 구글 시트 연동
+
 RSVP 데이터를 구글 시트에 자동 저장하려면 다음 단계를 진행하세요.
 
 ### 2.1 Google Cloud 프로젝트 생성
