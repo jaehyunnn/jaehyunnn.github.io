@@ -48,19 +48,47 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
     const handleFocusIn = (e: FocusEvent) => {
       const target = e.target as HTMLElement;
       if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+        // iOS 키보드가 올라오는 시간을 고려하여 긴 지연 시간 사용
         setTimeout(() => {
           if (modalContentRef.current) {
             const modalContent = modalContentRef.current;
-            const targetRect = target.getBoundingClientRect();
-            const modalRect = modalContent.getBoundingClientRect();
 
-            // 모달 내부에서의 상대적 위치 계산
-            const scrollTop = modalContent.scrollTop;
-            const targetTop = targetRect.top - modalRect.top + scrollTop;
+            // 타겟의 offsetTop을 직접 사용 (더 정확함)
+            const targetOffsetTop = (target as HTMLInputElement).offsetTop;
 
-            // 입력 필드가 모달의 중앙에 오도록 스크롤
+            // 입력 필드가 모달 상단 1/3 지점에 오도록 스크롤 (iOS 최적화)
+            const scrollPosition = targetOffsetTop - modalContent.clientHeight / 3;
+
             modalContent.scrollTo({
-              top: targetTop - modalRect.height / 2 + targetRect.height / 2,
+              top: Math.max(0, scrollPosition),
+              behavior: 'smooth',
+            });
+          }
+
+          // iOS에서는 추가로 target.scrollIntoView 사용
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+          });
+        }, 300); // iOS에서 키보드 애니메이션 시간 고려
+      }
+    };
+
+    // iOS에서 키보드로 인한 resize 이벤트도 처리
+    const handleResize = () => {
+      const activeElement = document.activeElement as HTMLElement;
+      if (
+        activeElement &&
+        (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')
+      ) {
+        setTimeout(() => {
+          if (modalContentRef.current) {
+            const modalContent = modalContentRef.current;
+            const targetOffsetTop = (activeElement as HTMLInputElement).offsetTop;
+            const scrollPosition = targetOffsetTop - modalContent.clientHeight / 3;
+
+            modalContent.scrollTo({
+              top: Math.max(0, scrollPosition),
               behavior: 'smooth',
             });
           }
@@ -69,7 +97,12 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
     };
 
     document.addEventListener('focusin', handleFocusIn);
-    return () => document.removeEventListener('focusin', handleFocusIn);
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      document.removeEventListener('focusin', handleFocusIn);
+      window.removeEventListener('resize', handleResize);
+    };
   }, [isOpen]);
 
   // 폼 리셋
@@ -90,74 +123,25 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
     onClose();
   };
 
-  // 모바일 기기 감지
-  const isMobile = () => {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-      navigator.userAgent
-    );
-  };
-
-  // 카카오톡으로 전송
-  const handleKakaoShare = async () => {
+  // RSVP 제출
+  const handleSubmit = async () => {
     if (!isValid) return;
 
     setIsSubmitting(true);
 
     try {
-      // 구글 시트에 데이터 저장 (옵셔널 - 실패해도 계속 진행)
-      try {
-        await saveToGoogleSheet(formData);
-      } catch (saveError) {
-        console.warn('데이터 저장 실패 (계속 진행):', saveError);
-      }
+      // 구글 시트에 데이터 저장
+      await saveToGoogleSheet(formData);
 
-      // 모바일에서만 카카오톡 공유 시도
-      if (isMobile() && window.Kakao && window.Kakao.isInitialized()) {
-        try {
-          // Feed 타입으로 카카오톡 공유
-          window.Kakao.Share.sendDefault({
-            objectType: 'feed',
-            content: {
-              title: `${formData.name}님의 참석 의사`,
-              description: formatRSVPMessage(formData),
-              imageUrl: window.location.origin + '/images/share-bg.png',
-              link: {
-                mobileWebUrl: window.location.href,
-                webUrl: window.location.href,
-              },
-            },
-            buttons: [
-              {
-                title: '청첩장 보기',
-                link: {
-                  mobileWebUrl: window.location.href,
-                  webUrl: window.location.href,
-                },
-              },
-            ],
-          });
+      // 성공 메시지 표시
+      alert('참석 의사가 전달되었습니다. 감사합니다!');
 
-          // 전송 완료 후 모달 닫기
-          setTimeout(() => {
-            handleClose();
-            setIsSubmitting(false);
-          }, 500);
-        } catch (kakaoError) {
-          console.error('카카오톡 공유 실패:', kakaoError);
-          // 카카오톡 공유 실패 시 클립보드로 복사
-          handleCopyToClipboard();
-          setIsSubmitting(false);
-          alert('카카오톡 공유에 실패했습니다. 내용이 클립보드에 복사되었습니다.');
-        }
-      } else {
-        // PC 또는 Kakao SDK가 없을 경우 클립보드로 복사
-        handleCopyToClipboard();
-        setIsSubmitting(false);
-        alert('내용이 클립보드에 복사되었습니다.\n카카오톡이나 문자로 직접 붙여넣어 주세요.');
-      }
+      // 모달 닫기
+      handleClose();
     } catch (error) {
-      console.error('RSVP 전송 실패:', error);
-      alert('전송 중 오류가 발생했습니다. 다시 시도해주세요.');
+      console.error('RSVP 저장 실패:', error);
+      alert('저장 중 오류가 발생했습니다. 다시 시도해주세요.');
+    } finally {
       setIsSubmitting(false);
     }
   };
@@ -436,9 +420,9 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
 
               {/* 푸터 */}
               <div className="px-6 py-4 border-t border-stone-200/50 space-y-3">
-                {/* 카카오톡 전송 버튼 */}
+                {/* 제출 버튼 */}
                 <button
-                  onClick={handleKakaoShare}
+                  onClick={handleSubmit}
                   disabled={!isValid || isSubmitting}
                   className={`w-full py-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
                     isValid && !isSubmitting
@@ -447,11 +431,7 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
                   }`}
                 >
                   <Send className="w-5 h-5" />
-                  {isSubmitting
-                    ? '전송 중...'
-                    : isMobile()
-                    ? '카카오톡으로 전송하기'
-                    : '참석 의사 전달하기'}
+                  {isSubmitting ? '전송 중...' : '참석 의사 전달하기'}
                 </button>
 
                 {/* 클립보드 복사 버튼 */}
@@ -470,11 +450,4 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
       )}
     </AnimatePresence>
   );
-}
-
-// Kakao SDK 타입 선언
-declare global {
-  interface Window {
-    Kakao: any;
-  }
 }
