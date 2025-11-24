@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
-import { Pause, Play } from 'lucide-react';
+import { Pause, Play, ChevronUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface BGMPlayerProps {
@@ -16,6 +16,7 @@ export interface BGMPlayerHandle {
 const BGMPlayer = forwardRef<BGMPlayerHandle, BGMPlayerProps>(({ audioSrc = '/audio/bgm.mp3', autoPlay = false }, ref) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [autoplayFailed, setAutoplayFailed] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   // 부모 컴포넌트에서 제어할 수 있도록 play 함수 노출
@@ -151,6 +152,21 @@ const BGMPlayer = forwardRef<BGMPlayerHandle, BGMPlayerProps>(({ audioSrc = '/au
     setIsPlaying(false);
   };
 
+  // 스크롤 이벤트 감지
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 300);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // 맨 위로 스크롤
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <>
       <audio
@@ -163,67 +179,88 @@ const BGMPlayer = forwardRef<BGMPlayerHandle, BGMPlayerProps>(({ audioSrc = '/au
         onEnded={handleEnded}
       />
 
-      <motion.div
-        className="fixed bottom-6 right-6 z-50"
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: 1, duration: 0.5, type: 'spring' }}
-      >
-        {/* 메인 컨트롤 버튼 - Enhanced Glassmorphism */}
-        <motion.button
-          onClick={togglePlay}
-          className="glass-strong shadow-2xl rounded-full p-2.5 hover:glass transition-all duration-300 hover:shadow-[0_20px_50px_rgba(251,113,133,0.4)] relative z-10"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          animate={autoplayFailed ? { scale: [1, 1.1, 1] } : {}}
-          transition={autoplayFailed ? { duration: 1.5, repeat: Infinity } : {}}
-          aria-label={isPlaying ? '음악 일시정지' : '음악 재생'}
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3">
+        {/* 맨 위로 가기 버튼 */}
+        <AnimatePresence>
+          {showScrollTop && (
+            <motion.button
+              onClick={scrollToTop}
+              className="glass backdrop-blur-xl bg-white/40 border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.1)] rounded-full w-12 h-12 flex items-center justify-center hover:bg-white/50 transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.15)]"
+              initial={{ scale: 0, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0, opacity: 0, y: 20 }}
+              whileHover={{ scale: 1.1, y: -2 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+              aria-label="맨 위로 가기"
+            >
+              <ChevronUp className="w-5 h-5 text-stone-700" />
+            </motion.button>
+          )}
+        </AnimatePresence>
+
+        {/* BGM 플레이어 버튼 */}
+        <motion.div
+          className="relative"
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 1, duration: 0.5, type: 'spring' }}
         >
-          <AnimatePresence mode="wait">
-            {isPlaying ? (
-              <motion.div
-                key="pause"
-                initial={{ rotate: -180, opacity: 0 }}
-                animate={{ rotate: 0, opacity: 1 }}
-                exit={{ rotate: 180, opacity: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Pause className="w-4 h-4 text-rose-600" />
-              </motion.div>
-            ) : (
-              <motion.div
-                key="play"
-                initial={{ rotate: -180, opacity: 0 }}
-                animate={{ rotate: 0, opacity: 1 }}
-                exit={{ rotate: 180, opacity: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Play className="w-4 h-4 text-rose-600 ml-0.5" />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.button>
+          <motion.button
+            onClick={togglePlay}
+            className="glass backdrop-blur-xl bg-white/40 border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.1)] rounded-full w-12 h-12 flex items-center justify-center hover:bg-white/50 transition-all duration-300 hover:shadow-[0_12px_40px_rgba(251,113,133,0.3)] relative z-10"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            animate={autoplayFailed ? { scale: [1, 1.1, 1] } : {}}
+            transition={autoplayFailed ? { duration: 1.5, repeat: Infinity } : {}}
+            aria-label={isPlaying ? '음악 일시정지' : '음악 재생'}
+          >
+            <AnimatePresence mode="wait">
+              {isPlaying ? (
+                <motion.div
+                  key="pause"
+                  initial={{ rotate: -180, opacity: 0 }}
+                  animate={{ rotate: 0, opacity: 1 }}
+                  exit={{ rotate: 180, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Pause className="w-5 h-5 text-rose-600" />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="play"
+                  initial={{ rotate: -180, opacity: 0 }}
+                  animate={{ rotate: 0, opacity: 1 }}
+                  exit={{ rotate: 180, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Play className="w-5 h-5 text-rose-600 ml-0.5" />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.button>
 
-        {/* 재생 중 애니메이션 링 */}
-        {isPlaying && (
-          <motion.div
-            className="absolute inset-0 rounded-full border-2 border-rose-300/50 pointer-events-none"
-            initial={{ scale: 1, opacity: 0.7 }}
-            animate={{ scale: 1.3, opacity: 0 }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-          />
-        )}
+          {/* 재생 중 애니메이션 링 */}
+          {isPlaying && (
+            <motion.div
+              className="absolute inset-0 rounded-full border-2 border-rose-300/50 pointer-events-none"
+              initial={{ scale: 1, opacity: 0.7 }}
+              animate={{ scale: 1.3, opacity: 0 }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            />
+          )}
 
-        {/* 자동재생 실패 시 알림 링 */}
-        {autoplayFailed && !isPlaying && (
-          <motion.div
-            className="absolute inset-0 rounded-full border-2 border-amber-400/60 pointer-events-none"
-            initial={{ scale: 1, opacity: 0.8 }}
-            animate={{ scale: 1.4, opacity: 0 }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-          />
-        )}
-      </motion.div>
+          {/* 자동재생 실패 시 알림 링 */}
+          {autoplayFailed && !isPlaying && (
+            <motion.div
+              className="absolute inset-0 rounded-full border-2 border-amber-400/60 pointer-events-none"
+              initial={{ scale: 1, opacity: 0.8 }}
+              animate={{ scale: 1.4, opacity: 0 }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            />
+          )}
+        </motion.div>
+      </div>
     </>
   );
 });

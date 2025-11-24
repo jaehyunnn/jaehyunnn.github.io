@@ -2,12 +2,14 @@
 
 import { useState, useRef } from 'react';
 import BGMPlayer, { BGMPlayerHandle } from '@/components/BGMPlayer';
+import KakaoScript from '@/components/KakaoScript';
 import IntroSection from '@/components/sections/IntroSection';
 import HeroSection from '@/components/sections/HeroSection';
 import CalendarSection from '@/components/sections/CalendarSection';
 import InvitationSection from '@/components/sections/InvitationSection';
 import GallerySection from '@/components/sections/GallerySection';
 import WeddingInfoSection from '@/components/sections/WeddingInfoSection';
+import RSVPSection from '@/components/sections/RSVPSection';
 import ContactSection from '@/components/sections/ContactSection';
 import ShareSection from '@/components/sections/ShareSection';
 
@@ -118,6 +120,9 @@ export default function Home() {
 
   return (
     <main className="min-h-screen relative">
+      {/* 카카오 SDK 초기화 */}
+      <KakaoScript />
+
       {/* 인트로 섹션 */}
       {showIntro && (
         <IntroSection
@@ -176,6 +181,12 @@ export default function Home() {
         longitude={weddingData.wedding.longitude}
       />
 
+      {/* 참석 여부 전달 */}
+      <RSVPSection
+        groomName={weddingData.groom.firstName}
+        brideName={weddingData.bride.firstName}
+      />
+
       {/* 연락처 및 계좌정보 */}
       <ContactSection
         groom={{
@@ -231,7 +242,7 @@ export default function Home() {
           <p className="text-stone-500 text-sm font-light tracking-wider mb-8">{weddingData.wedding.date}</p>
 
           <p className="text-[10px] text-stone-400 font-light tracking-widest uppercase">
-            Copyright © 2025 Jae-Hyun Park.<br />
+            Copyright © 2026 Jae-Hyun Park.<br />
             All rights reserved.
           </p>
         </div>
