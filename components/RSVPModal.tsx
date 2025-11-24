@@ -1,8 +1,8 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Minus, Plus, Send, Copy } from 'lucide-react';
-import { useState, useRef, useEffect } from 'react';
+import { X, ChevronLeft, ChevronRight, Send, Minus, Plus } from 'lucide-react';
+import { useState } from 'react';
 
 interface RSVPModalProps {
   isOpen: boolean;
@@ -21,6 +21,7 @@ interface RSVPData {
 }
 
 export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSVPModalProps) {
+  const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<RSVPData>({
     side: '',
     name: '',
@@ -31,89 +32,48 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showCopyMessage, setShowCopyMessage] = useState(false);
-  const modalContentRef = useRef<HTMLDivElement>(null);
 
-  // 필수 필드 검증
-  const isValid =
-    formData.side &&
-    formData.name &&
-    formData.attendance &&
-    (formData.attendance !== 'attending' || formData.meal); // 참석일 경우만 식사 여부 필수
-
-  // 모바일 키보드 대응: 입력 필드 포커스 시 스크롤
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const scrollToInput = (target: HTMLElement) => {
-      // 여러 번 시도하여 확실하게 스크롤
-      const attemptScroll = () => {
-        // 방법 1: 입력 필드를 화면 상단으로 스크롤
-        target.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start',
-          inline: 'nearest',
-        });
-
-        // 방법 2: 모달 컨텐츠 내부 스크롤
-        if (modalContentRef.current) {
-          const modalContent = modalContentRef.current;
-          const targetRect = target.getBoundingClientRect();
-          const modalRect = modalContent.getBoundingClientRect();
-
-          // 입력 필드가 모달 상단에서 20px 아래에 위치하도록
-          const relativeTop = targetRect.top - modalRect.top + modalContent.scrollTop;
-
-          modalContent.scrollTo({
-            top: relativeTop - 20,
-            behavior: 'smooth',
-          });
-        }
-      };
-
-      // 키보드 애니메이션을 고려하여 여러 번 시도
-      setTimeout(attemptScroll, 100);
-      setTimeout(attemptScroll, 300);
-      setTimeout(attemptScroll, 500);
-    };
-
-    const handleFocusIn = (e: FocusEvent) => {
-      const target = e.target as HTMLElement;
-      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
-        scrollToInput(target);
-      }
-    };
-
-    // visualViewport API를 사용한 키보드 감지 (iOS 최적화)
-    const handleViewportResize = () => {
-      const activeElement = document.activeElement as HTMLElement;
-      if (
-        activeElement &&
-        (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')
-      ) {
-        scrollToInput(activeElement);
-      }
-    };
-
-    document.addEventListener('focusin', handleFocusIn);
-
-    // visualViewport가 지원되는 경우 (iOS Safari 등)
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', handleViewportResize);
-    } else {
-      // 폴백: window resize 이벤트
-      window.addEventListener('resize', handleViewportResize);
+  // 단계 유효성 검사
+  const isStepValid = () => {
+    switch (step) {
+      case 1:
+        return !!formData.side;
+      case 2:
+        return !!formData.name;
+      case 3:
+        return !!formData.attendance;
+      case 4:
+        return formData.attendance !== 'attending' || formData.guestCount > 0;
+      case 5:
+        return formData.attendance !== 'attending' || !!formData.meal;
+      case 6:
+        return true; // 메시지는 선택사항
+      default:
+        return false;
     }
+  };
 
-    return () => {
-      document.removeEventListener('focusin', handleFocusIn);
-      if (window.visualViewport) {
-        window.visualViewport.removeEventListener('resize', handleViewportResize);
-      } else {
-        window.removeEventListener('resize', handleViewportResize);
-      }
-    };
-  }, [isOpen]);
+  // 다음 단계로
+  const handleNext = () => {
+    if (!isStepValid()) return;
+
+    // 불참/미정인 경우 동반인원, 식사 단계 건너뛰기
+    if (step === 3 && formData.attendance !== 'attending') {
+      setStep(6); // 메시지 단계로
+    } else {
+      setStep(step + 1);
+    }
+  };
+
+  // 이전 단계로
+  const handlePrev = () => {
+    // 메시지 단계에서 뒤로가기 시 참석여부에 따라 분기
+    if (step === 6 && formData.attendance !== 'attending') {
+      setStep(3); // 참석여부 단계로
+    } else {
+      setStep(step - 1);
+    }
+  };
 
   // 폼 리셋
   const resetForm = () => {
@@ -125,6 +85,7 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
       meal: '',
       message: '',
     });
+    setStep(1);
   };
 
   // 모달 닫기
@@ -135,18 +96,11 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
 
   // RSVP 제출
   const handleSubmit = async () => {
-    if (!isValid) return;
-
     setIsSubmitting(true);
 
     try {
-      // 구글 시트에 데이터 저장
       await saveToGoogleSheet(formData);
-
-      // 성공 메시지 표시
       alert('참석 의사가 전달되었습니다. 감사합니다!');
-
-      // 모달 닫기
       handleClose();
     } catch (error) {
       console.error('RSVP 저장 실패:', error);
@@ -156,48 +110,12 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
     }
   };
 
-  // 클립보드로 복사
-  const handleCopyToClipboard = () => {
-    const message = formatRSVPMessage(formData);
-    navigator.clipboard.writeText(message);
-    setShowCopyMessage(true);
-    setTimeout(() => setShowCopyMessage(false), 2000);
-  };
-
-  // 메시지 포맷팅
-  const formatRSVPMessage = (data: RSVPData): string => {
-    const sideText = data.side === 'groom' ? `신랑 측` : `신부 측`;
-    const attendanceText =
-      data.attendance === 'attending'
-        ? '참석'
-        : data.attendance === 'not-attending'
-        ? '불참'
-        : '미정';
-    const mealText =
-      data.meal === 'meal' ? '식사 예정' : data.meal === 'gift' ? '답례품 수령' : '미정';
-
-    let message = `[결혼식 참석 의사]\n\n`;
-    message += `👤 성함: ${data.name}\n`;
-    message += `💐 구분: ${sideText}\n`;
-    message += `✅ 참석 여부: ${attendanceText}\n`;
-    if (data.attendance === 'attending') {
-      message += `👥 동반 인원: ${data.guestCount}명 (본인 포함)\n`;
-      message += `🍽️ 식사 여부: ${mealText}\n`;
-    }
-    if (data.message) {
-      message += `\n💌 전하실 말씀:\n${data.message}`;
-    }
-
-    return message;
-  };
-
   // 구글 시트 저장
   const saveToGoogleSheet = async (data: RSVPData) => {
     try {
-      // Google Apps Script Web App URL
-      const scriptUrl = 'https://script.google.com/macros/s/AKfycbx02D055EaD3aJgIo5JikIIwz9AjFoQ6-I_tKvdZM15vy8lGtC_C2g9gRuyyOAVeUCb/exec';
+      const scriptUrl =
+        'https://script.google.com/macros/s/AKfycbx02D055EaD3aJgIo5JikIIwz9AjFoQ6-I_tKvdZM15vy8lGtC_C2g9gRuyyOAVeUCb/exec';
 
-      // GET 요청으로 변경 (CORS 문제 회피)
       const params = new URLSearchParams({
         data: JSON.stringify(data),
       });
@@ -216,6 +134,301 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
     }
   };
 
+  // 진행 상황 표시
+  const renderProgress = () => {
+    const totalSteps = formData.attendance === 'attending' ? 6 : 4;
+    const currentStep = step === 6 && formData.attendance !== 'attending' ? 4 : step;
+
+    return (
+      <div className="flex items-center justify-center gap-2 mb-8">
+        {Array.from({ length: totalSteps }).map((_, index) => (
+          <div
+            key={index}
+            className={`h-1.5 rounded-full transition-all ${
+              index + 1 <= currentStep ? 'bg-rose-400 w-8' : 'bg-stone-200 w-6'
+            }`}
+          />
+        ))}
+      </div>
+    );
+  };
+
+  // 각 단계별 콘텐츠
+  const renderStep = () => {
+    const slideVariants = {
+      enter: { x: 50, opacity: 0 },
+      center: { x: 0, opacity: 1 },
+      exit: { x: -50, opacity: 0 },
+    };
+
+    switch (step) {
+      case 1:
+        return (
+          <motion.div
+            key="step1"
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            className="flex flex-col items-center justify-center min-h-[60vh]"
+          >
+            <h2 className="text-2xl font-medium text-stone-800 mb-3 text-center">
+              어느 분의 지인이신가요?
+            </h2>
+            <p className="text-sm text-stone-500 mb-12">구분을 선택해주세요</p>
+
+            <div className="w-full max-w-sm space-y-4">
+              <button
+                onClick={() => {
+                  setFormData({ ...formData, side: 'groom' });
+                  setTimeout(handleNext, 300);
+                }}
+                className={`w-full py-6 rounded-2xl font-medium transition-all text-lg ${
+                  formData.side === 'groom'
+                    ? 'bg-gradient-to-r from-blue-400 to-blue-500 text-white shadow-lg'
+                    : 'bg-white/80 border-2 border-stone-200 text-stone-700 hover:border-blue-300'
+                }`}
+              >
+                신랑 측
+              </button>
+              <button
+                onClick={() => {
+                  setFormData({ ...formData, side: 'bride' });
+                  setTimeout(handleNext, 300);
+                }}
+                className={`w-full py-6 rounded-2xl font-medium transition-all text-lg ${
+                  formData.side === 'bride'
+                    ? 'bg-gradient-to-r from-rose-400 to-rose-500 text-white shadow-lg'
+                    : 'bg-white/80 border-2 border-stone-200 text-stone-700 hover:border-rose-300'
+                }`}
+              >
+                신부 측
+              </button>
+            </div>
+          </motion.div>
+        );
+
+      case 2:
+        return (
+          <motion.div
+            key="step2"
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            className="flex flex-col items-center justify-center min-h-[60vh]"
+          >
+            <h2 className="text-2xl font-medium text-stone-800 mb-3 text-center">
+              성함을 알려주세요
+            </h2>
+            <p className="text-sm text-stone-500 mb-12">예식장에서 확인할 수 있도록 정확히 입력해주세요</p>
+
+            <div className="w-full max-w-sm">
+              <input
+                type="text"
+                inputMode="text"
+                autoComplete="name"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder="홍길동"
+                autoFocus
+                className="w-full px-6 py-5 text-lg rounded-2xl border-2 border-stone-200 focus:border-rose-400 focus:outline-none transition-colors bg-white/80 text-center"
+              />
+            </div>
+          </motion.div>
+        );
+
+      case 3:
+        return (
+          <motion.div
+            key="step3"
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            className="flex flex-col items-center justify-center min-h-[60vh]"
+          >
+            <h2 className="text-2xl font-medium text-stone-800 mb-3 text-center">
+              참석 여부를 알려주세요
+            </h2>
+            <p className="text-sm text-stone-500 mb-12">
+              {groomName} ❤️ {brideName}의 결혼식에
+            </p>
+
+            <div className="w-full max-w-sm space-y-4">
+              <button
+                onClick={() => {
+                  setFormData({ ...formData, attendance: 'attending' });
+                  setTimeout(handleNext, 300);
+                }}
+                className={`w-full py-6 rounded-2xl font-medium transition-all text-lg ${
+                  formData.attendance === 'attending'
+                    ? 'bg-gradient-to-r from-rose-400 to-rose-500 text-white shadow-lg'
+                    : 'bg-white/80 border-2 border-stone-200 text-stone-700 hover:border-rose-300'
+                }`}
+              >
+                참석합니다
+              </button>
+              <button
+                onClick={() => {
+                  setFormData({ ...formData, attendance: 'not-attending', guestCount: 0, meal: '' });
+                  setTimeout(handleNext, 300);
+                }}
+                className={`w-full py-6 rounded-2xl font-medium transition-all text-lg ${
+                  formData.attendance === 'not-attending'
+                    ? 'bg-gradient-to-r from-stone-400 to-stone-500 text-white shadow-lg'
+                    : 'bg-white/80 border-2 border-stone-200 text-stone-700 hover:border-stone-300'
+                }`}
+              >
+                불참합니다
+              </button>
+              <button
+                onClick={() => {
+                  setFormData({ ...formData, attendance: 'undecided', guestCount: 0, meal: '' });
+                  setTimeout(handleNext, 300);
+                }}
+                className={`w-full py-6 rounded-2xl font-medium transition-all text-lg ${
+                  formData.attendance === 'undecided'
+                    ? 'bg-gradient-to-r from-amber-400 to-amber-500 text-white shadow-lg'
+                    : 'bg-white/80 border-2 border-stone-200 text-stone-700 hover:border-amber-300'
+                }`}
+              >
+                미정입니다
+              </button>
+            </div>
+          </motion.div>
+        );
+
+      case 4:
+        return (
+          <motion.div
+            key="step4"
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            className="flex flex-col items-center justify-center min-h-[60vh]"
+          >
+            <h2 className="text-2xl font-medium text-stone-800 mb-3 text-center">
+              동반 인원을 알려주세요
+            </h2>
+            <p className="text-sm text-stone-500 mb-12">본인 포함 총 인원수를 선택해주세요</p>
+
+            <div className="flex items-center gap-8">
+              <button
+                onClick={() => setFormData({ ...formData, guestCount: Math.max(1, formData.guestCount - 1) })}
+                className="w-14 h-14 rounded-full bg-white/80 border-2 border-stone-200 hover:border-rose-300 flex items-center justify-center transition-colors"
+              >
+                <Minus className="w-6 h-6 text-stone-700" />
+              </button>
+
+              <div className="text-center">
+                <div className="text-6xl font-light text-stone-800 mb-2">{formData.guestCount}</div>
+                <div className="text-sm text-stone-500">명</div>
+              </div>
+
+              <button
+                onClick={() => setFormData({ ...formData, guestCount: Math.min(10, formData.guestCount + 1) })}
+                className="w-14 h-14 rounded-full bg-white/80 border-2 border-stone-200 hover:border-rose-300 flex items-center justify-center transition-colors"
+              >
+                <Plus className="w-6 h-6 text-stone-700" />
+              </button>
+            </div>
+          </motion.div>
+        );
+
+      case 5:
+        return (
+          <motion.div
+            key="step5"
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            className="flex flex-col items-center justify-center min-h-[60vh]"
+          >
+            <h2 className="text-2xl font-medium text-stone-800 mb-3 text-center">
+              식사 여부를 선택해주세요
+            </h2>
+            <p className="text-sm text-stone-500 mb-12">예식 후 식사 준비를 위해 필요합니다</p>
+
+            <div className="w-full max-w-sm space-y-4">
+              <button
+                onClick={() => {
+                  setFormData({ ...formData, meal: 'meal' });
+                  setTimeout(handleNext, 300);
+                }}
+                className={`w-full py-6 rounded-2xl font-medium transition-all text-lg ${
+                  formData.meal === 'meal'
+                    ? 'bg-gradient-to-r from-rose-400 to-rose-500 text-white shadow-lg'
+                    : 'bg-white/80 border-2 border-stone-200 text-stone-700 hover:border-rose-300'
+                }`}
+              >
+                식사 예정입니다
+              </button>
+              <button
+                onClick={() => {
+                  setFormData({ ...formData, meal: 'gift' });
+                  setTimeout(handleNext, 300);
+                }}
+                className={`w-full py-6 rounded-2xl font-medium transition-all text-lg ${
+                  formData.meal === 'gift'
+                    ? 'bg-gradient-to-r from-amber-400 to-amber-500 text-white shadow-lg'
+                    : 'bg-white/80 border-2 border-stone-200 text-stone-700 hover:border-amber-300'
+                }`}
+              >
+                답례품만 수령합니다
+              </button>
+              <button
+                onClick={() => {
+                  setFormData({ ...formData, meal: 'undecided' });
+                  setTimeout(handleNext, 300);
+                }}
+                className={`w-full py-6 rounded-2xl font-medium transition-all text-lg ${
+                  formData.meal === 'undecided'
+                    ? 'bg-gradient-to-r from-stone-400 to-stone-500 text-white shadow-lg'
+                    : 'bg-white/80 border-2 border-stone-200 text-stone-700 hover:border-stone-300'
+                }`}
+              >
+                미정입니다
+              </button>
+            </div>
+          </motion.div>
+        );
+
+      case 6:
+        return (
+          <motion.div
+            key="step6"
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            className="flex flex-col items-center justify-center min-h-[60vh]"
+          >
+            <h2 className="text-2xl font-medium text-stone-800 mb-3 text-center">
+              축하 메시지를 남겨주세요
+            </h2>
+            <p className="text-sm text-stone-500 mb-12">선택사항입니다</p>
+
+            <div className="w-full max-w-sm">
+              <textarea
+                value={formData.message}
+                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                placeholder="축하합니다! 행복하세요."
+                rows={6}
+                autoFocus
+                className="w-full px-6 py-5 text-base rounded-2xl border-2 border-stone-200 focus:border-rose-400 focus:outline-none transition-colors resize-none bg-white/80"
+              />
+            </div>
+          </motion.div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -229,21 +442,22 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
             className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100]"
           />
 
-          {/* 모달 */}
-          <div className="fixed inset-0 z-[101] flex items-end sm:items-center justify-center p-0 sm:p-4 pointer-events-none">
+          {/* 모달 - 전체 화면 */}
+          <div className="fixed inset-0 z-[101] flex items-center justify-center pointer-events-none">
             <motion.div
-              initial={{ opacity: 0, y: 100, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 100, scale: 0.95 }}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="glass backdrop-blur-2xl bg-white/95 rounded-t-3xl sm:rounded-3xl shadow-2xl w-full max-w-lg max-h-[85vh] sm:max-h-[90vh] overflow-hidden flex flex-col pointer-events-auto"
-              style={{ fontFamily: "'Noto Serif KR', serif" }}
+              className="glass backdrop-blur-2xl bg-gradient-to-b from-white/98 to-stone-50/98 rounded-3xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden flex flex-col pointer-events-auto"
+              style={{
+                fontFamily: "'Noto Serif KR', serif",
+                maxHeight: '90vh'
+              }}
             >
               {/* 헤더 */}
               <div className="px-6 py-5 border-b border-stone-200/50 flex items-center justify-between">
-                <h3 className="text-xl font-medium text-stone-800 tracking-wide">
-                  참석 의사 전달
-                </h3>
+                <h3 className="text-lg font-medium text-stone-800 tracking-wide">참석 의사 전달</h3>
                 <button
                   onClick={handleClose}
                   className="w-8 h-8 rounded-full hover:bg-stone-100 flex items-center justify-center transition-colors"
@@ -253,206 +467,53 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
                 </button>
               </div>
 
-              {/* 폼 */}
-              <div
-                ref={modalContentRef}
-                className="overflow-y-auto flex-1 px-6 py-6"
-                style={{ WebkitOverflowScrolling: 'touch' }}
-              >
-                <div className="space-y-6 pb-4">
-                  {/* 구분 */}
-                  <div>
-                    <label className="block text-sm font-medium text-stone-700 mb-3">
-                      구분 <span className="text-rose-500">*</span>
-                    </label>
-                    <div className="grid grid-cols-2 gap-3">
-                      <button
-                        type="button"
-                        onClick={() => setFormData({ ...formData, side: 'groom' })}
-                        className={`py-3 px-4 rounded-xl border-2 transition-all ${
-                          formData.side === 'groom'
-                            ? 'border-rose-400 bg-rose-50 text-rose-700'
-                            : 'border-stone-200 hover:border-stone-300 text-stone-600'
-                        }`}
-                      >
-                        신랑 측
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setFormData({ ...formData, side: 'bride' })}
-                        className={`py-3 px-4 rounded-xl border-2 transition-all ${
-                          formData.side === 'bride'
-                            ? 'border-rose-400 bg-rose-50 text-rose-700'
-                            : 'border-stone-200 hover:border-stone-300 text-stone-600'
-                        }`}
-                      >
-                        신부 측
-                      </button>
-                    </div>
-                  </div>
+              {/* 진행 상황 */}
+              <div className="px-6 pt-6">{renderProgress()}</div>
 
-                  {/* 성함 */}
-                  <div>
-                    <label className="block text-sm font-medium text-stone-700 mb-3">
-                      성함 <span className="text-rose-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      inputMode="text"
-                      autoComplete="name"
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      placeholder="이름을 입력해주세요"
-                      className="w-full px-4 py-3 rounded-xl border-2 border-stone-200 focus:border-rose-400 focus:outline-none transition-colors bg-white/80"
-                    />
-                  </div>
-
-                  {/* 참석 여부 */}
-                  <div>
-                    <label className="block text-sm font-medium text-stone-700 mb-3">
-                      참석 여부 <span className="text-rose-500">*</span>
-                    </label>
-                    <div className="grid grid-cols-3 gap-2">
-                      {[
-                        { value: 'attending', label: '참석' },
-                        { value: 'not-attending', label: '불참' },
-                        { value: 'undecided', label: '미정' },
-                      ].map((option) => (
-                        <button
-                          key={option.value}
-                          type="button"
-                          onClick={() =>
-                            setFormData({
-                              ...formData,
-                              attendance: option.value as RSVPData['attendance'],
-                            })
-                          }
-                          className={`py-3 px-3 rounded-xl border-2 transition-all text-sm ${
-                            formData.attendance === option.value
-                              ? 'border-rose-400 bg-rose-50 text-rose-700'
-                              : 'border-stone-200 hover:border-stone-300 text-stone-600'
-                          }`}
-                        >
-                          {option.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* 동반 인원 (참석일 경우만) */}
-                  {formData.attendance === 'attending' && (
-                    <div>
-                      <label className="block text-sm font-medium text-stone-700 mb-3">
-                        동반 인원 (본인 포함)
-                      </label>
-                      <div className="flex items-center gap-4">
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setFormData({
-                              ...formData,
-                              guestCount: Math.max(1, formData.guestCount - 1),
-                            })
-                          }
-                          className="w-10 h-10 rounded-full border-2 border-stone-300 hover:border-rose-400 hover:bg-rose-50 flex items-center justify-center transition-all"
-                        >
-                          <Minus className="w-4 h-4" />
-                        </button>
-                        <div className="flex-1 text-center">
-                          <span className="text-2xl font-medium text-stone-800">
-                            {formData.guestCount}
-                          </span>
-                          <span className="text-sm text-stone-500 ml-1">명</span>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setFormData({ ...formData, guestCount: formData.guestCount + 1 })
-                          }
-                          className="w-10 h-10 rounded-full border-2 border-stone-300 hover:border-rose-400 hover:bg-rose-50 flex items-center justify-center transition-all"
-                        >
-                          <Plus className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* 식사 여부 */}
-                  {formData.attendance === 'attending' && (
-                    <div>
-                      <label className="block text-sm font-medium text-stone-700 mb-3">
-                        식사 여부 <span className="text-rose-500">*</span>
-                      </label>
-                      <div className="grid grid-cols-3 gap-2">
-                        {[
-                          { value: 'meal', label: '식사 예정' },
-                          { value: 'gift', label: '답례품' },
-                          { value: 'undecided', label: '미정' },
-                        ].map((option) => (
-                          <button
-                            key={option.value}
-                            type="button"
-                            onClick={() =>
-                              setFormData({
-                                ...formData,
-                                meal: option.value as RSVPData['meal'],
-                              })
-                            }
-                            className={`py-3 px-3 rounded-xl border-2 transition-all text-sm ${
-                              formData.meal === option.value
-                                ? 'border-rose-400 bg-rose-50 text-rose-700'
-                                : 'border-stone-200 hover:border-stone-300 text-stone-600'
-                            }`}
-                          >
-                            {option.label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* 전하실 말씀 */}
-                  <div>
-                    <label className="block text-sm font-medium text-stone-700 mb-3">
-                      전하실 말씀 (선택)
-                    </label>
-                    <textarea
-                      value={formData.message}
-                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      placeholder="축하 메시지를 남겨주세요"
-                      rows={4}
-                      autoComplete="off"
-                      className="w-full px-4 py-3 rounded-xl border-2 border-stone-200 focus:border-rose-400 focus:outline-none transition-colors resize-none bg-white/80"
-                    />
-                  </div>
-                </div>
+              {/* 콘텐츠 */}
+              <div className="flex-1 px-6 pb-6 overflow-y-auto">
+                <AnimatePresence mode="wait">{renderStep()}</AnimatePresence>
               </div>
 
-              {/* 푸터 */}
-              <div className="px-6 py-4 border-t border-stone-200/50 space-y-3">
-                {/* 제출 버튼 */}
-                <button
-                  onClick={handleSubmit}
-                  disabled={!isValid || isSubmitting}
-                  className={`w-full py-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
-                    isValid && !isSubmitting
-                      ? 'bg-gradient-to-r from-rose-400 to-rose-500 text-white shadow-lg hover:shadow-xl hover:from-rose-500 hover:to-rose-600'
-                      : 'bg-stone-200 text-stone-400 cursor-not-allowed'
-                  }`}
-                >
-                  <Send className="w-5 h-5" />
-                  {isSubmitting ? '전송 중...' : '참석 의사 전달하기'}
-                </button>
+              {/* 하단 버튼 */}
+              <div className="px-6 py-4 border-t border-stone-200/50 flex gap-3">
+                {step > 1 && (
+                  <button
+                    onClick={handlePrev}
+                    className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl border-2 border-stone-300 text-stone-700 hover:bg-stone-50 transition-colors"
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                    이전
+                  </button>
+                )}
 
-                {/* 클립보드 복사 버튼 */}
-                <button
-                  onClick={handleCopyToClipboard}
-                  disabled={!isValid}
-                  className="w-full py-3 rounded-xl font-medium transition-all flex items-center justify-center gap-2 border-2 border-stone-300 text-stone-700 hover:bg-stone-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <Copy className="w-4 h-4" />
-                  {showCopyMessage ? '복사되었습니다!' : '내용 복사하기'}
-                </button>
+                {step < 6 ? (
+                  <button
+                    onClick={handleNext}
+                    disabled={!isStepValid()}
+                    className={`flex-1 flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-medium transition-all ${
+                      isStepValid()
+                        ? 'bg-gradient-to-r from-rose-400 to-rose-500 text-white shadow-lg hover:shadow-xl'
+                        : 'bg-stone-200 text-stone-400 cursor-not-allowed'
+                    }`}
+                  >
+                    다음
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleSubmit}
+                    disabled={isSubmitting}
+                    className={`flex-1 flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-medium transition-all ${
+                      !isSubmitting
+                        ? 'bg-gradient-to-r from-rose-400 to-rose-500 text-white shadow-lg hover:shadow-xl'
+                        : 'bg-stone-200 text-stone-400 cursor-not-allowed'
+                    }`}
+                  >
+                    <Send className="w-5 h-5" />
+                    {isSubmitting ? '전송 중...' : '전달하기'}
+                  </button>
+                )}
               </div>
             </motion.div>
           </div>
