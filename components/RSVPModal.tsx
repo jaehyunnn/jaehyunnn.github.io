@@ -45,63 +45,73 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
   useEffect(() => {
     if (!isOpen) return;
 
+    const scrollToInput = (target: HTMLElement) => {
+      // 여러 번 시도하여 확실하게 스크롤
+      const attemptScroll = () => {
+        // 방법 1: 입력 필드를 화면 상단으로 스크롤
+        target.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+          inline: 'nearest',
+        });
+
+        // 방법 2: 모달 컨텐츠 내부 스크롤
+        if (modalContentRef.current) {
+          const modalContent = modalContentRef.current;
+          const targetRect = target.getBoundingClientRect();
+          const modalRect = modalContent.getBoundingClientRect();
+
+          // 입력 필드가 모달 상단에서 20px 아래에 위치하도록
+          const relativeTop = targetRect.top - modalRect.top + modalContent.scrollTop;
+
+          modalContent.scrollTo({
+            top: relativeTop - 20,
+            behavior: 'smooth',
+          });
+        }
+      };
+
+      // 키보드 애니메이션을 고려하여 여러 번 시도
+      setTimeout(attemptScroll, 100);
+      setTimeout(attemptScroll, 300);
+      setTimeout(attemptScroll, 500);
+    };
+
     const handleFocusIn = (e: FocusEvent) => {
       const target = e.target as HTMLElement;
       if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
-        // iOS 키보드가 올라오는 시간을 고려하여 긴 지연 시간 사용
-        setTimeout(() => {
-          if (modalContentRef.current) {
-            const modalContent = modalContentRef.current;
-
-            // 타겟의 offsetTop을 직접 사용 (더 정확함)
-            const targetOffsetTop = (target as HTMLInputElement).offsetTop;
-
-            // 입력 필드가 모달 상단 1/3 지점에 오도록 스크롤 (iOS 최적화)
-            const scrollPosition = targetOffsetTop - modalContent.clientHeight / 3;
-
-            modalContent.scrollTo({
-              top: Math.max(0, scrollPosition),
-              behavior: 'smooth',
-            });
-          }
-
-          // iOS에서는 추가로 target.scrollIntoView 사용
-          target.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center',
-          });
-        }, 300); // iOS에서 키보드 애니메이션 시간 고려
+        scrollToInput(target);
       }
     };
 
-    // iOS에서 키보드로 인한 resize 이벤트도 처리
-    const handleResize = () => {
+    // visualViewport API를 사용한 키보드 감지 (iOS 최적화)
+    const handleViewportResize = () => {
       const activeElement = document.activeElement as HTMLElement;
       if (
         activeElement &&
         (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')
       ) {
-        setTimeout(() => {
-          if (modalContentRef.current) {
-            const modalContent = modalContentRef.current;
-            const targetOffsetTop = (activeElement as HTMLInputElement).offsetTop;
-            const scrollPosition = targetOffsetTop - modalContent.clientHeight / 3;
-
-            modalContent.scrollTo({
-              top: Math.max(0, scrollPosition),
-              behavior: 'smooth',
-            });
-          }
-        }, 100);
+        scrollToInput(activeElement);
       }
     };
 
     document.addEventListener('focusin', handleFocusIn);
-    window.addEventListener('resize', handleResize);
+
+    // visualViewport가 지원되는 경우 (iOS Safari 등)
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', handleViewportResize);
+    } else {
+      // 폴백: window resize 이벤트
+      window.addEventListener('resize', handleViewportResize);
+    }
 
     return () => {
       document.removeEventListener('focusin', handleFocusIn);
-      window.removeEventListener('resize', handleResize);
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', handleViewportResize);
+      } else {
+        window.removeEventListener('resize', handleViewportResize);
+      }
     };
   }, [isOpen]);
 
