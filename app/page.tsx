@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import BGMPlayer, { BGMPlayerHandle } from '@/components/BGMPlayer';
+import StickyHeader from '@/components/StickyHeader';
 import IntroSection from '@/components/sections/IntroSection';
 import HeroSection from '@/components/sections/HeroSection';
 import CalendarSection from '@/components/sections/CalendarSection';
@@ -133,6 +134,12 @@ export default function Home() {
 
       {/* BGM 플레이어 - 인트로 완료 후 자동 재생 */}
       <BGMPlayer ref={bgmRef} audioSrc="/audio/bgm.mp3" autoPlay={true} />
+
+      {/* 스티키 헤더 - Hero 이후 스크롤 시 표시 */}
+      <StickyHeader
+        groomName={weddingData.groom.name_eng.toUpperCase()}
+        brideName={weddingData.bride.name_eng.toUpperCase()}
+      />
 
       {/* 히어로 섹션 */}
       <HeroSection
