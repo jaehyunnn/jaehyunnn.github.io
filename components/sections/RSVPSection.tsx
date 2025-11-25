@@ -48,14 +48,14 @@ export default function RSVPSection({ groomName, brideName }: RSVPSectionProps) 
           {/* 버튼 */}
           <motion.button
             onClick={() => setIsModalOpen(true)}
-            className="glass backdrop-blur-xl bg-white/60 border border-white/80 shadow-[0_8px_32px_rgba(0,0,0,0.08)] rounded-full px-8 py-4 flex items-center gap-3 mx-auto hover:bg-white/70 transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] group"
-            whileHover={{ scale: 1.05, y: -2 }}
+            className="backdrop-blur-sm bg-white/70 border border-stone-200/80 rounded-full px-8 py-4 flex items-center gap-3 mx-auto hover:bg-white/90 hover:border-stone-300 transition-all duration-300 group shadow-[0_4px_20px_rgba(0,0,0,0.06)]"
+            whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.98 }}
           >
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-rose-400 to-rose-500 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
-              <Check className="w-5 h-5 text-white" strokeWidth={2.5} />
+            <div className="w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm border border-stone-200 flex items-center justify-center group-hover:bg-white transition-all duration-300 shadow-sm">
+              <Check className="w-5 h-5 text-stone-500" strokeWidth={2} />
             </div>
-            <span className="text-base font-medium text-stone-800 tracking-wide">
+            <span className="text-base font-medium text-stone-700 tracking-wide">
               참석 의사 전달하기
             </span>
           </motion.button>
@@ -67,7 +67,7 @@ export default function RSVPSection({ groomName, brideName }: RSVPSectionProps) 
             transition={{ delay: 0.3, duration: 0.8 }}
             className="mt-8 text-xs text-stone-400 tracking-wider"
           >
-            카카오톡으로 간편하게 전달하실 수 있습니다
+            참석여부를 간편하게 전달하실 수 있습니다
           </motion.p>
         </motion.div>
       </div>

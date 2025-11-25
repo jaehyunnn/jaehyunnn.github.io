@@ -144,8 +144,10 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
         {Array.from({ length: totalSteps }).map((_, index) => (
           <div
             key={index}
-            className={`h-1.5 rounded-full transition-all ${
-              index + 1 <= currentStep ? 'bg-rose-400 w-8' : 'bg-stone-200 w-6'
+            className={`h-1.5 rounded-full transition-all duration-300 ${
+              index + 1 <= currentStep
+                ? 'bg-stone-400 w-8'
+                : 'bg-white/60 border border-stone-200/50 w-6'
             }`}
           />
         ))}
@@ -161,6 +163,48 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
       exit: { x: -50, opacity: 0 },
     };
 
+    // 로딩 화면
+    if (isSubmitting) {
+      const loadingText = "전송중입니다...";
+      const characters = loadingText.split('');
+
+      return (
+        <motion.div
+          key="loading"
+          variants={slideVariants}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          className="flex flex-col items-center justify-center min-h-[60vh]"
+        >
+          <h2 className="text-2xl font-medium text-center mb-8">
+            {characters.map((char, index) => (
+              <motion.span
+                key={index}
+                animate={{
+                  color: ['#d6d3d1', '#78716c', '#d6d3d1'],
+                }}
+                transition={{
+                  duration: 1.2,
+                  ease: "easeInOut",
+                  repeat: Infinity,
+                  delay: index * 0.1,
+                }}
+                className="inline-block"
+                style={{
+                  minWidth: char === ' ' ? '0.25em' : 'auto',
+                }}
+              >
+                {char}
+              </motion.span>
+            ))}
+          </h2>
+
+          <p className="text-sm text-stone-400">잠시만 기다려주세요</p>
+        </motion.div>
+      );
+    }
+
     switch (step) {
       case 1:
         return (
@@ -172,21 +216,21 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
             exit="exit"
             className="flex flex-col items-center justify-center min-h-[60vh]"
           >
-            <h2 className="text-2xl font-medium text-stone-800 mb-3 text-center">
+            <h2 className="text-2xl font-medium text-stone-700 mb-3 text-center">
               어느 분의 지인이신가요?
             </h2>
             <p className="text-sm text-stone-500 mb-12">구분을 선택해주세요</p>
 
-            <div className="w-full max-w-sm space-y-4">
+            <div className="w-full max-w-sm space-y-3">
               <button
                 onClick={() => {
                   setFormData({ ...formData, side: 'groom' });
                   setTimeout(handleNext, 300);
                 }}
-                className={`w-full py-6 rounded-2xl font-medium transition-all text-lg ${
+                className={`w-full py-4 rounded-2xl font-medium transition-all duration-300 text-base backdrop-blur-sm border ${
                   formData.side === 'groom'
-                    ? 'bg-gradient-to-r from-blue-400 to-blue-500 text-white shadow-lg'
-                    : 'bg-white/80 border-2 border-stone-200 text-stone-700 hover:border-blue-300'
+                    ? 'bg-white/80 text-stone-700 border-stone-300 shadow-lg'
+                    : 'bg-white/40 text-stone-600 border-white/60 hover:bg-white/60 hover:border-stone-200'
                 }`}
               >
                 신랑 측
@@ -196,10 +240,10 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
                   setFormData({ ...formData, side: 'bride' });
                   setTimeout(handleNext, 300);
                 }}
-                className={`w-full py-6 rounded-2xl font-medium transition-all text-lg ${
+                className={`w-full py-4 rounded-2xl font-medium transition-all duration-300 text-base backdrop-blur-sm border ${
                   formData.side === 'bride'
-                    ? 'bg-gradient-to-r from-rose-400 to-rose-500 text-white shadow-lg'
-                    : 'bg-white/80 border-2 border-stone-200 text-stone-700 hover:border-rose-300'
+                    ? 'bg-white/80 text-stone-700 border-stone-300 shadow-lg'
+                    : 'bg-white/40 text-stone-600 border-white/60 hover:bg-white/60 hover:border-stone-200'
                 }`}
               >
                 신부 측
@@ -216,9 +260,9 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
             initial="enter"
             animate="center"
             exit="exit"
-            className="flex flex-col items-center justify-center min-h-[60vh]"
+            className="flex flex-col items-center pt-16 pb-8"
           >
-            <h2 className="text-2xl font-medium text-stone-800 mb-3 text-center">
+            <h2 className="text-2xl font-medium text-stone-700 mb-3 text-center">
               성함을 알려주세요
             </h2>
             <p className="text-sm text-stone-500 mb-12">예식장에서 확인할 수 있도록 정확히 입력해주세요</p>
@@ -231,8 +275,7 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 placeholder="홍길동"
-                autoFocus
-                className="w-full px-6 py-5 text-lg rounded-2xl border-2 border-stone-200 focus:border-rose-400 focus:outline-none transition-colors bg-white/80 text-center"
+                className="w-full px-6 py-4 text-base rounded-2xl border border-white/60 focus:border-stone-300 focus:outline-none transition-all duration-300 bg-white/40 backdrop-blur-sm text-center text-stone-700 placeholder:text-stone-400"
               />
             </div>
           </motion.div>
@@ -248,23 +291,23 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
             exit="exit"
             className="flex flex-col items-center justify-center min-h-[60vh]"
           >
-            <h2 className="text-2xl font-medium text-stone-800 mb-3 text-center">
+            <h2 className="text-2xl font-medium text-stone-700 mb-3 text-center">
               참석 여부를 알려주세요
             </h2>
             <p className="text-sm text-stone-500 mb-12">
               {groomName} ❤️ {brideName}의 결혼식에
             </p>
 
-            <div className="w-full max-w-sm space-y-4">
+            <div className="w-full max-w-sm space-y-3">
               <button
                 onClick={() => {
                   setFormData({ ...formData, attendance: 'attending' });
-                  setTimeout(handleNext, 300);
+                  setTimeout(() => setStep(4), 300); // 참석 -> 동반인원 단계로
                 }}
-                className={`w-full py-6 rounded-2xl font-medium transition-all text-lg ${
+                className={`w-full py-4 rounded-2xl font-medium transition-all duration-300 text-base backdrop-blur-sm border ${
                   formData.attendance === 'attending'
-                    ? 'bg-gradient-to-r from-rose-400 to-rose-500 text-white shadow-lg'
-                    : 'bg-white/80 border-2 border-stone-200 text-stone-700 hover:border-rose-300'
+                    ? 'bg-white/80 text-stone-700 border-stone-300 shadow-lg'
+                    : 'bg-white/40 text-stone-600 border-white/60 hover:bg-white/60 hover:border-stone-200'
                 }`}
               >
                 참석합니다
@@ -272,12 +315,12 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
               <button
                 onClick={() => {
                   setFormData({ ...formData, attendance: 'not-attending', guestCount: 0, meal: '' });
-                  setTimeout(handleNext, 300);
+                  setTimeout(() => setStep(6), 300); // 불참 -> 메시지 단계로
                 }}
-                className={`w-full py-6 rounded-2xl font-medium transition-all text-lg ${
+                className={`w-full py-4 rounded-2xl font-medium transition-all duration-300 text-base backdrop-blur-sm border ${
                   formData.attendance === 'not-attending'
-                    ? 'bg-gradient-to-r from-stone-400 to-stone-500 text-white shadow-lg'
-                    : 'bg-white/80 border-2 border-stone-200 text-stone-700 hover:border-stone-300'
+                    ? 'bg-white/80 text-stone-700 border-stone-300 shadow-lg'
+                    : 'bg-white/40 text-stone-600 border-white/60 hover:bg-white/60 hover:border-stone-200'
                 }`}
               >
                 불참합니다
@@ -285,12 +328,12 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
               <button
                 onClick={() => {
                   setFormData({ ...formData, attendance: 'undecided', guestCount: 0, meal: '' });
-                  setTimeout(handleNext, 300);
+                  setTimeout(() => setStep(6), 300); // 미정 -> 메시지 단계로
                 }}
-                className={`w-full py-6 rounded-2xl font-medium transition-all text-lg ${
+                className={`w-full py-4 rounded-2xl font-medium transition-all duration-300 text-base backdrop-blur-sm border ${
                   formData.attendance === 'undecided'
-                    ? 'bg-gradient-to-r from-amber-400 to-amber-500 text-white shadow-lg'
-                    : 'bg-white/80 border-2 border-stone-200 text-stone-700 hover:border-amber-300'
+                    ? 'bg-white/80 text-stone-700 border-stone-300 shadow-lg'
+                    : 'bg-white/40 text-stone-600 border-white/60 hover:bg-white/60 hover:border-stone-200'
                 }`}
               >
                 미정입니다
@@ -309,7 +352,7 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
             exit="exit"
             className="flex flex-col items-center justify-center min-h-[60vh]"
           >
-            <h2 className="text-2xl font-medium text-stone-800 mb-3 text-center">
+            <h2 className="text-2xl font-medium text-stone-700 mb-3 text-center">
               동반 인원을 알려주세요
             </h2>
             <p className="text-sm text-stone-500 mb-12">본인 포함 총 인원수를 선택해주세요</p>
@@ -317,21 +360,21 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
             <div className="flex items-center gap-8">
               <button
                 onClick={() => setFormData({ ...formData, guestCount: Math.max(1, formData.guestCount - 1) })}
-                className="w-14 h-14 rounded-full bg-white/80 border-2 border-stone-200 hover:border-rose-300 flex items-center justify-center transition-colors"
+                className="w-12 h-12 rounded-full bg-white/40 backdrop-blur-sm border border-white/60 hover:bg-white/60 hover:border-stone-200 flex items-center justify-center transition-all duration-300"
               >
-                <Minus className="w-6 h-6 text-stone-700" />
+                <Minus className="w-5 h-5 text-stone-500" />
               </button>
 
               <div className="text-center">
-                <div className="text-6xl font-light text-stone-800 mb-2">{formData.guestCount}</div>
+                <div className="text-5xl font-light text-stone-700 mb-2">{formData.guestCount}</div>
                 <div className="text-sm text-stone-500">명</div>
               </div>
 
               <button
                 onClick={() => setFormData({ ...formData, guestCount: Math.min(10, formData.guestCount + 1) })}
-                className="w-14 h-14 rounded-full bg-white/80 border-2 border-stone-200 hover:border-rose-300 flex items-center justify-center transition-colors"
+                className="w-12 h-12 rounded-full bg-white/40 backdrop-blur-sm border border-white/60 hover:bg-white/60 hover:border-stone-200 flex items-center justify-center transition-all duration-300"
               >
-                <Plus className="w-6 h-6 text-stone-700" />
+                <Plus className="w-5 h-5 text-stone-500" />
               </button>
             </div>
           </motion.div>
@@ -347,21 +390,21 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
             exit="exit"
             className="flex flex-col items-center justify-center min-h-[60vh]"
           >
-            <h2 className="text-2xl font-medium text-stone-800 mb-3 text-center">
+            <h2 className="text-2xl font-medium text-stone-700 mb-3 text-center">
               식사 여부를 선택해주세요
             </h2>
             <p className="text-sm text-stone-500 mb-12">예식 후 식사 준비를 위해 필요합니다</p>
 
-            <div className="w-full max-w-sm space-y-4">
+            <div className="w-full max-w-sm space-y-3">
               <button
                 onClick={() => {
                   setFormData({ ...formData, meal: 'meal' });
                   setTimeout(handleNext, 300);
                 }}
-                className={`w-full py-6 rounded-2xl font-medium transition-all text-lg ${
+                className={`w-full py-4 rounded-2xl font-medium transition-all duration-300 text-base backdrop-blur-sm border ${
                   formData.meal === 'meal'
-                    ? 'bg-gradient-to-r from-rose-400 to-rose-500 text-white shadow-lg'
-                    : 'bg-white/80 border-2 border-stone-200 text-stone-700 hover:border-rose-300'
+                    ? 'bg-white/80 text-stone-700 border-stone-300 shadow-lg'
+                    : 'bg-white/40 text-stone-600 border-white/60 hover:bg-white/60 hover:border-stone-200'
                 }`}
               >
                 식사 예정입니다
@@ -371,10 +414,10 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
                   setFormData({ ...formData, meal: 'gift' });
                   setTimeout(handleNext, 300);
                 }}
-                className={`w-full py-6 rounded-2xl font-medium transition-all text-lg ${
+                className={`w-full py-4 rounded-2xl font-medium transition-all duration-300 text-base backdrop-blur-sm border ${
                   formData.meal === 'gift'
-                    ? 'bg-gradient-to-r from-amber-400 to-amber-500 text-white shadow-lg'
-                    : 'bg-white/80 border-2 border-stone-200 text-stone-700 hover:border-amber-300'
+                    ? 'bg-white/80 text-stone-700 border-stone-300 shadow-lg'
+                    : 'bg-white/40 text-stone-600 border-white/60 hover:bg-white/60 hover:border-stone-200'
                 }`}
               >
                 답례품만 수령합니다
@@ -384,10 +427,10 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
                   setFormData({ ...formData, meal: 'undecided' });
                   setTimeout(handleNext, 300);
                 }}
-                className={`w-full py-6 rounded-2xl font-medium transition-all text-lg ${
+                className={`w-full py-4 rounded-2xl font-medium transition-all duration-300 text-base backdrop-blur-sm border ${
                   formData.meal === 'undecided'
-                    ? 'bg-gradient-to-r from-stone-400 to-stone-500 text-white shadow-lg'
-                    : 'bg-white/80 border-2 border-stone-200 text-stone-700 hover:border-stone-300'
+                    ? 'bg-white/80 text-stone-700 border-stone-300 shadow-lg'
+                    : 'bg-white/40 text-stone-600 border-white/60 hover:bg-white/60 hover:border-stone-200'
                 }`}
               >
                 미정입니다
@@ -404,9 +447,9 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
             initial="enter"
             animate="center"
             exit="exit"
-            className="flex flex-col items-center justify-center min-h-[60vh]"
+            className="flex flex-col items-center pt-16 pb-8"
           >
-            <h2 className="text-2xl font-medium text-stone-800 mb-3 text-center">
+            <h2 className="text-2xl font-medium text-stone-700 mb-3 text-center">
               축하 메시지를 남겨주세요
             </h2>
             <p className="text-sm text-stone-500 mb-12">선택사항입니다</p>
@@ -416,9 +459,8 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                 placeholder="축하합니다! 행복하세요."
-                rows={6}
-                autoFocus
-                className="w-full px-6 py-5 text-base rounded-2xl border-2 border-stone-200 focus:border-rose-400 focus:outline-none transition-colors resize-none bg-white/80"
+                rows={5}
+                className="w-full px-5 py-4 text-base rounded-2xl border border-white/60 focus:border-stone-300 focus:outline-none transition-all duration-300 resize-none bg-white/40 backdrop-blur-sm text-stone-700 placeholder:text-stone-400"
               />
             </div>
           </motion.div>
@@ -449,21 +491,23 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="glass backdrop-blur-2xl bg-gradient-to-b from-white/98 to-stone-50/98 rounded-3xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden flex flex-col pointer-events-auto"
+              className="rounded-3xl w-full max-w-lg mx-4 overflow-hidden flex flex-col pointer-events-auto backdrop-blur-xl border border-white/60"
               style={{
                 fontFamily: "'Noto Serif KR', serif",
-                maxHeight: '90vh'
+                maxHeight: '90vh',
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)',
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255,255,255,0.5) inset'
               }}
             >
               {/* 헤더 */}
-              <div className="px-6 py-5 border-b border-stone-200/50 flex items-center justify-between">
-                <h3 className="text-lg font-medium text-stone-800 tracking-wide">참석 의사 전달</h3>
+              <div className="px-6 py-5 border-b border-white/50 flex items-center justify-between">
+                <h3 className="text-lg font-medium text-stone-700 tracking-wide">참석 의사 전달</h3>
                 <button
                   onClick={handleClose}
-                  className="w-8 h-8 rounded-full hover:bg-stone-100 flex items-center justify-center transition-colors"
+                  className="w-8 h-8 rounded-full bg-white/40 hover:bg-white/60 flex items-center justify-center transition-all duration-300 border border-white/60"
                   aria-label="닫기"
                 >
-                  <X className="w-5 h-5 text-stone-600" />
+                  <X className="w-4 h-4 text-stone-500" />
                 </button>
               </div>
 
@@ -476,45 +520,64 @@ export default function RSVPModal({ isOpen, onClose, groomName, brideName }: RSV
               </div>
 
               {/* 하단 버튼 */}
-              <div className="px-6 py-4 border-t border-stone-200/50 flex gap-3">
-                {step > 1 && (
-                  <button
-                    onClick={handlePrev}
-                    className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl border-2 border-stone-300 text-stone-700 hover:bg-stone-50 transition-colors"
-                  >
-                    <ChevronLeft className="w-5 h-5" />
-                    이전
-                  </button>
-                )}
+              {!isSubmitting && (
+                <div className="px-6 py-4 border-t border-white/50 flex gap-3">
+                  {step > 1 && (
+                    <button
+                      onClick={handlePrev}
+                      className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white/40 backdrop-blur-sm border border-white/60 text-stone-600 hover:bg-white/60 hover:border-stone-200 transition-all duration-300 text-sm font-medium"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                      이전
+                    </button>
+                  )}
 
-                {step < 6 ? (
-                  <button
-                    onClick={handleNext}
-                    disabled={!isStepValid()}
-                    className={`flex-1 flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-medium transition-all ${
-                      isStepValid()
-                        ? 'bg-gradient-to-r from-rose-400 to-rose-500 text-white shadow-lg hover:shadow-xl'
-                        : 'bg-stone-200 text-stone-400 cursor-not-allowed'
-                    }`}
-                  >
-                    다음
-                    <ChevronRight className="w-5 h-5" />
-                  </button>
-                ) : (
-                  <button
-                    onClick={handleSubmit}
-                    disabled={isSubmitting}
-                    className={`flex-1 flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-medium transition-all ${
-                      !isSubmitting
-                        ? 'bg-gradient-to-r from-rose-400 to-rose-500 text-white shadow-lg hover:shadow-xl'
-                        : 'bg-stone-200 text-stone-400 cursor-not-allowed'
-                    }`}
-                  >
-                    <Send className="w-5 h-5" />
-                    {isSubmitting ? '전송 중...' : '전달하기'}
-                  </button>
-                )}
-              </div>
+                  {step < 6 ? (
+                    isStepValid() ? (
+                      <motion.button
+                        onClick={handleNext}
+                        animate={{
+                          borderColor: ['#d6d3d1', '#78716c', '#d6d3d1'],
+                        }}
+                        transition={{
+                          duration: 2,
+                          ease: "easeInOut",
+                          repeat: Infinity,
+                        }}
+                        className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-medium text-sm backdrop-blur-sm bg-white/70 text-stone-700 border-2 hover:bg-white/90 shadow-sm"
+                      >
+                        다음
+                        <ChevronRight className="w-4 h-4" />
+                      </motion.button>
+                    ) : (
+                      <button
+                        disabled
+                        className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-medium text-sm backdrop-blur-sm bg-white/20 text-stone-400 cursor-not-allowed border border-white/40"
+                      >
+                        다음
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
+                    )
+                  ) : (
+                    <motion.button
+                      onClick={handleSubmit}
+                      disabled={isSubmitting}
+                      animate={{
+                        borderColor: ['#d6d3d1', '#78716c', '#d6d3d1'],
+                      }}
+                      transition={{
+                        duration: 2,
+                        ease: "easeInOut",
+                        repeat: Infinity,
+                      }}
+                      className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-medium text-sm backdrop-blur-sm bg-white/70 text-stone-700 border-2 hover:bg-white/90 shadow-sm"
+                    >
+                      <Send className="w-4 h-4" />
+                      전달하기
+                    </motion.button>
+                  )}
+                </div>
+              )}
             </motion.div>
           </div>
         </>
