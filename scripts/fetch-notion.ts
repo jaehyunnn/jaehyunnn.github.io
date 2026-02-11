@@ -377,59 +377,136 @@ async function queryAllPages(
   return pages;
 }
 
-// ── 블로그 fetch ──
+// ── 캐시 로드 ──
+
+function loadCachedPosts(): Map<string, NotionPost & { _lastEdited?: string }> {
+  const cache = new Map<string, NotionPost & { _lastEdited?: string }>();
+  try {
+    const raw = fsSync.readFileSync(
+      path.join(NOTION_DATA_DIR, "posts.json"),
+      "utf-8"
+    );
+    const posts = JSON.parse(raw) as Array<NotionPost & { _lastEdited?: string }>;
+    for (const post of posts) {
+      cache.set(post.id, post);
+    }
+  } catch {
+    // 캐시 없음
+  }
+  return cache;
+}
+
+// ── 단일 포스트 처리 ──
+
+async function processPost(
+  page: Record<string, unknown>
+): Promise<NotionPost | null> {
+  if (!("properties" in page)) return null;
+  const props = page.properties as Props;
+
+  const slug = getRichText(props, "Slug");
+  const title = getTitle(props, "Title");
+  if (!slug || !title) {
+    console.warn(`  ⚠️  Skipping post without slug or title: ${page.id}`);
+    return null;
+  }
+
+  console.log(`  → Processing: ${title}`);
+
+  const mdBlocks = await n2m.pageToMarkdown(page.id as string);
+  const mdString = n2m.toMarkdownString(mdBlocks);
+  const markdown = mdString.parent;
+
+  let html = await markdownToHtml(markdown);
+  html = await processImages(html);
+  html = injectHeadingIds(html);
+
+  const toc = extractToc(html);
+  const thumbnail = await downloadThumbnail(getFiles(props, "Thumbnail"));
+
+  const lastEdited =
+    "last_edited_time" in page
+      ? (page.last_edited_time as string)
+      : undefined;
+
+  return {
+    id: page.id as string,
+    slug,
+    title,
+    description: getRichText(props, "Description"),
+    date: getDate(props, "Date") || new Date().toISOString(),
+    updatedAt: getDate(props, "UpdatedAt"),
+    tags: getMultiSelect(props, "Tags"),
+    thumbnail,
+    readingTime: calculateReadingTime(html),
+    contentHtml: html,
+    toc,
+    _lastEdited: lastEdited,
+  } as NotionPost & { _lastEdited?: string };
+}
+
+// ── 병렬 실행 (동시성 제한) ──
+
+async function parallel<T, R>(
+  items: T[],
+  fn: (item: T) => Promise<R>,
+  concurrency: number
+): Promise<R[]> {
+  const results: R[] = [];
+  for (let i = 0; i < items.length; i += concurrency) {
+    const batch = items.slice(i, i + concurrency);
+    const batchResults = await Promise.all(batch.map(fn));
+    results.push(...batchResults);
+  }
+  return results;
+}
+
+// ── 블로그 fetch (incremental) ──
 
 async function fetchBlogPosts(): Promise<NotionPost[]> {
   console.log("\n📝 Fetching blog posts...");
 
+  const cache = loadCachedPosts();
   const pages = await queryAllPages(
     BLOG_DB_ID,
     { property: "Published", checkbox: { equals: true } },
     [{ property: "Date", direction: "descending" }]
   );
 
+  const toProcess: Array<Record<string, unknown>> = [];
   const posts: NotionPost[] = [];
 
+  // 변경 감지: last_edited_time 비교
   for (const page of pages) {
-    if (!("properties" in page)) continue;
-    const props = page.properties as Props;
+    const pageId = page.id as string;
+    const lastEdited =
+      "last_edited_time" in page ? (page.last_edited_time as string) : "";
+    const cached = cache.get(pageId);
 
-    const slug = getRichText(props, "Slug");
-    const title = getTitle(props, "Title");
-    if (!slug || !title) {
-      console.warn(`  ⚠️  Skipping post without slug or title: ${page.id}`);
-      continue;
+    if (cached && cached._lastEdited === lastEdited) {
+      const props = page.properties as Props;
+      const title = getTitle(props, "Title");
+      console.log(`  ✓ Cached: ${title}`);
+      posts.push(cached);
+    } else {
+      toProcess.push(page);
     }
-
-    console.log(`  → Processing: ${title}`);
-
-    const mdBlocks = await n2m.pageToMarkdown(page.id as string);
-    const mdString = n2m.toMarkdownString(mdBlocks);
-    const markdown = mdString.parent;
-
-    let html = await markdownToHtml(markdown);
-    html = await processImages(html);
-    html = injectHeadingIds(html);
-
-    const toc = extractToc(html);
-    const thumbnail = await downloadThumbnail(getFiles(props, "Thumbnail"));
-
-    posts.push({
-      id: page.id as string,
-      slug,
-      title,
-      description: getRichText(props, "Description"),
-      date: getDate(props, "Date") || new Date().toISOString(),
-      updatedAt: getDate(props, "UpdatedAt"),
-      tags: getMultiSelect(props, "Tags"),
-      thumbnail,
-      readingTime: calculateReadingTime(html),
-      contentHtml: html,
-      toc,
-    });
   }
 
-  console.log(`✅ Fetched ${posts.length} posts`);
+  if (toProcess.length > 0) {
+    console.log(`  ⚡ Processing ${toProcess.length} changed post(s)...`);
+    const processed = await parallel(toProcess, processPost, 3);
+    for (const post of processed) {
+      if (post) posts.push(post);
+    }
+  }
+
+  // Date 기준 내림차순 정렬 유지
+  posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+  console.log(
+    `✅ Fetched ${posts.length} posts (${posts.length - toProcess.length} cached, ${toProcess.length} updated)`
+  );
   return posts;
 }
 
@@ -538,9 +615,11 @@ async function main(): Promise<void> {
   await fs.mkdir(NOTION_DATA_DIR, { recursive: true });
   await fs.mkdir(IMAGES_DIR, { recursive: true });
 
-  const posts = await fetchBlogPosts();
-  const projects = await fetchProjects();
-  const about = await fetchAbout();
+  const [posts, projects, about] = await Promise.all([
+    fetchBlogPosts(),
+    fetchProjects(),
+    fetchAbout(),
+  ]);
   const searchIndex = buildSearchIndex(posts);
 
   await fs.writeFile(
