@@ -1,0 +1,326 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1770610737533,
+  "projectRoot": "/home/ibk/workspace/jay_page",
+  "techStack": {
+    "languages": [
+      {
+        "name": "JavaScript/TypeScript",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "package.json"
+        ]
+      },
+      {
+        "name": "TypeScript",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "tsconfig.json"
+        ]
+      }
+    ],
+    "frameworks": [
+      {
+        "name": "next",
+        "version": "15.5.12",
+        "category": "fullstack"
+      },
+      {
+        "name": "react",
+        "version": "19.1.0",
+        "category": "frontend"
+      },
+      {
+        "name": "react-dom",
+        "version": "19.1.0",
+        "category": "frontend"
+      }
+    ],
+    "packageManager": "npm",
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": "npm run build",
+    "testCommand": null,
+    "lintCommand": "npm run lint",
+    "devCommand": "npm run dev",
+    "scripts": {
+      "fetch": "tsx scripts/fetch-notion.ts",
+      "dev": "next dev --turbopack",
+      "build": "next build --turbopack",
+      "start": "next start",
+      "lint": "eslint"
+    }
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": "type-based"
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [
+      "assets",
+      "docs",
+      "public",
+      "scripts",
+      "src"
+    ],
+    "gitBranches": null
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "assets": {
+      "path": "assets",
+      "purpose": "Static assets",
+      "fileCount": 1,
+      "lastAccessed": 1770610737527,
+      "keyFiles": []
+    },
+    "content": {
+      "path": "content",
+      "purpose": null,
+      "fileCount": 3,
+      "lastAccessed": 1770610737527,
+      "keyFiles": [
+        "cv_박재현_한글.md",
+        "cv_박재현_한글.pdf",
+        "portfolio-data.md"
+      ]
+    },
+    "docs": {
+      "path": "docs",
+      "purpose": "Documentation",
+      "fileCount": 4,
+      "lastAccessed": 1770610737530,
+      "keyFiles": [
+        "DESIGN.md",
+        "NOTION-SETUP.md",
+        "PLAN.md",
+        "PRD.md"
+      ]
+    },
+    "out": {
+      "path": "out",
+      "purpose": "Build output",
+      "fileCount": 5,
+      "lastAccessed": 1770610737531,
+      "keyFiles": [
+        "404.html",
+        "favicon.ico",
+        "index.html",
+        "index.txt"
+      ]
+    },
+    "public": {
+      "path": "public",
+      "purpose": "Public files",
+      "fileCount": 1,
+      "lastAccessed": 1770610737531,
+      "keyFiles": []
+    },
+    "scripts": {
+      "path": "scripts",
+      "purpose": "Build/utility scripts",
+      "fileCount": 1,
+      "lastAccessed": 1770610737531,
+      "keyFiles": [
+        "fetch-notion.ts"
+      ]
+    },
+    "src": {
+      "path": "src",
+      "purpose": "Source code",
+      "fileCount": 0,
+      "lastAccessed": 1770610737531,
+      "keyFiles": []
+    },
+    "src/app": {
+      "path": "src/app",
+      "purpose": "Application code",
+      "fileCount": 4,
+      "lastAccessed": 1770610737532,
+      "keyFiles": [
+        "favicon.ico",
+        "layout.tsx",
+        "not-found.tsx"
+      ]
+    },
+    "src/components": {
+      "path": "src/components",
+      "purpose": "UI components",
+      "fileCount": 0,
+      "lastAccessed": 1770610737532,
+      "keyFiles": []
+    },
+    "src/lib": {
+      "path": "src/lib",
+      "purpose": "Library code",
+      "fileCount": 1,
+      "lastAccessed": 1770610737532,
+      "keyFiles": [
+        "notion.ts"
+      ]
+    },
+    "src/types": {
+      "path": "src/types",
+      "purpose": "Type definitions",
+      "fileCount": 1,
+      "lastAccessed": 1770610737532,
+      "keyFiles": [
+        "notion.ts"
+      ]
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "scripts/fetch-notion.ts",
+      "accessCount": 15,
+      "lastAccessed": 1770695270979,
+      "type": "file"
+    },
+    {
+      "path": "src/styles/globals.css",
+      "accessCount": 12,
+      "lastAccessed": 1770625998890,
+      "type": "file"
+    },
+    {
+      "path": "src/app/blog/[slug]/page.tsx",
+      "accessCount": 8,
+      "lastAccessed": 1770626009145,
+      "type": "file"
+    },
+    {
+      "path": "src/components/layout/Header.tsx",
+      "accessCount": 7,
+      "lastAccessed": 1770623492880,
+      "type": "file"
+    },
+    {
+      "path": "src/app/page.tsx",
+      "accessCount": 6,
+      "lastAccessed": 1770615456837,
+      "type": "file"
+    },
+    {
+      "path": "src/app/layout.tsx",
+      "accessCount": 6,
+      "lastAccessed": 1770623488086,
+      "type": "file"
+    },
+    {
+      "path": "src/components/home/About.tsx",
+      "accessCount": 6,
+      "lastAccessed": 1770623657727,
+      "type": "file"
+    },
+    {
+      "path": "src/components/layout/Footer.tsx",
+      "accessCount": 5,
+      "lastAccessed": 1770623500702,
+      "type": "file"
+    },
+    {
+      "path": "src/components/home/Hero.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1770615406270,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/bio.ts",
+      "accessCount": 4,
+      "lastAccessed": 1770624203864,
+      "type": "file"
+    },
+    {
+      "path": "src/components/blog/PostCard.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1770627168045,
+      "type": "file"
+    },
+    {
+      "path": "src/components/home/ProjectCard.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1770613537026,
+      "type": "file"
+    },
+    {
+      "path": "src/components/home/Projects.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1770613548991,
+      "type": "file"
+    },
+    {
+      "path": "src/app/not-found.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1770613576223,
+      "type": "file"
+    },
+    {
+      "path": "src/components/home/Contact.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1770615036190,
+      "type": "file"
+    },
+    {
+      "path": "src/components/home/LangContext.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1770615332006,
+      "type": "file"
+    },
+    {
+      "path": "content/bio.md",
+      "accessCount": 3,
+      "lastAccessed": 1770623657889,
+      "type": "file"
+    },
+    {
+      "path": "src/components/ui/ScrollProgress.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1770613585300,
+      "type": "file"
+    },
+    {
+      "path": "src",
+      "accessCount": 2,
+      "lastAccessed": 1770623483492,
+      "type": "directory"
+    },
+    {
+      "path": "src/components/blog/TableOfContents.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1770625987923,
+      "type": "file"
+    },
+    {
+      "path": "package.json",
+      "accessCount": 2,
+      "lastAccessed": 1770695252713,
+      "type": "file"
+    },
+    {
+      "path": "content/bio-en.md",
+      "accessCount": 1,
+      "lastAccessed": 1770615436955,
+      "type": "file"
+    },
+    {
+      "path": "src/components/ui/CodeBlockEnhancer.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1770623811064,
+      "type": "file"
+    },
+    {
+      "path": "src/lib/notion.ts",
+      "accessCount": 1,
+      "lastAccessed": 1770695219066,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}
