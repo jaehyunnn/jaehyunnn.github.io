@@ -579,15 +579,18 @@ body::after {
 }
 
 /* ── Tables ── */
+.prose-custom .table-wrapper {
+  overflow-x: auto;
+  margin: 1.75rem 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
 .prose-custom table {
   width: 100%;
-  margin: 1.75rem 0;
   border-collapse: separate;
   border-spacing: 0;
   font-size: 0.9rem;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
+  min-width: max-content;
 }
 .prose-custom thead {
   background: var(--surface);

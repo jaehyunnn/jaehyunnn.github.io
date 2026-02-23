@@ -299,6 +299,13 @@ function slugify(text: string): string {
     .replace(/^-|-$/g, "");
 }
 
+function wrapTables(html: string): string {
+  return html.replace(
+    /<table([\s\S]*?)<\/table>/gi,
+    '<div class="table-wrapper"><table$1</table></div>'
+  );
+}
+
 function injectHeadingIds(html: string): string {
   const seen = new Map<string, number>();
   return html.replace(
@@ -419,6 +426,7 @@ async function processPost(
 
   let html = await markdownToHtml(markdown);
   html = await processImages(html);
+  html = wrapTables(html);
   html = injectHeadingIds(html);
 
   const toc = extractToc(html);
@@ -569,6 +577,7 @@ async function fetchAbout(): Promise<NotionAbout | null> {
 
   let html = await markdownToHtml(markdown);
   html = await processImages(html);
+  html = wrapTables(html);
   html = injectHeadingIds(html);
 
   const lastEdited =
@@ -584,6 +593,7 @@ async function fetchAbout(): Promise<NotionAbout | null> {
     const enMdString = n2m.toMarkdownString(enBlocks);
     let enHtml = await markdownToHtml(enMdString.parent);
     enHtml = await processImages(enHtml);
+    enHtml = wrapTables(enHtml);
     enHtml = injectHeadingIds(enHtml);
     contentHtmlEn = enHtml;
   }
